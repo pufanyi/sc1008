@@ -1,1 +1,4 @@
-site_name: My Docs
+site_name: NTU SC1008 C & C++ PROGRAMMING
+site_url: https://pufanyi.com/sc1008
+theme:
+  name: material
