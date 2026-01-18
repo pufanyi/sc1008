@@ -1,4 +1,6 @@
-# Week 1: Linear Equation Solver
+# Week 2: Linear Equation Solver
+
+<iframe src="slides.html" width="100%" height="500px" frameborder="0"></iframe>
 
 This week we look at a simple C program that solves a system of two linear equations.
 
@@ -26,7 +28,7 @@ provided that the denominator $a_1 b_2 - a_2 b_1$ is not zero.
 Here is the complete source code for the solver:
 
 ```c
---8<-- "src/week2/t1/t1.c"
+--8<-- "src/week2/t1/solution.c"
 ```
 
 ## Code Explanation
