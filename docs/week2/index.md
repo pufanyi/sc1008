@@ -1,10 +1,8 @@
-# Week 2: Linear Equation Solver
+# Week 2
 
 <iframe src="slides.html" width="100%" height="500px" frameborder="0"></iframe>
 
-This week we look at a simple C program that solves a system of two linear equations.
-
-## The Problem
+## Question 1
 
 We want to solve for $x$ and $y$ in the following system of equations:
 
@@ -23,7 +21,7 @@ $$
 
 provided that the denominator $a_1 b_2 - a_2 b_1$ is not zero.
 
-## The Code
+### The Code
 
 Here is the complete source code for the solver:
 
@@ -31,9 +29,9 @@ Here is the complete source code for the solver:
 --8<-- "src/week2/t1/solution.c"
 ```
 
-## Code Explanation
+### Code Explanation
 
-### 1. Headers and Macros
+#### 1. Headers and Macros
 
 ```c
 #include <math.h>
@@ -46,7 +44,7 @@ Here is the complete source code for the solver:
 - `math.h`: Math library, used here for the `fabs()` function (absolute value of a float).
 - `#define EPS 1e-6`: Defines a small epsilon value. Since floating-point arithmetic is not perfectly precise, we use a small threshold to check if a number is "close enough" to zero.
 
-### 2. Input
+#### 2. Input
 
 ```c
   double a1, b1, c1, a2, b2, c2;
@@ -56,7 +54,7 @@ Here is the complete source code for the solver:
 
 We declare variables for the coefficients and read them from the user. Note the usage of `%lf` for reading `double` values with `scanf`.
 
-### 3. Checking the Denominator
+#### 3. Checking the Denominator
 
 ```c
   if (fabs(a1 * b2 - a2 * b1) < EPS) {
@@ -66,11 +64,12 @@ We declare variables for the coefficients and read them from the user. Note the 
 ```
 
 Before dividing, we must check if the denominator is zero.
+
 - `a1 * b2 - a2 * b1` is the determinant of the coefficient matrix.
 - `fabs(...) < EPS` checks if the absolute value of the determinant is smaller than our epsilon, effectively treating it as zero.
 - If it is zero, the system has either no solution or infinite solutions, and we cannot proceed with the formula.
 
-### 4. Calculating and Printing Results
+#### 4. Calculating and Printing Results
 
 ```c
   double x = (b2 * c1 - b1 * c2) / (a1 * b2 - a2 * b1);
