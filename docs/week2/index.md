@@ -8,8 +8,8 @@ Write a C program that computes the solutions for $x$ and $y$ in the linear syst
 
 $$
 \begin{cases}
-a_1x + b_1y = c_1 \\
-a_2x + b_2y = c_2
+a_1 x + b_1 y = c_1 \\
+a_2 x + b_2 y = c_2
 \end{cases}
 $$
 
