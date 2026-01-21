@@ -2,24 +2,25 @@
 
 <iframe src="slides.html" width="100%" height="500px" frameborder="0"></iframe>
 
-## Question 1
+## Question 1: Linear System
 
-We want to solve for $x$ and $y$ in the following system of equations:
+Write a C program that computes the solutions for $x$ and $y$ in the linear system of equations:
 
 $$
 \begin{cases}
-a_1 x + b_1 y = c_1 \\
-a_2 x + b_2 y = c_2
+a_1x + b_1y = c_1 \\
+a_2x + b_2y = c_2
 \end{cases}
 $$
 
-Using Cramer's rule or substitution, the solution is given by:
+The solutions for $x$ and $y$ are given by:
 
 $$
-x = \frac{b_2 c_1 - b_1 c_2}{a_1 b_2 - a_2 b_1}, \quad y = \frac{a_1 c_2 - a_2 c_1}{a_1 b_2 - a_2 b_1}
+x = \frac{b_2c_1 - b_1c_2}{a_1b_2 - a_2b_1} \quad \text{and} \quad y = \frac{a_1c_2 - a_2c_1}{a_1b_2 - a_2b_1}
 $$
 
-provided that the denominator $a_1 b_2 - a_2 b_1$ is not zero.
+The program reads in $a_1, b_1, c_1, a_2, b_2$ and $c_2$, and then computes and prints the solutions.
+In your program, if the denominator $(a_1b_2 - a_2b_1)$ of the above equations is zero, then it prints an error message "`Unable to compute because the denominator is zero!`".
 
 ### The Code
 
