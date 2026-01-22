@@ -89,6 +89,102 @@
 
                 </section>
             </section>
+            <section>
+                <section data-markdown>
+                    <textarea data-template>
+                        ## Q1: Implementation Outline
+
+                        - Read six doubles: `a1, b1, c1, a2, b2, c2`
+                        - Compute the determinant: `a1 * b2 - a2 * b1`
+                        - If determinant is near zero → print an error
+                        - Otherwise compute:
+                          - `x = (b2 * c1 - b1 * c2) / det`
+                          - `y = (a1 * c2 - a2 * c1) / det`
+                    </textarea>
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    <textarea data-template>
+                        ## Question 2: Count Characters
+
+                        - Read characters one by one
+                        - Stop when `#` is seen
+                        - Count:
+                          - English letters (`a-z`, `A-Z`)
+                          - Digits (`0-9`)
+                        - Print totals
+                    </textarea>
+                </section>
+                <section data-markdown>
+                    <textarea data-template>
+                        ## Q2: Key Logic
+
+                        ```c
+                        char c = getchar();
+                        if (c == '#') break;
+                        if ((c >= 'a' && c <= 'z') ||
+                            (c >= 'A' && c <= 'Z')) {
+                          num_letters++;
+                        } else if (c >= '0' && c <= '9') {
+                          num_digits++;
+                        }
+                        ```
+                    </textarea>
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    <textarea data-template>
+                        ## Question 3: Print Pattern
+
+                        - Input: `height` (1–9)
+                        - Print triangle of digits
+                        - Each row repeats the same digit
+                        - Digits cycle 1 → 2 → 3 → 1 → ...
+                    </textarea>
+                </section>
+                <section data-markdown>
+                    <textarea data-template>
+                        ## Q3: Row Construction
+
+                        ```c
+                        for (int i = 0; i < height; ++i) {
+                          int d = i % 3 + 1;
+                          for (int j = 0; j <= i; ++j) {
+                            printf("%d", d);
+                          }
+                          printf("\n");
+                        }
+                        ```
+                    </textarea>
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    <textarea data-template>
+                        ## Question 4: Compute Series
+
+                        Compute:
+
+                        $$e^x = 1 + \frac{x}{1!} + \frac{x^2}{2!} + \cdots + \frac{x^{10}}{10!}$$
+
+                        - Accumulate terms iteratively
+                        - Track `numerator = x^i` and `denominator = i!`
+                    </textarea>
+                </section>
+                <section data-markdown>
+                    <textarea data-template>
+                        ## Q4: Iterative Update
+
+                        ```c
+                        sum += numerator / denominator;
+                        denominator *= i + 1;
+                        numerator *= x;
+                        ```
+                    </textarea>
+                </section>
+            </section>
         </div>
     </div>
 

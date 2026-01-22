@@ -79,3 +79,141 @@ Before dividing, we must check if the denominator is zero.
 ```
 
 If the denominator is valid, we compute `x` and `y` using the formulas and print the result formatted to 2 decimal places (`%.2f`).
+
+## Question 2: Count Characters
+
+Write a C program that reads input characters until `#` is entered, then prints the number of English letters and the number of digits.
+
+### The Code
+
+```c
+--8<-- "src/week2/t2/solution.c"
+```
+
+### Code Explanation
+
+#### 1. Input Loop with `getchar`
+
+```c
+  while (true) {
+    char c = getchar();
+    if (c == '#') {
+      break;
+    }
+```
+
+We read one character at a time using `getchar()`. The loop stops when the sentinel character `#` appears.
+
+#### 2. Counting Letters and Digits
+
+```c
+    } else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+      num_letters++;
+    } else if (c >= '0' && c <= '9') {
+      num_digits++;
+    }
+```
+
+- Letters are checked by comparing ASCII ranges for lowercase and uppercase characters.
+- Digits are checked with the range `'0'` to `'9'`.
+
+#### 3. Output
+
+```c
+  printf("Number of letters: %d\n", num_letters);
+  printf("Number of digits: %d\n", num_digits);
+```
+
+The program prints the total counts after the loop ends.
+
+## Question 3: Print Pattern
+
+Write a C program that reads a positive integer height (1–9) and prints a triangular pattern, cycling digits 1, 2, 3 for each row.
+
+### The Code
+
+```c
+--8<-- "src/week2/t3/solution.c"
+```
+
+### Code Explanation
+
+#### 1. Read Height and Start the Pattern
+
+```c
+  int height;
+  scanf("%d", &height);
+  printf("Pattern:\n");
+```
+
+We read the height and print a label before the pattern.
+
+#### 2. Row Loop and Cyclic Digits
+
+```c
+  for (int i = 0; i < height; ++i) {
+    int what_to_print = i % 3 + 1;
+```
+
+Each row `i` uses `i % 3 + 1` to cycle through 1, 2, 3, 1, 2, 3, ...
+
+#### 3. Column Loop to Print Repeated Digits
+
+```c
+    for (int j = 0; j <= i; ++j) {
+      printf("%d", what_to_print);
+    }
+    printf("\n");
+```
+
+The inner loop prints the digit `(i + 1)` times to form the triangle.
+
+## Question 4: Compute Series
+
+Write a C program that computes the value of:
+
+$$
+e^x = 1 + \frac{x}{1!} + \frac{x^2}{2!} + \cdots + \frac{x^{10}}{10!}
+$$
+
+### The Code
+
+```c
+--8<-- "src/week2/t4/solution.c"
+```
+
+### Code Explanation
+
+#### 1. Input and Initialization
+
+```c
+  double x;
+  scanf("%lf", &x);
+  double sum = 0;
+  double denominator = 1;
+  double numerator = 1;
+```
+
+- `numerator` tracks \(x^i\).
+- `denominator` tracks \(i!\).
+- `sum` accumulates the series.
+
+#### 2. Accumulating Terms
+
+```c
+  for (int i = 0; i < N; ++i) {
+    sum += numerator / denominator;
+    denominator *= i + 1;
+    numerator *= x;
+  }
+```
+
+We add each term and update both numerator and denominator iteratively.
+
+#### 3. Output
+
+```c
+  printf("Result = %.2f\n", sum);
+```
+
+The final value is printed to two decimal places.
