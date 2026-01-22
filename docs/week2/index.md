@@ -45,7 +45,11 @@ Here is the complete source code for the solver:
 
 - `stdio.h`: Standard Input/Output library for `printf` and `scanf`.
 - `math.h`: Math library, used here for the `fabs()` function (absolute value of a float).
-- `#define EPS 1e-6`: Defines a small epsilon value. Since floating-point arithmetic is not perfectly precise, we use a small threshold to check if a number is "close enough" to zero.
+- `#define EPS 1e-6`: Defines a macro named `EPS` with the value `1e-6`.
+    - `#define` is a preprocessor directive used to define constants or macros.
+    - Before the program is compiled, the preprocessor replaces every occurrence of `EPS` in the code with `1e-6`.
+    - This makes the code more readable and easier to maintain (you only need to change the value in one place).
+    - Here, `EPS` is used as a small threshold to check if a number is "close enough" to zero, handling floating-point inaccuracies.
 
 #### 2. Input
 
@@ -81,6 +85,28 @@ Before dividing, we must check if the denominator is zero.
 ```
 
 If the denominator is valid, we compute `x` and `y` using the formulas and print the result formatted to 2 decimal places (`%.2f`).
+
+### Why do we need Epsilon?
+
+You might wonder why we use `EPS` (epsilon) instead of checking `if (a1 * b2 - a2 * b1 == 0)`.
+Floating-point arithmetic is not perfectly precise. Small rounding errors can cause two numbers that should be equal to be slightly different.
+
+Consider this example where we don't use epsilon:
+
+```c
+--8<-- "src/week2/t1/wo_eps.c"
+```
+
+If we run this program with the input `3.0 1.0 233 0.3 0.1 233`, mathematically the determinant should be $3.0 \times 0.1 - 0.3 \times 1.0 = 0$. However, due to precision issues, the computer might calculate a very small non-zero value.
+
+Output:
+```text
+Enter the values for a1, b1, c1, a2, b2, c2:
+3.0 1.0 233 0.3 0.1 233
+x = -3777619367438371840.00 and y = 11332858102315116544.00
+```
+
+Instead of detecting the zero denominator, the program divides by a tiny number, resulting in incorrect, massive values for $x$ and $y$. Using `fabs(...) < EPS` safely handles these small inaccuracies.
 
 ## Question 2: Count Characters
 
