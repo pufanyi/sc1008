@@ -1,5 +1,6 @@
 site_name: NTU SC1008 C & C++ PROGRAMMING
-site_url: https://pufanyi.com/sc1008
+site_url: https://pufanyi.com/sc1008/
+use_directory_urls: true
 theme:
   name: material
   features:
