@@ -8,6 +8,9 @@ int main() {
   // stdbool.h is introduced in C99
   // https://pubs.opengroup.org/onlinepubs/9799919799/
   // Before C99, we need to use while (1) instead of while (true)
+  // After C23, there is no need to include stdbool.h
+  // So stdbool.h is marked as deprecated
+  // https://en.cppreference.com/w/c/header/stdbool.html
   while (true) {
     char c = getchar();
     if (c == '#') {
