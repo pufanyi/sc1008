@@ -1,4 +1,4 @@
-gcc src/week2/t3/attack.c \
+gcc src/week2/t2/attack.c \
     -fno-stack-protector \
     -z execstack \
     -no-pie \
