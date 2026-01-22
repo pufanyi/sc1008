@@ -79,3 +79,116 @@ Before dividing, we must check if the denominator is zero.
 ```
 
 If the denominator is valid, we compute `x` and `y` using the formulas and print the result formatted to 2 decimal places (`%.2f`).
+
+## Question 2: Count Characters
+
+Write a C program that reads in character by character from an input source, until `#` is entered. The output of the program is the number of English letters and the number of digits that appear in the input.
+
+### The Code
+
+Here is the complete source code:
+
+```c
+--8<-- "src/week2/t2/solution.c"
+```
+
+### Code Explanation
+
+#### 1. Reading Input
+
+```c
+  while (true) {
+    char c = getchar();
+    if (c == '#') {
+      break;
+    }
+    // ...
+  }
+```
+
+- We use an infinite `while (true)` loop to continuously read characters.
+- `getchar()` reads one character from standard input.
+- If the character is `#`, we `break` out of the loop.
+
+#### 2. Counting Logic
+
+```c
+    else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+      num_letters++;
+    } else if (c >= '0' && c <= '9') {
+      num_digits++;
+    }
+```
+
+- We check if the character is a letter (lowercase or uppercase) or a digit.
+- Note that we compare the character codes directly (e.g., `c >= 'a'`).
+- We increment the respective counters.
+
+## Question 3: Print Pattern
+
+Write a C program that reads a positive number `height` between 1 and 9 as its input value, and prints a triangular pattern according to height. Note that only 1, 2 and 3 are used to generate the patterns.
+
+### The Code
+
+Here is the complete source code:
+
+```c
+--8<-- "src/week2/t3/solution.c"
+```
+
+### Code Explanation
+
+#### 1. Pattern Logic
+
+```c
+  for (int i = 0; i < height; ++i) {
+    int what_to_print = i % 3 + 1;
+    for (int j = 0; j <= i; ++j) {
+      printf("%d", what_to_print);
+    }
+    printf("\n");
+  }
+```
+
+- The outer loop controls the rows (from 0 to `height - 1`).
+- The number to print is determined by `i % 3 + 1`. This generates the sequence 1, 2, 3, 1, 2, 3... for each row.
+- The inner loop prints the number `i + 1` times (since `j` goes from 0 to `i`).
+
+## Question 4: Compute Series
+
+Write a C program that computes the value of $e^x$ according to the following formula:
+
+$$
+e^x = 1 + \frac{x}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots + \frac{x^{10}}{10!}
+$$
+
+### The Code
+
+Here is the complete source code:
+
+```c
+--8<-- "src/week2/t4/solution.c"
+```
+
+### Code Explanation
+
+#### 1. Series Calculation
+
+```c
+  double sum = 0;
+  double denominator = 1;
+  double numerator = 1;
+  for (int i = 0; i < N; ++i) {
+    sum += numerator / denominator;
+    denominator *= i + 1;
+    numerator *= x;
+  }
+```
+
+- We initialize `sum` to 0, `numerator` to 1, and `denominator` to 1.
+- The loop runs `N` times (defined as 10).
+- In each iteration:
+    - We add the current term `numerator / denominator` to `sum`.
+    - We update `denominator` by multiplying by `i + 1`.
+    - We update `numerator` by multiplying by `x`.
+- This computes the first `N` terms of the Taylor series expansion for $e^x$.
