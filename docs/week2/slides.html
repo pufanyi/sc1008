@@ -115,7 +115,7 @@
         <section data-markdown>
           <textarea data-template>
             ## `float`/`double`
-            
+
             - In fact, the C language standard does not explicitly specify the exact representation of `float` or `double`.
             - However, most modern compilers follow the [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754) floating-point standard.
             - Floating-point literals are of type double by default if no suffix is specified (e.g., `0.1`).
@@ -125,7 +125,7 @@
         <section data-markdown>
           <textarea data-template>
             ## `float`/`double`
-            
+
             - Although `double` precision (`FP64`) is generally the preferred choice for most scientific computing,
             - In modern AI research, low-precision formats are increasingly favored due to their efficiency and reduced memory footprint.
             - Modern AI is effectively redesigning floating-point representations, such as [`bfloat16`](https://en.wikipedia.org/wiki/Bfloat16) and [`FP16`](https://en.wikipedia.org/wiki/Half-precision_floating-point_format).
@@ -134,7 +134,7 @@
         <section data-markdown>
           <textarea data-template>
             ## `FP8`/`FP4`
-            
+
             - DeepSeek is using `FP8` for training to reduce costs.
             - According to what I've heard from my friend, OpenAI may be using `FP4` for inference, though I'm not sure whether this is true.
             - Lowering numerical precision can significantly reduce costs, but it comes at the expense of accuracy.
@@ -148,7 +148,7 @@
         <section data-markdown>
           <textarea data-template>
             ## Correct Way to Read a String
-            
+
             - `scanf("%s", str)`: you can use in SC1008, but don't use it in real life
             - `fgets(str, sizeof(str), stdin)`: the recommended way
           </textarea>
