@@ -68,6 +68,16 @@
                         <a href="https://web.stanford.edu/class/cs107/resources/gdb">GDB</a>
                     </textarea>
         </section>
+        <section data-markdown>
+          <textarea data-template>
+                        ## About C
+
+                        - C is a language specification / standard, not a single implementation.
+                        - The most well-known implementations are GCC, Clang, and MSVC.
+                        - Each implementation may provide its own extensions, but they are largely compatible because they conform to the C standard.
+                        - In practice, we often use GCC's behavior as a reference.
+                    </textarea>
+        </section>
       </section>
       <section>
         <section>
@@ -84,6 +94,14 @@
           y = \frac{a_1c_2 - a_2c_1}{a_1b_2 - a_2b_1}
           \end{cases}
           $$
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            `scanf` vs `printf`
+
+            - `scanf`: read a value *to a place*
+            - `printf`: print a value
+          </textarea>
         </section>
         <section data-markdown>
           <h2>Why EPS?</h2>
@@ -121,6 +139,29 @@
             - According to what I've heard from my friend, OpenAI may be using `FP4` for inference, though I'm not sure whether this is true.
             - Lowering numerical precision can significantly reduce costs, but it comes at the expense of accuracy.
           </textarea>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Question 2: Count Chars</h2>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Correct Way to Read a String
+            
+            - `scanf("%s", str)`: you can use in SC1008, but don't use it in real life
+            - `fgets(str, sizeof(str), stdin)`: the recommended way
+          </textarea>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Question 3: Print Pattern</h2>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Question 4: Compute Series</h2>
         </section>
       </section>
     </div>
