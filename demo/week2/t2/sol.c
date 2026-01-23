@@ -3,11 +3,11 @@
 
 int main() {
     printf("Enter your characters (# to end):\n");
-    char c;
     int num_digits = 0;
     int num_letters = 0;
+    char str[100];
     while (1) {
-        c = getchar();
+        char c = getchar();
         if (c == '#') {
             break;
         }
@@ -17,7 +17,7 @@ int main() {
             num_letters++;
         }
     }
-    printf("The number of digits: %d\n", num_digits);
-    printf("The number of letters: %d\n", num_letters);
+    printf("Number of digits: %d\n", num_digits);
+    printf("Number of letters: %d\n", num_letters);
     return 0;
 }

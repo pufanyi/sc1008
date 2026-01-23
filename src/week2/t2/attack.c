@@ -22,3 +22,5 @@ int main() {
   printf("password: %s\n", password);
   return 0;
 }
+
+// stack overflow attack
