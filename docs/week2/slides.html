@@ -2,33 +2,32 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Week 2 Slides</title>
+  <title>Week 2 Slides</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/dracula.min.css">
 
-    <!-- Theme used for syntax highlighted code -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/monokai.min.css">
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/monokai.min.css">
 </head>
 
 <body>
-    <div class="reveal">
-        <div class="slides">
-            <section>
-                <h2>NTU SC1008 Tutorial</h2>
-                <h3>Week 2 Slides</h3>
-                <p>Pu Fanyi</p>
-                <p><a href="https://pufanyi.com">pufanyi.com</a></p>
-                <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
-            </section>
-            <section>
-                <section data-markdown>
-                    <textarea data-template>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h2>NTU SC1008 Tutorial</h2>
+        <h3>Week 2 Slides</h3>
+        <p>Pu Fanyi</p>
+        <p><a href="https://pufanyi.com">pufanyi.com</a></p>
+        <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
+      </section>
+      <section>
+        <section data-markdown>
+          <textarea data-template>
                         ## About Me
 
                         - Name: Pu Fanyi
@@ -40,17 +39,17 @@
                         - Telegram: @pufanyi
                         - I often make mistakes, so please feel free to point them out
                     </textarea>
-                </section>
-                <section data-markdown>
-                    <textarea data-template>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
                         ## About This Course
 
                         - All materials are available at [pufanyi.com/sc1008](https://pufanyi.com/sc1008/)
                         - Codes are available at [github.com/pufanyi/sc1008](https://github.com/pufanyi/sc1008)
                     </textarea>
-                </section>
-                <section data-markdown>
-                    <textarea data-template>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
                         ## About AI
 
                         - I highly encourage using AI for debugging
@@ -58,9 +57,9 @@
                         - But remember, no AI during exams
                         - I always believe exams may not measure true ability, but you still need a good GPA
                     </textarea>
-                </section>
-                <section data-markdown>
-                    <textarea data-template>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
                         ## C is hard
 
                         - Many behaviors in C can be counter-intuitive
@@ -68,51 +67,54 @@
                         - I strongly recommend learning how to use
                         <a href="https://web.stanford.edu/class/cs107/resources/gdb">GDB</a>
                     </textarea>
-                </section>
-            </section>
-            <section>
-                <section>
-                    <h2>Question 1: Linear System</h2>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Question 1: Linear System</h2>
 
-                    $$
-                    \begin{cases}
-                    a_1x + b_1y = c_1 \\
-                    a_2x + b_2y = c_2
-                    \end{cases}
-                    \Rightarrow
-                    \begin{cases}
-                    x = \frac{c_1b_2 - c_2b_1}{a_1b_2 - a_2b_1} \\
-                    y = \frac{a_1c_2 - a_2c_1}{a_1b_2 - a_2b_1}
-                    \end{cases}
-                    $$
-                </section>
-                <section>
-                    <h2>Why EPS?</h2>
-                    <textarea>
-                        - [https://0.30000000000000004.com/](https://0.30000000000000004.com/)
-                    </textarea>
-                </section>
-            </section>
-        </div>
+          $$
+          \begin{cases}
+          a_1x + b_1y = c_1 \\
+          a_2x + b_2y = c_2
+          \end{cases}
+          \Rightarrow
+          \begin{cases}
+          x = \frac{c_1b_2 - c_2b_1}{a_1b_2 - a_2b_1} \\
+          y = \frac{a_1c_2 - a_2c_1}{a_1b_2 - a_2b_1}
+          \end{cases}
+          $$
+        </section>
+        <section data-markdown>
+          <h2>Why EPS?</h2>
+          <textarea data-template>
+            - Floating-point arithmetic has precision errors (e.g., `0.1 + 0.2 != 0.3`)
+            - Direct comparison (`==`) is unreliable
+            - Use EPS (Epsilon) to check if the difference is within a tolerance
+            - [0.30000000000000004.com](https://0.30000000000000004.com/)
+          </textarea>
+        </section>
+      </section>
     </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/markdown/markdown.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/math/math.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/markdown/markdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/math/math.min.js"></script>
 
-    <script>
-        // More info about initialization & config:
-        // - https://revealjs.com/initialization/
-        // - https://revealjs.com/config/
-        Reveal.initialize({
-            hash: true,
+  <script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+      hash: true,
 
-            // Learn about plugins: https://revealjs.com/plugins/
-            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
-        });
-    </script>
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+    });
+  </script>
 </body>
 
 </html>
