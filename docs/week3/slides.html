@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Week 3 Slides</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/monokai.min.css">
+
+  <style>
+    .memory-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin: 20px 0;
+    }
+    .memory-box {
+      border: 2px solid #bd93f9;
+      padding: 15px 35px;
+      text-align: center;
+      border-radius: 8px;
+      background: #44475a;
+    }
+    .memory-label {
+      font-size: 0.8em;
+      color: #8be9fd;
+      margin-bottom: 5px;
+    }
+    .memory-value {
+      font-size: 1.6em;
+      font-weight: bold;
+      font-family: monospace;
+    }
+    .memory-addr {
+      font-size: 0.65em;
+      color: #6272a4;
+      margin-top: 5px;
+    }
+    .val-changed { color: #50fa7b; }
+    .val-normal { color: #f8f8f2; }
+    .val-unknown { color: #ff5555; }
+
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      max-width: 800px;
+      margin: 15px auto 0;
+    }
+    .answer-item {
+      background: #44475a;
+      padding: 10px 3px;
+      border-radius: 6px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .answer-label {
+      font-size: 0.6em;
+      color: #8be9fd;
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+    .answer-label code {
+      font-size: 1.1em;
+      color: #ff79c6;
+    }
+    .answer-value {
+      font-size: 1.2em;
+      font-family: monospace;
+      color: #50fa7b;
+      min-height: 1.4em;
+    }
+    .operation-box {
+      background: #6272a4;
+      padding: 10px 25px;
+      border-radius: 8px;
+      display: inline-block;
+      font-family: monospace;
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+    .pointer-arrow {
+      color: #50fa7b;
+      font-size: 2em;
+    }
+    .explanation {
+      color: #ffb86c;
+      font-size: 0.75em;
+      margin-top: 10px;
+    }
+    .summary-table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      font-size: 0.6em;
+    }
+    .summary-table th, .summary-table td {
+      border: 1px solid #6272a4;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    .summary-table th {
+      background: #44475a;
+      color: #8be9fd;
+    }
+    .summary-table tr:nth-child(even) {
+      background: #44475a;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Title -->
+      <section>
+        <h2>NTU SC1008 Tutorial</h2>
+        <h3>Week 3 Slides</h3>
+        <p>Pu Fanyi</p>
+        <p><a href="https://pufanyi.com">pufanyi.com</a></p>
+        <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
+      </section>
+
+      <!-- Question 1 -->
+      <section>
+        <!-- Intro -->
+        <section>
+          <h2>Question 1: Pointers</h2>
+        </section>
+
+        <!-- Problem Setup -->
+        <section data-auto-animate>
+          <h3>Problem Setup</h3>
+          <pre data-id="code"><code class="language-c" data-trim>
+int number;
+int *p;
+          </code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Problem Setup</h3>
+          <pre data-id="code"><code class="language-c" data-trim>
+int number;   // address: 7700
+int *p;       // address: 3478
+          </code></pre>
+          <p style="font-size: 0.8em;">Determine: (a) number (b) &number (c) p (d) &p (e) *p</p>
+        </section>
+
+        <!-- Initial State -->
+        <section>
+          <h3>Initial Memory Layout</h3>
+          <div class="memory-container">
+            <div class="memory-box">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-unknown">?</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="memory-box">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-unknown">?</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (i) -->
+        <section data-auto-animate>
+          <h3>Step (i)</h3>
+          <div class="operation-box" data-id="op">p = 100; number = 8</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-unknown" data-id="val-p">?</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-unknown" data-id="val-num">?</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (i)</h3>
+          <div class="operation-box" data-id="op">p = 100; number = 8</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-changed" data-id="val-p">100</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-changed" data-id="val-num">8</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>number</code></div>
+              <div class="answer-value fragment">8</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>&number</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">100</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>&p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>*p</code></div>
+              <div class="answer-value fragment" style="color: #ff5555;">?</div>
+            </div>
+          </div>
+          <p class="explanation fragment">*p undefined (address 100 unknown)</p>
+        </section>
+
+        <!-- Step (ii) -->
+        <section data-auto-animate>
+          <h3>Step (ii)</h3>
+          <div class="operation-box" data-id="op">number = p</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">100</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-normal" data-id="val-num">8</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (ii)</h3>
+          <div class="operation-box" data-id="op">number = p</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">100</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-changed" data-id="val-num">100</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+          <p class="explanation">number = value of p (not *p!)</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>number</code></div>
+              <div class="answer-value fragment">100</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>&number</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">100</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>&p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>*p</code></div>
+              <div class="answer-value fragment" style="color: #ff5555;">?</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (iii) -->
+        <section data-auto-animate>
+          <h3>Step (iii)</h3>
+          <div class="operation-box" data-id="op">p = &number</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">100</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-normal" data-id="val-num">100</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (iii)</h3>
+          <div class="operation-box" data-id="op">p = &number</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-changed" data-id="val-p">7700</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="pointer-arrow">→</div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-normal" data-id="val-num">100</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+          <p class="explanation">p now points to number, *p = 100</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>number</code></div>
+              <div class="answer-value fragment">100</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>&number</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>&p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>*p</code></div>
+              <div class="answer-value fragment">100</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (iv) -->
+        <section data-auto-animate>
+          <h3>Step (iv)</h3>
+          <div class="operation-box" data-id="op">*p = 10</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">7700</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="pointer-arrow">→</div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-normal" data-id="val-num">100</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (iv)</h3>
+          <div class="operation-box" data-id="op">*p = 10</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">7700</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="pointer-arrow">→</div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-changed" data-id="val-num">10</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+          <p class="explanation">*p = 10 modifies value at address p points to</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>number</code></div>
+              <div class="answer-value fragment">10</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>&number</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>&p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>*p</code></div>
+              <div class="answer-value fragment">10</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (v) -->
+        <section data-auto-animate>
+          <h3>Step (v)</h3>
+          <div class="operation-box" data-id="op">number = &p</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">7700</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="pointer-arrow">→</div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-normal" data-id="val-num">10</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (v)</h3>
+          <div class="operation-box" data-id="op">number = &p</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">7700</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="pointer-arrow">→</div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-changed" data-id="val-num">3478</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+          <p class="explanation">number = address of p, so *p = number = 3478</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>number</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>&number</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>&p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>*p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (vi) -->
+        <section data-auto-animate>
+          <h3>Step (vi)</h3>
+          <div class="operation-box" data-id="op">p = &p</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">7700</div>
+              <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-normal" data-id="val-num">3478</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (vi)</h3>
+          <div class="operation-box" data-id="op">p = &p</div>
+          <div class="memory-container">
+            <div style="position: relative;">
+              <div class="memory-box" data-id="box-p">
+                <div class="memory-label">p</div>
+                <div class="memory-value val-changed" data-id="val-p">3478</div>
+                <div class="memory-addr">addr: 3478</div>
+              </div>
+              <div style="position: absolute; top: -8px; right: -45px; color: #50fa7b; font-size: 1.8em;">↺</div>
+            </div>
+            <div class="memory-box" data-id="box-num">
+              <div class="memory-label">number</div>
+              <div class="memory-value val-normal" data-id="val-num">3478</div>
+              <div class="memory-addr">addr: 7700</div>
+            </div>
+          </div>
+          <p class="explanation">p points to itself! p = &p = *p = 3478</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>number</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>&number</code></div>
+              <div class="answer-value fragment">7700</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>&p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>*p</code></div>
+              <div class="answer-value fragment">3478</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Summary -->
+        <section>
+          <h3>Summary</h3>
+          <table class="summary-table">
+            <tr>
+              <th>Step</th>
+              <th>Operation</th>
+              <th>number</th>
+              <th>&number</th>
+              <th>p</th>
+              <th>&p</th>
+              <th>*p</th>
+            </tr>
+            <tr class="fragment">
+              <td>(i)</td><td>p=100; number=8</td>
+              <td>8</td><td>7700</td><td>100</td><td>3478</td><td>?</td>
+            </tr>
+            <tr class="fragment">
+              <td>(ii)</td><td>number = p</td>
+              <td>100</td><td>7700</td><td>100</td><td>3478</td><td>?</td>
+            </tr>
+            <tr class="fragment">
+              <td>(iii)</td><td>p = &number</td>
+              <td>100</td><td>7700</td><td>7700</td><td>3478</td><td>100</td>
+            </tr>
+            <tr class="fragment">
+              <td>(iv)</td><td>*p = 10</td>
+              <td>10</td><td>7700</td><td>7700</td><td>3478</td><td>10</td>
+            </tr>
+            <tr class="fragment">
+              <td>(v)</td><td>number = &p</td>
+              <td>3478</td><td>7700</td><td>7700</td><td>3478</td><td>3478</td>
+            </tr>
+            <tr class="fragment">
+              <td>(vi)</td><td>p = &p</td>
+              <td>3478</td><td>7700</td><td>3478</td><td>3478</td><td>3478</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li class="fragment"><code>&var</code> — Address of variable (constant)</li>
+            <li class="fragment"><code>p</code> — Value stored in pointer</li>
+            <li class="fragment"><code>*p</code> — Value at address stored in p</li>
+            <li class="fragment"><code>*p = x</code> — Modify value via pointer</li>
+            <li class="fragment"><code>p = &p</code> — Pointer can point to itself</li>
+          </ul>
+        </section>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/markdown/markdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/math/math.min.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      transition: 'slide',
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+    });
+  </script>
+</body>
+
+</html>
