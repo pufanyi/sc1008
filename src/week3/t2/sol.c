@@ -16,17 +16,17 @@ int main() {
 }
 
 int digitValue1(int num, int k) {
-    int result = 0;
-    for (int i = 0; i < k; ++i) {
-        result = num % 10;
-        num /= 10;
-    }
-    return result;
+  int result = 0;
+  for (int i = 0; i < k; ++i) {
+    result = num % 10;
+    num /= 10;
+  }
+  return result;
 }
 
 void digitValue2(int num, int k, int* result) {
-    for (int i = 0; i < k; ++i) {
-        *result = num % 10;
-        num /= 10;
-    }
+  for (int i = 0; i < k; ++i) {
+    *result = num % 10;
+    num /= 10;
+  }
 }

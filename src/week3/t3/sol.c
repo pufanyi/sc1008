@@ -16,31 +16,31 @@ int main() {
 }
 
 int extOddDigits1(int num) {
-    int result = 0;
-    int base = 1;
-    while (num > 0) {
-        int digit = num % 10;
-        if (digit % 2 != 0) {
-            result += digit * base;
-            base *= 10;
-        }
-        num /= 10;
+  int result = 0;
+  int base = 1;
+  while (num > 0) {
+    int digit = num % 10;
+    if (digit % 2 != 0) {
+      result += digit * base;
+      base *= 10;
     }
-    return -1;
+    num /= 10;
+  }
+  return -1;
 }
 
 void extOddDigits2(int num, int* result) {
-    *result = 0;
-    int base = 1;
-    while (num > 0) {
-        int digit = num % 10;
-        if (digit % 2 != 0) {
-            *result += digit * base;
-            base *= 10;
-        }
-        num /= 10;
+  *result = 0;
+  int base = 1;
+  while (num > 0) {
+    int digit = num % 10;
+    if (digit % 2 != 0) {
+      *result += digit * base;
+      base *= 10;
     }
-    if (*result == 0) {
-      *result = -1;
-    }
+    num /= 10;
+  }
+  if (*result == 0) {
+    *result = -1;
+  }
 }
