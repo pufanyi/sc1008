@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #define INIT_VALUE 999
 
 int extOddDigits1(int num);
