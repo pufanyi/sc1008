@@ -15,6 +15,39 @@ int main() {
   return 0;
 }
 
-int extOddDigits1(int num) { /* Write your code here */ }
+int extOddDigits1(int num) {
+  int result = 0;
+  int base = 1;
 
-void extOddDigits2(int num, int* result) { /* Write your code here */ }
+  while (num != 0) {
+    int digit = num % 10;
+    num /= 10;
+    if (digit % 2 == 1) {
+      result += digit * base;
+      base *= 10;
+    }
+  }
+
+  if (result == 0) {
+    return -1;
+  }
+  return result;
+}
+
+void extOddDigits2(int num, int* result) {
+  *result = 0;
+  int base = 1;
+
+  while (num != 0) {
+    int digit = num % 10;
+    num /= 10;
+    if (digit % 2 == 1) {
+      *result += digit * base;
+      base *= 10;
+    }
+  }
+
+  if (*result == 0) {
+    *result = -1;
+  }
+}

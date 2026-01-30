@@ -15,6 +15,17 @@ int main() {
   return 0;
 }
 
-int digitValue1(int num, int k) { /* Write your code here */ }
+int digitValue1(int num, int k) {
+  for (int i = 1; i <= k - 1; ++i) {
+    num /= 10;
+  }
+  return num % 10;
+}
 
-void digitValue2(int num, int k, int* result) { /* Write your code here */ }
+void digitValue2(int num, int k, int* result) {
+  for (int i = 1; i <= k - 1; ++i) {
+    num /= 10;
+  }
+  // result = &(num % 10); // CANNOT DO!
+  *result = num % 10;
+}

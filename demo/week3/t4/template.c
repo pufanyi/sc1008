@@ -20,15 +20,16 @@ int main() {
 }
 
 void inputXY(double* x1, double* y1, double* x2, double* y2) {
-  /* Write your code here */
+  scanf("%lf%lf%lf%lf", x1, y1, x2, y2);
 }
 
-void outputResult(double dist) { /* Write your code here */ }
+void outputResult(double dist) { printf("%.2f\n", dist); }
 
 double calDistance1(double x1, double y1, double x2, double y2) {
-  /* Write your code here */
+  return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+  // return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2), 0.5);
 }
 
 void calDistance2(double x1, double y1, double x2, double y2, double* dist) {
-  /* Write your code here */
+  *dist = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
