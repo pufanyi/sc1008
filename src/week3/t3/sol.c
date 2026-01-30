@@ -26,7 +26,10 @@ int extOddDigits1(int num) {
     }
     num /= 10;
   }
-  return -1;
+  if (result == 0) {
+    return -1;
+  }
+  return result;
 }
 
 void extOddDigits2(int num, int* result) {
