@@ -89,6 +89,38 @@
       color: #50fa7b;
       font-size: 2em;
     }
+    .pointer-invalid {
+      color: #ff5555;
+      font-size: 1.5em;
+      margin-left: 10px;
+    }
+    .unknown-box {
+      border: 2px dashed #ff5555;
+      padding: 15px 25px;
+      text-align: center;
+      border-radius: 8px;
+      background: #282a36;
+      opacity: 0.7;
+    }
+    .unknown-label {
+      font-size: 0.8em;
+      color: #ff5555;
+    }
+    .unknown-value {
+      font-size: 1.4em;
+      color: #ff5555;
+      font-family: monospace;
+    }
+    .self-pointer {
+      position: relative;
+    }
+    .self-arrow {
+      position: absolute;
+      top: -15px;
+      right: -50px;
+      color: #50fa7b;
+      font-size: 2em;
+    }
     .explanation {
       color: #ffb86c;
       font-size: 0.75em;
@@ -97,20 +129,29 @@
     .summary-table {
       margin: 0 auto;
       border-collapse: collapse;
-      font-size: 0.6em;
+      font-size: 0.55em;
+      border: 1px solid #6272a4;
     }
     .summary-table th, .summary-table td {
-      border: 1px solid #6272a4;
       padding: 8px 12px;
       text-align: center;
+      border: 1px solid #6272a4 !important;
     }
     .summary-table th {
       background: #44475a;
       color: #8be9fd;
     }
-    .summary-table tr:nth-child(even) {
-      background: #44475a;
+    .summary-table tbody tr:nth-child(even) {
+      background: rgba(68, 71, 90, 0.5);
     }
+    .summary-table td {
+      font-family: monospace;
+    }
+    .summary-table .val-unknown { color: #ff5555; }
+    .summary-table .val-changed { color: #50fa7b; }
+    .summary-table .points-to { color: #ff79c6; }
+    .summary-table .points-unknown { color: #ff5555; }
+    .summary-table .points-self { color: #50fa7b; }
   </style>
 </head>
 
@@ -195,6 +236,11 @@ int *p;       // address: 3478
               <div class="memory-value val-changed" data-id="val-p">100</div>
               <div class="memory-addr">addr: 3478</div>
             </div>
+            <div class="pointer-invalid">→ ?</div>
+            <div class="unknown-box">
+              <div class="unknown-label">addr: 100</div>
+              <div class="unknown-value">???</div>
+            </div>
             <div class="memory-box" data-id="box-num">
               <div class="memory-label">number</div>
               <div class="memory-value val-changed" data-id="val-num">8</div>
@@ -236,6 +282,11 @@ int *p;       // address: 3478
               <div class="memory-value val-normal" data-id="val-p">100</div>
               <div class="memory-addr">addr: 3478</div>
             </div>
+            <div class="pointer-invalid">→ ?</div>
+            <div class="unknown-box">
+              <div class="unknown-label">addr: 100</div>
+              <div class="unknown-value">???</div>
+            </div>
             <div class="memory-box" data-id="box-num">
               <div class="memory-label">number</div>
               <div class="memory-value val-normal" data-id="val-num">8</div>
@@ -252,6 +303,11 @@ int *p;       // address: 3478
               <div class="memory-label">p</div>
               <div class="memory-value val-normal" data-id="val-p">100</div>
               <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="pointer-invalid">→ ?</div>
+            <div class="unknown-box">
+              <div class="unknown-label">addr: 100</div>
+              <div class="unknown-value">???</div>
             </div>
             <div class="memory-box" data-id="box-num">
               <div class="memory-label">number</div>
@@ -293,6 +349,11 @@ int *p;       // address: 3478
               <div class="memory-label">p</div>
               <div class="memory-value val-normal" data-id="val-p">100</div>
               <div class="memory-addr">addr: 3478</div>
+            </div>
+            <div class="pointer-invalid">→ ?</div>
+            <div class="unknown-box">
+              <div class="unknown-label">addr: 100</div>
+              <div class="unknown-value">???</div>
             </div>
             <div class="memory-box" data-id="box-num">
               <div class="memory-label">number</div>
@@ -473,6 +534,7 @@ int *p;       // address: 3478
               <div class="memory-value val-normal" data-id="val-p">7700</div>
               <div class="memory-addr">addr: 3478</div>
             </div>
+            <div class="pointer-arrow">→</div>
             <div class="memory-box" data-id="box-num">
               <div class="memory-label">number</div>
               <div class="memory-value val-normal" data-id="val-num">3478</div>
@@ -485,13 +547,25 @@ int *p;       // address: 3478
           <h3>Step (vi)</h3>
           <div class="operation-box" data-id="op">p = &p</div>
           <div class="memory-container">
-            <div style="position: relative;">
+            <div style="position: relative; display: inline-block;">
               <div class="memory-box" data-id="box-p">
                 <div class="memory-label">p</div>
                 <div class="memory-value val-changed" data-id="val-p">3478</div>
                 <div class="memory-addr">addr: 3478</div>
               </div>
-              <div style="position: absolute; top: -8px; right: -45px; color: #50fa7b; font-size: 1.8em;">↺</div>
+              <svg width="140" height="120" style="position: absolute; top: -40px; left: 50%; transform: translateX(-50%);">
+                <defs>
+                  <marker id="self-arrow" markerWidth="8" markerHeight="6" refX="4" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#50fa7b"/>
+                  </marker>
+                </defs>
+                <!-- 从右边出发，绕上方一圈回来 -->
+                <path d="M 95 85
+                         C 120 85, 130 50, 110 25
+                         C 90 0, 50 0, 30 25
+                         C 10 50, 20 75, 45 85"
+                      stroke="#50fa7b" stroke-width="3" fill="none" marker-end="url(#self-arrow)"/>
+              </svg>
             </div>
             <div class="memory-box" data-id="box-num">
               <div class="memory-label">number</div>
@@ -536,30 +610,67 @@ int *p;       // address: 3478
               <th>p</th>
               <th>&p</th>
               <th>*p</th>
+              <th>p →</th>
             </tr>
             <tr class="fragment">
-              <td>(i)</td><td>p=100; number=8</td>
-              <td>8</td><td>7700</td><td>100</td><td>3478</td><td>?</td>
+              <td>(i)</td>
+              <td>p=100; number=8</td>
+              <td class="val-changed">8</td>
+              <td>7700</td>
+              <td class="val-changed">100</td>
+              <td>3478</td>
+              <td class="val-unknown">?</td>
+              <td class="points-unknown">?</td>
             </tr>
             <tr class="fragment">
-              <td>(ii)</td><td>number = p</td>
-              <td>100</td><td>7700</td><td>100</td><td>3478</td><td>?</td>
+              <td>(ii)</td>
+              <td>number = p</td>
+              <td class="val-changed">100</td>
+              <td>7700</td>
+              <td>100</td>
+              <td>3478</td>
+              <td class="val-unknown">?</td>
+              <td class="points-unknown">?</td>
             </tr>
             <tr class="fragment">
-              <td>(iii)</td><td>p = &number</td>
-              <td>100</td><td>7700</td><td>7700</td><td>3478</td><td>100</td>
+              <td>(iii)</td>
+              <td>p = &number</td>
+              <td>100</td>
+              <td>7700</td>
+              <td class="val-changed">7700</td>
+              <td>3478</td>
+              <td>100</td>
+              <td class="points-to">number</td>
             </tr>
             <tr class="fragment">
-              <td>(iv)</td><td>*p = 10</td>
-              <td>10</td><td>7700</td><td>7700</td><td>3478</td><td>10</td>
+              <td>(iv)</td>
+              <td>*p = 10</td>
+              <td class="val-changed">10</td>
+              <td>7700</td>
+              <td>7700</td>
+              <td>3478</td>
+              <td class="val-changed">10</td>
+              <td class="points-to">number</td>
             </tr>
             <tr class="fragment">
-              <td>(v)</td><td>number = &p</td>
-              <td>3478</td><td>7700</td><td>7700</td><td>3478</td><td>3478</td>
+              <td>(v)</td>
+              <td>number = &p</td>
+              <td class="val-changed">3478</td>
+              <td>7700</td>
+              <td>7700</td>
+              <td>3478</td>
+              <td class="val-changed">3478</td>
+              <td class="points-to">number</td>
             </tr>
             <tr class="fragment">
-              <td>(vi)</td><td>p = &p</td>
-              <td>3478</td><td>7700</td><td>3478</td><td>3478</td><td>3478</td>
+              <td>(vi)</td>
+              <td>p = &p</td>
+              <td>3478</td>
+              <td>7700</td>
+              <td class="val-changed">3478</td>
+              <td>3478</td>
+              <td>3478</td>
+              <td class="points-self">self ↺</td>
             </tr>
           </table>
         </section>
