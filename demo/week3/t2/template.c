@@ -26,6 +26,5 @@ void digitValue2(int num, int k, int* result) {
   for (int i = 1; i <= k - 1; ++i) {
     num /= 10;
   }
-  // result = &(num % 10); // CANNOT DO!
   *result = num % 10;
 }

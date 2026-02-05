@@ -26,10 +26,10 @@ void inputXY(double* x1, double* y1, double* x2, double* y2) {
 void outputResult(double dist) { printf("%.2f\n", dist); }
 
 double calDistance1(double x1, double y1, double x2, double y2) {
-  return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-  // return pow(pow(x1 - x2, 2) + pow(y1 - y2, 2), 0.5);
+  return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+  // return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
 void calDistance2(double x1, double y1, double x2, double y2, double* dist) {
-  *dist = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+  *dist = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
