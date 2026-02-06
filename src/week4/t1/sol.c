@@ -17,7 +17,7 @@ int main() {
   for (int i = 0; i < 10; ++i) {
     printf("%2d - %2d | ", i * 10, i * 10 + 9);
     for (int j = 0; j < freq[i]; ++j) {
-      putchar('*');
+      printf("*");
     }
     putchar('\n');
   }
