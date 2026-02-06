@@ -2,7 +2,7 @@
 
 #define SIZE 10
 
-void transpose2D(int ar[][SIZE], int rowSize, int colSize);
+void reduceMatrix2D(int ar[][SIZE], int rowSize, int colSize);
 
 int main() {
     int rowSize, colSize;
@@ -13,30 +13,31 @@ int main() {
             scanf("%d", &ar[i][j]);
         }
     }
-    transpose2D(ar, rowSize, colSize);
+    reduceMatrix2D(ar, rowSize, colSize);
     for (int i = 0; i < rowSize; i++) {
         for (int j = 0; j < colSize; j++) {
-            printf("%2d", ar[i][j]);
+            printf("%3d", ar[i][j]);
         }
         putchar('\n');
     }
     return 0;
 }
 
-void transpose2D(int ar[][SIZE], int rowSize, int colSize) {
+void reduceMatrix2D(int ar[][SIZE], int rowSize, int colSize) {
     for (int i = 0; i < rowSize; i++) {
-        for (int j = 0; j < i; j++) {
-            int temp = ar[i][j];
-            ar[i][j] = ar[j][i];
-            ar[j][i] = temp;
+        for (int j = 0; j < colSize; j++) {
+            if (i > j) {
+                ar[j][j] += ar[i][j];
+                ar[i][j] = 0;
+            }
         }
     }
 }
 
 /*
 4 4
-1 2 3 4
-5 1 2 2
-6 3 4 4
-7 5 6 7
+4 3 8 6
+9 0 6 5
+5 1 2 4
+9 8 3 7
 */

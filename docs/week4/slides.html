@@ -269,15 +269,15 @@
 int n = 1078530011;
 float *fp = (float *)&amp;n;
 printf("int:   %d\n", n);      // 1078530011
-printf("float: %f\n", *fp);    // 3.140000
+printf("float: %f\n", *fp);    // 3.141593
           </code></pre>
           <div class="fragment" style="margin-top: 15px;">
-            <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 8px;">Memory (4 bytes):</p>
+            <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 8px;">Memory (4 bytes, little-endian):</p>
             <div style="display:flex; justify-content:center; gap:3px; font-family:monospace; font-size:0.7em;">
+              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0xDB</div></div>
+              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x0F</div></div>
+              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x49</div></div>
               <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x40</div></div>
-              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x48</div></div>
-              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0xF5</div></div>
-              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0xCB</div></div>
             </div>
           </div>
           <div class="fragment" style="display:flex; justify-content:center; gap:40px; margin-top:15px; font-size:0.75em;">
@@ -287,7 +287,7 @@ printf("float: %f\n", *fp);    // 3.140000
             </div>
             <div>
               <span style="color:#50fa7b;">as float &rarr;</span>
-              <code style="color:#f8f8f2;"> 3.14</code>
+              <code style="color:#f8f8f2;"> 3.1416 (&asymp; &pi;)</code>
             </div>
           </div>
           <p class="explanation fragment">Same bytes, different type = completely different value!</p>
@@ -318,7 +318,7 @@ printf("%d %d\n", p[0], p[1]);         // 1 2
               <div style="min-width:142px; text-align:center; color:#50fa7b;">&#9492;&#9472;&#9472; p[1] = 2 &#9472;&#9472;&#9496;</div>
             </div>
           </div>
-          <p class="explanation fragment">8 chars &rarr; reinterpreted as 2 ints (little-endian)</p>
+          <p class="explanation fragment">8 chars &rarr; reinterpreted as 2 ints (little-endian; byte order may differ on other architectures)</p>
         </section>
 
         <!-- Data vs Type: Example 3 — int[3][4] vs int[12] -->
@@ -355,16 +355,16 @@ for (int i = 0; i &lt; 12; i++)
         <section>
           <h3>GDB: See It Yourself</h3>
           <div class="gdb-box">
-            <span class="gdb-comment">// int n whose bytes happen to encode 3.14 as float</span><br>
+            <span class="gdb-comment">// int n whose bytes happen to encode &pi; as float</span><br>
             <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p n</span><br>
             <span class="gdb-output">= 1078530011</span><br>
             <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p *(float *)&amp;n</span><br>
-            <span class="gdb-output">= <span class="gdb-highlight">3.14000010</span></span><br>
+            <span class="gdb-output">= <span class="gdb-highlight">3.14159274</span></span><br>
             <br>
             <span class="gdb-comment">// Raw bytes</span><br>
             <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">x/4xb &amp;n</span><br>
             <span class="gdb-output"><span class="gdb-addr">0x7ffd...</span>: </span>
-            <span style="color:#bd93f9">0xcb 0xf5 0x48 0x40</span><br>
+            <span style="color:#bd93f9">0xdb 0x0f 0x49 0x40</span><br>
             <br>
             <span class="gdb-comment">// 2D array as flat 1D</span><br>
             <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p array</span><br>
