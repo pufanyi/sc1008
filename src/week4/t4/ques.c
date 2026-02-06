@@ -1,5 +1,7 @@
 #include <stdio.h>
+
 void add1(int ar[], int size);
+
 int main() {
   int array[3][4];
   int h, k;
@@ -19,6 +21,7 @@ int main() {
   }
   return 0;
 }
+
 void add1(int ar[], int size) {
   int k;
   for (k = 0; k < size; k++) ar[k]++;
