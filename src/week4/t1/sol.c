@@ -11,6 +11,14 @@ int main() {
     freq[i] = 0;
   }
   for (int i = 0; i < n; ++i) {
-    int num = rand() % 10;
+    int num = rand() % 100;
+    freq[num / 10]++;
+  }
+  for (int i = 0; i < 10; ++i) {
+    printf("%2d - %2d | ", i * 10, i * 10 + 9);
+    for (int j = 0; j < freq[i]; ++j) {
+      putchar('*');
+    }
+    putchar('\n');
   }
 }
