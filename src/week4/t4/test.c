@@ -5,4 +5,5 @@ int main() {
   float* fp = (float*)&n;
   printf("int:   %d\n", n);    // 1078530011
   printf("float: %f\n", *fp);  // 3.140000
+  return 0;
 }
