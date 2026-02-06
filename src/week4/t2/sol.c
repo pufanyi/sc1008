@@ -4,9 +4,6 @@
 
 void transpose2D(int ar[][SIZE], int rowSize, int colSize);
 
-int main() {
-    
-}
+int main() {}
 
-void transpose2D(int ar[][SIZE], int rowSize, int colSize) {
-}
+void transpose2D(int ar[][SIZE], int rowSize, int colSize) {}
