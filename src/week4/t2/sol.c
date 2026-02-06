@@ -25,7 +25,7 @@ int main() {
 
 void transpose2D(int ar[][SIZE], int rowSize, int colSize) {
   for (int i = 0; i < rowSize; i++) {
-    for (int j = 0; j < i; j++) {
+    for (int j = 0; j < i && j < colSize; j++) {
       int temp = ar[i][j];
       ar[i][j] = ar[j][i];
       ar[j][i] = temp;

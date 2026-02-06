@@ -5,8 +5,8 @@
 void reduceMatrix2D(int ar[][SIZE], int rowSize, int colSize);
 
 int main() {
-  int rowSize, colSize;
   int ar[SIZE][SIZE];
+  int rowSize, colSize;
   scanf("%d %d", &rowSize, &colSize);
   for (int i = 0; i < rowSize; i++) {
     for (int j = 0; j < colSize; j++) {
@@ -25,11 +25,9 @@ int main() {
 
 void reduceMatrix2D(int ar[][SIZE], int rowSize, int colSize) {
   for (int i = 0; i < rowSize; i++) {
-    for (int j = 0; j < colSize; j++) {
-      if (i > j) {
-        ar[j][j] += ar[i][j];
-        ar[i][j] = 0;
-      }
+    for (int j = 0; j < i; j++) {
+      ar[j][j] += ar[i][j];
+      ar[i][j] = 0;
     }
   }
 }
