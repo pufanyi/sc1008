@@ -10,9 +10,9 @@ int main() {
       scanf("%d", &array[h][k]);
     }
   }
-//   for (h = 0; h < 3; h++) {
-//     add1(array[h], 4);
-//   }
+  //   for (h = 0; h < 3; h++) {
+  //     add1(array[h], 4);
+  //   }
   add1(array[0], 12);
   for (h = 0; h < 3; h++) {
     for (k = 0; k < 4; k++) {
