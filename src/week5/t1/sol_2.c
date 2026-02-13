@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -18,16 +19,14 @@ int main() {
 }
 
 void processString(char* str, int* totVowels, int* totDigits) {
+  int length = strlen(str);
   *totVowels = 0;
   *totDigits = 0;
-  char* p = str;
-  while (*p) {
-    if (*p == 'a' || *p == 'e' || *p == 'i' || *p == 'o' || *p == 'u' ||
-        *p == 'A' || *p == 'E' || *p == 'I' || *p == 'O' || *p == 'U') {
+  for (int i = 0; i < length; i++) {
+    if (strchr("aeiouAEIOU", str[i])) {
       (*totVowels)++;
-    } else if ('0' <= *p && *p <= '9') {
+    } else if (isdigit(str[i])) {
       (*totDigits)++;
     }
-    p++;
   }
 }
