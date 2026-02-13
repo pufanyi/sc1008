@@ -306,10 +306,46 @@ str[5] = ' ';   // overwrite the ORIGINAL '\0' with a space!
         <p style="color: #6272a4;">(To be added)</p>
       </section>
 
-      <!-- Q3 Placeholder -->
+      <!-- ==================== Question 3 ==================== -->
       <section>
-        <h2>Question 3</h2>
-        <p style="color: #6272a4;">(To be added)</p>
+        <section>
+          <h2>Question 3</h2>
+          <h4>Implement <code>stringcmp</code></h4>
+        </section>
+
+        <!-- What is strcmp -->
+        <section>
+          <h3><code>strcmp</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+#include &lt;string.h&gt;
+int strcmp(const char *s1, const char *s2);
+          </code></pre>
+          <p style="font-size: 0.65em; margin-top: 15px;">Compares two strings <strong>character by character</strong> (by ASCII value).</p>
+          <p style="font-size: 0.6em; margin-top: 10px;">Returns the difference of the <strong>first mismatched</strong> characters: <code style="color:#8be9fd;">*s1 - *s2</code></p>
+          <table class="cmp-table fragment" style="font-size: 0.55em; margin-top: 15px;">
+            <tr>
+              <th>Return value</th>
+              <th>Meaning</th>
+              <th>Example</th>
+            </tr>
+            <tr>
+              <td style="color:#50fa7b;">&lt; 0</td>
+              <td><code>s1</code> &lt; <code>s2</code></td>
+              <td><code>strcmp("abc", "abd")</code> &rarr; <code>'c' - 'd'</code> = <span style="color:#50fa7b;">-1</span></td>
+            </tr>
+            <tr>
+              <td style="color:#8be9fd;">0</td>
+              <td><code>s1</code> == <code>s2</code></td>
+              <td><code>strcmp("abc", "abc")</code> &rarr; <span style="color:#8be9fd;">0</span></td>
+            </tr>
+            <tr>
+              <td style="color:#ff79c6;">&gt; 0</td>
+              <td><code>s1</code> &gt; <code>s2</code></td>
+              <td><code>strcmp("abd", "abc")</code> &rarr; <code>'d' - 'c'</code> = <span style="color:#ff79c6;">1</span></td>
+            </tr>
+          </table>
+          <p class="explanation fragment">Comparison is based on <strong>ASCII values</strong>: <code>'A'</code>=65, <code>'a'</code>=97, <code>'0'</code>=48</p>
+        </section>
       </section>
 
       <!-- ==================== Question 4 ==================== -->
