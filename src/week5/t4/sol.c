@@ -2,7 +2,7 @@
 #include <string.h>
 #define M1 "How are ya, sweetie?"
 char M2[40] = "Beat the clock.";
-char *M3 = "chat";
+char* M3 = "chat";
 
 int main() {
   char words[80], *p;
