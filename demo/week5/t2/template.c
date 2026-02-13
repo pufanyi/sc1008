@@ -18,4 +18,12 @@ int main() {
   return 0;
 }
 
-char* stringncpy(char* s1, char* s2, int n) { /* Write your code here */ }
+char* stringncpy(char* s1, char* s2, int n) {
+  for (int i = 0; i < n; ++i) {
+    s1[i] = s2[i];
+    if (s2[i] == '\0') {
+      break;
+    }
+  }
+  return s1;
+}
