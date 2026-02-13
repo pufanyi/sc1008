@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Week 2 Slides</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/dracula.min.css">
+
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/monokai.min.css">
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h2>NTU SC1008 Tutorial</h2>
+        <h3>Week 2 Slides</h3>
+        <p>Pu Fanyi</p>
+        <p><a href="https://pufanyi.com">pufanyi.com</a></p>
+        <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
+      </section>
+      <section>
+        <section data-markdown>
+          <textarea data-template>
+                        ## About Me
+
+                        - Name: Pu Fanyi
+                        - Email: [FPU001@e.ntu.edu.sg](mailto:FPU001@e.ntu.edu.sg)
+                        - Year 4, Data Science and Artificial Intelligence
+                        - Research@[MMLab](https://www.mmlab-ntu.com/)
+                        - Gold medal, ICPC Asia Regional contest
+                        - Website: [pufanyi.com](https://pufanyi.com)
+                        - Telegram: @pufanyi
+                        - I often make mistakes, so please feel free to point them out
+                    </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+                        ## About This Course
+
+                        - All materials are available at [pufanyi.com/sc1008](https://pufanyi.com/sc1008/)
+                        - Codes are available at [github.com/pufanyi/sc1008](https://github.com/pufanyi/sc1008)
+                    </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+                        ## About AI
+
+                        - I highly encourage using AI for debugging
+                        - If your code keeps failing, try asking AI
+                        - But remember, no AI during exams
+                        - I always believe exams may not measure true ability, but you still need a good GPA
+                    </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+                        ## C is hard
+
+                        - Many behaviors in C can be counter-intuitive
+                        - So don't just read the code -- write and run it often
+                        - I strongly recommend learning how to use
+                        <a href="https://web.stanford.edu/class/cs107/resources/gdb">GDB</a>
+                    </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+                        ## About C
+
+                        - C is a language specification / standard, not a single implementation.
+                        - The most well-known implementations are GCC, Clang, and MSVC.
+                        - Each implementation may provide its own extensions, but they are largely compatible because they conform to the C standard.
+                        - In practice, we often use GCC's behavior as a reference.
+                    </textarea>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Question 1: Linear System</h2>
+
+          $$
+          \begin{cases}
+          a_1x + b_1y = c_1 \\
+          a_2x + b_2y = c_2
+          \end{cases}
+          \Rightarrow
+          \begin{cases}
+          x = \frac{c_1b_2 - c_2b_1}{a_1b_2 - a_2b_1} \\
+          y = \frac{a_1c_2 - a_2c_1}{a_1b_2 - a_2b_1}
+          \end{cases}
+          $$
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            `scanf` vs `printf`
+
+            - `scanf`: read a value *to a place*
+            - `printf`: print a value
+          </textarea>
+        </section>
+        <section data-markdown>
+          <h2>Why EPS?</h2>
+          <textarea data-template>
+            - Floating-point arithmetic has precision errors
+            - Direct comparison (`==`) is unreliable
+            - Use $\epsilon$ to check if the difference is within a tolerance
+            - [0.30000000000000004.com](https://0.30000000000000004.com/)
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## `float`/`double`
+
+            - In fact, the C language standard does not explicitly specify the exact representation of `float` or `double`.
+            - However, most modern compilers follow the [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754) floating-point standard.
+            - Floating-point literals are of type double by default if no suffix is specified (e.g., `0.1`).
+            - To explicitly specify a float literal, the suffix `f` must be added (e.g., `0.1f`).
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## `float`/`double`
+
+            - Although `double` precision (`FP64`) is generally the preferred choice for most scientific computing,
+            - In modern AI research, low-precision formats are increasingly favored due to their efficiency and reduced memory footprint.
+            - Modern AI is effectively redesigning floating-point representations, such as [`bfloat16`](https://en.wikipedia.org/wiki/Bfloat16) and [`FP16`](https://en.wikipedia.org/wiki/Half-precision_floating-point_format).
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## `FP8`/`FP4`
+
+            - DeepSeek is using `FP8` for training to reduce costs.
+            - According to what I've heard from my friend, OpenAI may be using `FP4` for inference, though I'm not sure whether this is true.
+            - Lowering numerical precision can significantly reduce costs, but it comes at the expense of accuracy.
+          </textarea>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Question 2: Count Chars</h2>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Correct Way to Read a String
+
+            - `scanf("%s", str)`: you can use in SC1008, but don't use it in real life
+            - `fgets(str, sizeof(str), stdin)`: the recommended way
+          </textarea>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Question 3: Print Pattern</h2>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Question 4: Compute Series</h2>
+        </section>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/markdown/markdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/math/math.min.js"></script>
+
+  <script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+      hash: true,
+
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+    });
+  </script>
+</body>
+
+</html>
