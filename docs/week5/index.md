@@ -4,7 +4,7 @@
 
 <iframe src="slides.html" width="100%" height="500px" frameborder="0"></iframe>
 
-## Question 1: processString
+## Question 1
 
 === "Solution 1"
 
@@ -18,13 +18,13 @@
     --8<-- "src/week5/t1/sol_2.c"
     ```
 
-## Question 2: stringncpy
+## Question 2
 
 ```c
 --8<-- "src/week5/t2/sol.c"
 ```
 
-## Question 3: stringcmp
+## Question 3
 
 === "Solution 1"
 
@@ -37,9 +37,3 @@
     ```c
     --8<-- "src/week5/t3/sol_2.c"
     ```
-
-## Question 4
-
-```c
---8<-- "src/week5/t4/question.c"
-```
