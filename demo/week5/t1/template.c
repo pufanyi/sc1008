@@ -17,14 +17,4 @@ int main() {
 }
 
 void processString(char* str, int* totVowels, int* totDigits) {
-  *totVowels = 0;
-  *totDigits = 0;
-  int len = strlen(str); // O(n)
-  for (int i = 0; i < len; ++i) {
-    if (strchr("aeiouAEIOU", str[i])) {
-      (*totVowels)++;
-    } else if (isdigit(str[i])) {
-      (*totDigits)++;
-    }
-  }
 }
