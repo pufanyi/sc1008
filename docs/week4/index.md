@@ -4,26 +4,20 @@
 
 <iframe src="slides.html" width="100%" height="500px" frameborder="0"></iframe>
 
-## Question 1: Histogram
+## Question 1
 
 ```c
 --8<-- "src/week4/t1/sol.c"
 ```
 
-## Question 2: transpose2D
+## Question 2
 
 ```c
 --8<-- "src/week4/t2/sol.c"
 ```
 
-## Question 3: reduceMatrix2D
+## Question 3
 
 ```c
 --8<-- "src/week4/t3/sol.c"
-```
-
-## Question 4: add1
-
-```c
---8<-- "src/week4/t4/ques.c"
 ```
