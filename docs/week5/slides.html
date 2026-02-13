@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <title>Week 4 Slides</title>
+  <title>Week 5 Slides</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
@@ -13,163 +13,83 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/monokai.min.css">
 
   <style>
-    /* Memory grid for 2D array visualization */
-    .mem-grid {
-      display: grid;
-      grid-template-columns: auto repeat(4, 1fr);
-      gap: 2px;
-      max-width: 700px;
-      margin: 15px auto;
-      font-family: monospace;
-      font-size: 0.75em;
-    }
-    .mem-cell {
-      border: 2px solid #6272a4;
-      padding: 10px 14px;
-      text-align: center;
-      border-radius: 4px;
-      background: #44475a;
-      position: relative;
-    }
-    .mem-cell-val {
-      font-size: 1.2em;
-      color: #f8f8f2;
-    }
-    .mem-cell-addr {
-      font-size: 0.65em;
-      color: #6272a4;
-      margin-top: 3px;
-    }
-    .mem-row-label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 5px 10px;
-      color: #8be9fd;
-      font-size: 0.9em;
-      font-weight: bold;
-    }
-    .mem-col-header {
-      text-align: center;
-      padding: 5px;
-      color: #bd93f9;
-      font-size: 0.8em;
-    }
-    .highlight-row0 { border-color: #ff79c6 !important; background: rgba(255, 121, 198, 0.15) !important; }
-    .highlight-row1 { border-color: #50fa7b !important; background: rgba(80, 250, 123, 0.15) !important; }
-    .highlight-row2 { border-color: #ffb86c !important; background: rgba(255, 184, 108, 0.15) !important; }
-    .highlight-all  { border-color: #8be9fd !important; background: rgba(139, 233, 253, 0.15) !important; }
-    .val-changed { color: #50fa7b !important; }
-    .val-highlight { color: #ff79c6 !important; }
-
-    /* Linear memory view */
-    .mem-linear {
+    /* String memory cell row */
+    .str-mem {
       display: flex;
       flex-wrap: nowrap;
       justify-content: center;
       gap: 1px;
-      margin: 15px auto;
+      margin: 10px auto;
       font-family: monospace;
-      font-size: 0.6em;
+      font-size: 0.65em;
     }
-    .mem-lin-cell {
+    .str-cell {
       border: 2px solid #6272a4;
-      padding: 6px 5px;
+      padding: 8px 6px;
       text-align: center;
       border-radius: 3px;
       background: #44475a;
-      min-width: 38px;
+      min-width: 36px;
     }
-    .mem-lin-val {
-      font-size: 1.1em;
+    .str-val {
+      font-size: 1.15em;
       color: #f8f8f2;
     }
-    .mem-lin-idx {
-      font-size: 0.75em;
+    .str-idx {
+      font-size: 0.7em;
       color: #6272a4;
       margin-top: 2px;
     }
-    .row-bracket {
-      display: flex;
-      align-items: center;
-      padding: 0 2px;
-      font-size: 1.2em;
-      font-weight: bold;
-    }
-    .row0-bracket { color: #ff79c6; }
-    .row1-bracket { color: #50fa7b; }
-    .row2-bracket { color: #ffb86c; }
-    .lin-row0 { border-color: #ff79c6; }
-    .lin-row1 { border-color: #50fa7b; }
-    .lin-row2 { border-color: #ffb86c; }
-    .lin-all  { border-color: #8be9fd; }
+    /* Color variants */
+    .c-str   { border-color: #ff79c6; }
+    .c-str1  { border-color: #50fa7b; }
+    .c-null  { background: rgba(255, 85, 85, 0.2); border-color: #ff5555; }
+    .c-space { background: rgba(139, 233, 253, 0.2); border-color: #8be9fd; }
+    .c-m2    { border-color: #8be9fd; }
+    .c-m3    { border-color: #ffb86c; }
+    .c-words { border-color: #ff79c6; }
+    .c-over  { border-color: #50fa7b; }
+    .c-dim   { opacity: 0.35; }
 
-    /* GDB terminal style */
-    .gdb-box {
+    /* Terminal output box */
+    .term-box {
       background: #1e1f29;
       border: 1px solid #6272a4;
       border-radius: 8px;
-      padding: 14px 18px;
+      padding: 14px 20px;
       text-align: left;
       font-family: monospace;
-      font-size: 0.55em;
-      line-height: 1.6;
-      max-width: 800px;
-      margin: 10px auto;
-    }
-    .gdb-prompt { color: #50fa7b; }
-    .gdb-cmd { color: #f8f8f2; }
-    .gdb-output { color: #8be9fd; }
-    .gdb-comment { color: #6272a4; font-style: italic; }
-    .gdb-highlight { color: #ff79c6; }
-    .gdb-addr { color: #bd93f9; }
-
-    /* Pointer arrow diagram */
-    .ptr-diagram {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      margin: 15px auto;
-    }
-    .ptr-box {
-      border: 2px solid #bd93f9;
-      padding: 12px 20px;
-      border-radius: 8px;
-      background: #44475a;
-      text-align: center;
-    }
-    .ptr-label {
-      font-size: 0.7em;
-      color: #8be9fd;
-      margin-bottom: 4px;
-    }
-    .ptr-value {
-      font-family: monospace;
-      font-size: 1.1em;
+      font-size: 0.6em;
+      line-height: 1.7;
+      max-width: 750px;
+      margin: 12px auto;
       color: #f8f8f2;
     }
-    .ptr-arrow {
+    .term-box .t-label {
+      color: #6272a4;
+      font-style: italic;
+    }
+    .term-box .t-hi {
       color: #50fa7b;
-      font-size: 2em;
+    }
+    .term-box .t-new {
+      color: #ffb86c;
     }
 
     /* Explanation callout */
     .explanation {
       color: #ffb86c;
-      font-size: 0.75em;
+      font-size: 0.7em;
       margin-top: 10px;
     }
 
-    /* Step-by-step call box */
-    .call-box {
-      background: #6272a4;
-      padding: 8px 22px;
-      border-radius: 8px;
-      display: inline-block;
-      font-family: monospace;
-      font-size: 1em;
-      margin-bottom: 10px;
+    /* Label strip under memory cells */
+    .str-label-strip {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 0.6em;
+      margin-top: 6px;
     }
 
     /* Comparison table */
@@ -191,16 +111,6 @@
     .cmp-table td {
       font-family: monospace;
     }
-    .cmp-table tbody tr:nth-child(even) {
-      background: rgba(68, 71, 90, 0.5);
-    }
-
-    /* Code line highlight overlay */
-    .code-note {
-      font-size: 0.65em;
-      color: #ffb86c;
-      margin-top: 8px;
-    }
   </style>
 </head>
 
@@ -210,10 +120,178 @@
       <!-- Title -->
       <section>
         <h2>NTU SC1008 Tutorial</h2>
-        <h3>Week 4 Slides</h3>
+        <h3>Week 5 Slides</h3>
         <p>Pu Fanyi</p>
         <p><a href="https://pufanyi.com">pufanyi.com</a></p>
         <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
+      </section>
+
+      <!-- ==================== test.c: String Memory Layout ==================== -->
+      <section>
+        <section>
+          <h2>String Memory Layout</h2>
+          <h4>Understanding <code>\0</code> in C Strings</h4>
+        </section>
+
+        <!-- test.c code -->
+        <section>
+          <h3>The Code</h3>
+          <pre style="font-size: 0.45em;"><code class="language-c" data-trim data-line-numbers>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+  char str1[] = "password";
+  char str[6] = "Hello";
+  printf("%s\n", str);
+  printf("strlen(str) = %lu\n", strlen(str));
+  str[1] = '\0';
+  printf("%s\n", str);
+  printf("strlen(str) = %lu\n", strlen(str));
+  str[1] = 'e';
+  str[5] = ' ';
+  printf("%s\n", str);
+  printf("strlen(str) = %lu\n", strlen(str));
+  return 0;
+}
+          </code></pre>
+        </section>
+
+        <!-- Initialization -->
+        <section>
+          <h3>Initialization</h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+char str1[] = "password";   // 9 bytes (8 chars + '\0')
+char str[6] = "Hello";      // 6 bytes (5 chars + '\0')
+          </code></pre>
+          <p style="font-size: 0.65em; color: #8be9fd; margin-top: 15px;">On the stack, they sit next to each other:</p>
+          <div class="str-mem" style="margin-top: 15px;">
+            <div class="str-cell c-str"><div class="str-val">H</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-str"><div class="str-val">e</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-str"><div class="str-val">l</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-str"><div class="str-val">l</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-str"><div class="str-val">o</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">p</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">a</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">s</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">s</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">w</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">o</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">r</div><div class="str-idx">[6]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">d</div><div class="str-idx">[7]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[8]</div></div>
+          </div>
+          <div class="str-label-strip">
+            <span style="color: #ff79c6;">&#9608; str (6 bytes)</span>
+            <span style="color: #50fa7b;">&#9608; str1 (9 bytes)</span>
+            <span style="color: #ff5555;">&#9608; \0 (null terminator)</span>
+          </div>
+        </section>
+
+        <!-- Step 1: printf str → "Hello" -->
+        <section>
+          <h3>Step 1: Print <code>str</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+printf("%s\n", str);               // Hello
+printf("strlen(str) = %lu\n", strlen(str));  // 5
+          </code></pre>
+          <p style="font-size: 0.65em; margin-top: 12px;">
+            <code>printf</code> reads from <code>str[0]</code> until it hits <code style="color:#ff5555;">\0</code> at <code>str[5]</code>:
+          </p>
+          <div class="str-mem">
+            <div class="str-cell c-str"><div class="str-val" style="color:#50fa7b;">H</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-str"><div class="str-val" style="color:#50fa7b;">e</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-str"><div class="str-val" style="color:#50fa7b;">l</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-str"><div class="str-val" style="color:#50fa7b;">l</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-str"><div class="str-val" style="color:#50fa7b;">o</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">STOP</div></div>
+            <div class="str-cell c-str1 c-dim"><div class="str-val">p</div></div>
+            <div class="str-cell c-str1 c-dim"><div class="str-val">a</div></div>
+            <div class="str-cell c-str1 c-dim"><div class="str-val">s</div></div>
+            <div class="str-cell c-str1 c-dim"><div class="str-val">...</div></div>
+          </div>
+          <div class="term-box">
+            Hello<br>
+            strlen(str) = 5
+          </div>
+          <p class="explanation"><code>strlen</code> counts characters before <code>\0</code> &mdash; 5 chars, not including the terminator.</p>
+        </section>
+
+        <!-- Step 2: str[1] = '\0' -->
+        <section>
+          <h3>Step 2: <code>str[1] = '\0'</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+str[1] = '\0';
+printf("%s\n", str);               // H
+printf("strlen(str) = %lu\n", strlen(str));  // 1
+          </code></pre>
+          <p style="font-size: 0.65em; margin-top: 12px;">We insert a <code style="color:#ff5555;">\0</code> at index 1 &mdash; the string is now truncated early:</p>
+          <div class="str-mem">
+            <div class="str-cell c-str"><div class="str-val" style="color:#50fa7b;">H</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[1] NEW</div></div>
+            <div class="str-cell c-str c-dim"><div class="str-val">l</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-str c-dim"><div class="str-val">l</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-str c-dim"><div class="str-val">o</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-null c-dim"><div class="str-val">\0</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-str1 c-dim"><div class="str-val">p</div></div>
+            <div class="str-cell c-str1 c-dim"><div class="str-val">a</div></div>
+            <div class="str-cell c-str1 c-dim"><div class="str-val">...</div></div>
+          </div>
+          <div class="term-box">
+            H<br>
+            strlen(str) = 1
+          </div>
+          <p class="explanation">The bytes <code>'l','l','o','\0'</code> are still in memory &mdash; but <code>printf</code>/<code>strlen</code> stop at the first <code>\0</code>.</p>
+        </section>
+
+        <!-- Step 3: str[1]='e', str[5]=' ' -->
+        <section>
+          <h3>Step 3: <code>str[1]='e'</code>, <code>str[5]=' '</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+str[1] = 'e';   // restore 'e'
+str[5] = ' ';   // overwrite the ORIGINAL '\0' with a space!
+          </code></pre>
+          <div class="str-mem" style="margin-top: 15px;">
+            <div class="str-cell c-str"><div class="str-val">H</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-str"><div class="str-val" style="color:#50fa7b;">e</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-str"><div class="str-val">l</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-str"><div class="str-val">l</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-str"><div class="str-val">o</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-space"><div class="str-val">' '</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">p</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">a</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">s</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">s</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">w</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">o</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">r</div><div class="str-idx">[6]</div></div>
+            <div class="str-cell c-str1"><div class="str-val">d</div><div class="str-idx">[7]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">STOP</div></div>
+          </div>
+          <p style="font-size: 0.6em; color: #ff5555; margin-top: 8px;">
+            No <code>\0</code> inside <code>str</code>! &rarr; <code>printf</code> reads past <code>str</code> into <code>str1</code>!
+          </p>
+          <div class="term-box">
+            Hello password<br>
+            strlen(str) = 14
+            <div class="t-label" style="margin-top:5px;">5 (Hello) + 1 (space) + 8 (password) = 14</div>
+          </div>
+        </section>
+
+        <!-- test.c: Complete Output -->
+        <section>
+          <h3>Complete Output</h3>
+          <div class="term-box" style="font-size: 0.7em;">
+            Hello<br>
+            strlen(str) = 5<br>
+            H<br>
+            strlen(str) = 1<br>
+            Hello password<br>
+            strlen(str) = 14
+          </div>
+          <p class="explanation">Key lesson: <code>\0</code> is the <strong>only</strong> thing that defines where a C string ends.</p>
+        </section>
       </section>
 
       <!-- Q1 Placeholder -->
@@ -234,398 +312,379 @@
         <p style="color: #6272a4;">(To be added)</p>
       </section>
 
-      <!-- Question 4 -->
+      <!-- ==================== Question 4 ==================== -->
       <section>
-        <!-- Q4 Intro -->
+        <!-- Q4 Title -->
         <section>
           <h2>Question 4</h2>
-          <h4>2D Arrays &amp; Pointers</h4>
+          <h4>Strings, Pointers &amp; Memory</h4>
         </section>
 
-        <!-- Data vs Type: Philosophy -->
-        <section>
-          <h3>A Key Idea in C</h3>
-          <p style="font-size: 0.85em;">In C, <strong style="color:#ff79c6;">data</strong> and <strong style="color:#8be9fd;">type</strong> are separate things.</p>
-          <div style="margin: 30px auto; max-width: 700px;">
-            <p class="fragment" style="font-size: 0.75em; text-align: left;">
-              Memory is just <strong style="color:#ffb86c;">bytes</strong> &mdash; it has no inherent meaning.
-            </p>
-            <p class="fragment" style="font-size: 0.75em; text-align: left;">
-              <strong style="color:#8be9fd;">Type</strong> tells the compiler <em>how to interpret</em> those bytes.
-            </p>
-            <p class="fragment" style="font-size: 0.75em; text-align: left;">
-              The same bytes, viewed through a different type = different value.
-            </p>
-          </div>
-          <p class="fragment" style="font-size: 0.7em; color: #6272a4; margin-top: 20px;">
-            "You see what you want to see."
-          </p>
-        </section>
-
-        <!-- Data vs Type: Example 1 — same 4 bytes -->
-        <section>
-          <h3>Example: Same 4 Bytes</h3>
-          <pre style="font-size: 0.48em;"><code class="language-c" data-trim>
-int n = 1078530011;
-float *fp = (float *)&amp;n;
-printf("int:   %d\n", n);      // 1078530011
-printf("float: %f\n", *fp);    // 3.141593
-          </code></pre>
-          <div class="fragment" style="margin-top: 15px;">
-            <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 8px;">Memory (4 bytes, little-endian):</p>
-            <div style="display:flex; justify-content:center; gap:3px; font-family:monospace; font-size:0.7em;">
-              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0xDB</div></div>
-              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x0F</div></div>
-              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x49</div></div>
-              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x40</div></div>
-            </div>
-          </div>
-          <div class="fragment" style="display:flex; justify-content:center; gap:40px; margin-top:15px; font-size:0.75em;">
-            <div>
-              <span style="color:#ff79c6;">as int &rarr;</span>
-              <code style="color:#f8f8f2;"> 1078530011</code>
-            </div>
-            <div>
-              <span style="color:#50fa7b;">as float &rarr;</span>
-              <code style="color:#f8f8f2;"> 3.1416 (&asymp; &pi;)</code>
-            </div>
-          </div>
-          <p class="explanation fragment">Same bytes, different type = completely different value!</p>
-        </section>
-
-        <!-- Data vs Type: Example 2 — char[] vs int* -->
-        <section>
-          <h3>Example: <code>char[]</code> as <code>int*</code></h3>
-          <pre style="font-size: 0.48em;"><code class="language-c" data-trim>
-char s[] = {1, 0, 0, 0, 2, 0, 0, 0};  // 8 bytes
-int *p = (int *)s;
-printf("%d %d\n", p[0], p[1]);         // 1 2
-          </code></pre>
-          <div class="fragment" style="margin-top: 15px;">
-            <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 8px;">Memory (8 bytes):</p>
-            <div style="display:flex; justify-content:center; gap:2px; font-family:monospace; font-size:0.6em;">
-              <div class="mem-lin-cell" style="border-color:#ff79c6; min-width:34px;"><div class="mem-lin-val">01</div><div class="mem-lin-idx">s[0]</div></div>
-              <div class="mem-lin-cell" style="border-color:#ff79c6; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[1]</div></div>
-              <div class="mem-lin-cell" style="border-color:#ff79c6; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[2]</div></div>
-              <div class="mem-lin-cell" style="border-color:#ff79c6; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[3]</div></div>
-              <div class="mem-lin-cell" style="border-color:#50fa7b; min-width:34px;"><div class="mem-lin-val">02</div><div class="mem-lin-idx">s[4]</div></div>
-              <div class="mem-lin-cell" style="border-color:#50fa7b; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[5]</div></div>
-              <div class="mem-lin-cell" style="border-color:#50fa7b; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[6]</div></div>
-              <div class="mem-lin-cell" style="border-color:#50fa7b; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[7]</div></div>
-            </div>
-            <div style="display:flex; justify-content:center; gap:2px; font-family:monospace; font-size:0.6em; margin-top:3px;">
-              <div style="min-width:142px; text-align:center; color:#ff79c6;">&#9492;&#9472;&#9472; p[0] = 1 &#9472;&#9472;&#9496;</div>
-              <div style="min-width:142px; text-align:center; color:#50fa7b;">&#9492;&#9472;&#9472; p[1] = 2 &#9472;&#9472;&#9496;</div>
-            </div>
-          </div>
-          <p class="explanation fragment">8 chars &rarr; reinterpreted as 2 ints (little-endian; byte order may differ on other architectures)</p>
-        </section>
-
-        <!-- Data vs Type: Example 3 — int[3][4] vs int[12] -->
-        <section>
-          <h3>Example: <code>int[3][4]</code> vs <code>int[12]</code></h3>
-          <pre style="font-size: 0.48em;"><code class="language-c" data-trim>
-int array[3][4] = {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}};
-int *flat = &amp;array[0][0];  // or: (int *)array
-
-// flat[0]..flat[11] accesses ALL 12 elements!
-for (int i = 0; i &lt; 12; i++)
-    printf("%d ", flat[i]);   // 1 2 3 4 5 6 7 8 9 10 11 12
-          </code></pre>
-          <div class="fragment" style="margin-top: 15px;">
-            <p style="font-size: 0.65em; color: #8be9fd; margin-bottom: 8px;">Same 48 bytes, two views:</p>
-            <div style="display:flex; justify-content:center; gap:40px; font-size:0.7em; align-items:center;">
-              <div style="text-align:center;">
-                <div style="color:#ff79c6; margin-bottom:5px;">int [3][4]</div>
-                <div style="color:#f8f8f2;">{1,2,3,4}</div>
-                <div style="color:#f8f8f2;">{5,6,7,8}</div>
-                <div style="color:#f8f8f2;">{9,10,11,12}</div>
-              </div>
-              <div style="font-size:2em; color:#6272a4;">=</div>
-              <div style="text-align:center;">
-                <div style="color:#50fa7b; margin-bottom:5px;">int [12]</div>
-                <div style="color:#f8f8f2;">{1,2,3,4,5,6,7,8,9,10,11,12}</div>
-              </div>
-            </div>
-          </div>
-          <p class="explanation fragment">This is exactly what Question 4 is about!</p>
-        </section>
-
-        <!-- GDB Demo: Data vs Type -->
-        <section>
-          <h3>GDB: See It Yourself</h3>
-          <div class="gdb-box">
-            <span class="gdb-comment">// int n whose bytes happen to encode &pi; as float</span><br>
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p n</span><br>
-            <span class="gdb-output">= 1078530011</span><br>
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p *(float *)&amp;n</span><br>
-            <span class="gdb-output">= <span class="gdb-highlight">3.14159274</span></span><br>
-            <br>
-            <span class="gdb-comment">// Raw bytes</span><br>
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">x/4xb &amp;n</span><br>
-            <span class="gdb-output"><span class="gdb-addr">0x7ffd...</span>: </span>
-            <span style="color:#bd93f9">0xdb 0x0f 0x49 0x40</span><br>
-            <br>
-            <span class="gdb-comment">// 2D array as flat 1D</span><br>
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p array</span><br>
-            <span class="gdb-output">= {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}}</span><br>
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p *(int (*)[12])array</span><br>
-            <span class="gdb-output">= {<span class="gdb-highlight">1,2,3,4,5,6,7,8,9,10,11,12</span>}</span><br>
-          </div>
-          <p class="explanation">Same memory, cast to different type &rarr; different interpretation</p>
-        </section>
-
-        <!-- The Code -->
+        <!-- Q4 Code -->
         <section>
           <h3>The Code</h3>
-          <pre style="font-size: 0.42em;"><code class="language-c" data-trim data-line-numbers="|6|13-15|25-28">
+          <pre style="font-size: 0.36em;"><code class="language-c" data-trim data-line-numbers>
 #include &lt;stdio.h&gt;
-
-void add1(int ar[], int size);
+#include &lt;string.h&gt;
+#define M1 "How are ya, sweetie?"
+char M2[40] = "Beat the clock.";
+char *M3 = "chat";
 
 int main() {
-  int array[3][4];
-  int h, k;
-  for (h = 0; h &lt; 3; h++) {
-    for (k = 0; k &lt; 4; k++) {
-      scanf("%d", &amp;array[h][k]);
-    }
-  }
-  for (h = 0; h &lt; 3; h++) {   // line a
-    add1(array[h], 4);
-  }
-  for (h = 0; h &lt; 3; h++) {
-    for (k = 0; k &lt; 4; k++) {
-      printf("%10d", array[h][k]);
-    }
-    putchar('\n');
-  }
+  char words[80], *p;
+  printf(M1);
+  puts(M1);
+  puts(M2);
+  puts(M2 + 1);
+  fgets(words, 80, stdin);  /* user inputs : win a toy. */
+  if (p = strchr(words, '\n')) *p = '\0';
+  puts(words);
+  scanf("%s", words + 6);   /* user inputs : snoopy. */
+  puts(words);
+  words[3] = '\0';
+  puts(words);
+  while (*M3) puts(M3++);
+  puts(--M3);
+  puts(--M3);
+  M3 = M1;
+  puts(M3);
   return 0;
 }
-
-void add1(int ar[], int size) {
-  int k;
-  for (k = 0; k &lt; size; k++) ar[k]++;
-}
           </code></pre>
         </section>
 
-        <!-- Memory layout: 2D array concept -->
-        <section data-auto-animate>
-          <h3>How We Think of It</h3>
-          <p style="font-size: 0.7em; color: #8be9fd;">int array[3][4] &mdash; 3 rows, 4 columns</p>
-          <div class="mem-grid" data-id="grid">
-            <div></div>
-            <div class="mem-col-header">[0]</div>
-            <div class="mem-col-header">[1]</div>
-            <div class="mem-col-header">[2]</div>
-            <div class="mem-col-header">[3]</div>
-
-            <div class="mem-row-label">array[0]</div>
-            <div class="mem-cell highlight-row0"><div class="mem-cell-val">1</div></div>
-            <div class="mem-cell highlight-row0"><div class="mem-cell-val">2</div></div>
-            <div class="mem-cell highlight-row0"><div class="mem-cell-val">3</div></div>
-            <div class="mem-cell highlight-row0"><div class="mem-cell-val">4</div></div>
-
-            <div class="mem-row-label">array[1]</div>
-            <div class="mem-cell highlight-row1"><div class="mem-cell-val">5</div></div>
-            <div class="mem-cell highlight-row1"><div class="mem-cell-val">6</div></div>
-            <div class="mem-cell highlight-row1"><div class="mem-cell-val">7</div></div>
-            <div class="mem-cell highlight-row1"><div class="mem-cell-val">8</div></div>
-
-            <div class="mem-row-label">array[2]</div>
-            <div class="mem-cell highlight-row2"><div class="mem-cell-val">9</div></div>
-            <div class="mem-cell highlight-row2"><div class="mem-cell-val">10</div></div>
-            <div class="mem-cell highlight-row2"><div class="mem-cell-val">11</div></div>
-            <div class="mem-cell highlight-row2"><div class="mem-cell-val">12</div></div>
-          </div>
-        </section>
-
-        <!-- Memory layout: contiguous in memory -->
-        <section data-auto-animate>
-          <h3>How It Actually Lives in Memory</h3>
-          <p style="font-size: 0.65em; color: #8be9fd;">Row-major order &mdash; all 12 ints are contiguous</p>
-          <div class="mem-linear" data-id="linear">
-            <div class="mem-lin-cell lin-row0"><div class="mem-lin-val">1</div><div class="mem-lin-idx">[0][0]</div></div>
-            <div class="mem-lin-cell lin-row0"><div class="mem-lin-val">2</div><div class="mem-lin-idx">[0][1]</div></div>
-            <div class="mem-lin-cell lin-row0"><div class="mem-lin-val">3</div><div class="mem-lin-idx">[0][2]</div></div>
-            <div class="mem-lin-cell lin-row0"><div class="mem-lin-val">4</div><div class="mem-lin-idx">[0][3]</div></div>
-            <div class="mem-lin-cell lin-row1"><div class="mem-lin-val">5</div><div class="mem-lin-idx">[1][0]</div></div>
-            <div class="mem-lin-cell lin-row1"><div class="mem-lin-val">6</div><div class="mem-lin-idx">[1][1]</div></div>
-            <div class="mem-lin-cell lin-row1"><div class="mem-lin-val">7</div><div class="mem-lin-idx">[1][2]</div></div>
-            <div class="mem-lin-cell lin-row1"><div class="mem-lin-val">8</div><div class="mem-lin-idx">[1][3]</div></div>
-            <div class="mem-lin-cell lin-row2"><div class="mem-lin-val">9</div><div class="mem-lin-idx">[2][0]</div></div>
-            <div class="mem-lin-cell lin-row2"><div class="mem-lin-val">10</div><div class="mem-lin-idx">[2][1]</div></div>
-            <div class="mem-lin-cell lin-row2"><div class="mem-lin-val">11</div><div class="mem-lin-idx">[2][2]</div></div>
-            <div class="mem-lin-cell lin-row2"><div class="mem-lin-val">12</div><div class="mem-lin-idx">[2][3]</div></div>
-          </div>
-          <div style="display: flex; justify-content: center; gap: 30px; font-size: 0.6em; margin-top: 8px;">
-            <span style="color: #ff79c6;">&#9608; array[0]</span>
-            <span style="color: #50fa7b;">&#9608; array[1]</span>
-            <span style="color: #ffb86c;">&#9608; array[2]</span>
-          </div>
-          <p style="font-size: 0.6em; color: #6272a4; margin-top: 10px;">Low address &#x2192; High address</p>
-        </section>
-
-        <!-- GDB: verify contiguous memory -->
+        <!-- Global Variables -->
         <section>
-          <h3>GDB: Verify Memory Layout</h3>
-          <div class="gdb-box">
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">b 13</span><br>
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">r &lt; input.txt</span><br>
-            <br>
-            <span class="gdb-comment">// Print array as 2D</span><br>
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p array</span><br>
-            <span class="gdb-output">= {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}}</span><br>
-            <br>
-            <span class="gdb-comment">// Examine 12 consecutive ints from the start</span><br>
-            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">x/12dw array</span><br>
-            <span class="gdb-addr">0x7ffd1000</span><span class="gdb-output">: </span>
-            <span style="color:#ff79c6">1  2  3  4</span><br>
-            <span class="gdb-addr">0x7ffd1010</span><span class="gdb-output">: </span>
-            <span style="color:#50fa7b">5  6  7  8</span><br>
-            <span class="gdb-addr">0x7ffd1020</span><span class="gdb-output">: </span>
-            <span style="color:#ffb86c">9  10  11  12</span><br>
-          </div>
-          <p class="explanation">Each int = 4 bytes. 12 ints = 48 bytes, all contiguous!</p>
-        </section>
-
-        <!-- What is array[h]? -->
-        <section data-auto-animate>
-          <h3>What is <code>array[h]</code>?</h3>
-          <div style="font-size: 0.7em; text-align: left; max-width: 700px; margin: 0 auto;">
-            <p><code style="color:#8be9fd;">array</code> has type <code style="color:#ff79c6;">int (*)[4]</code> &mdash; pointer to array of 4 ints</p>
-            <p class="fragment"><code style="color:#8be9fd;">array[h]</code> has type <code style="color:#ff79c6;">int [4]</code> &mdash; an array of 4 ints</p>
-            <p class="fragment">When passed to a function, it <strong style="color:#50fa7b;">decays</strong> to <code style="color:#ff79c6;">int *</code></p>
-          </div>
-          <div class="fragment" style="margin-top: 20px;">
-            <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
-// These are equivalent:
-void add1(int ar[], int size);
-void add1(int *ar,  int size);
-            </code></pre>
-          </div>
-          <p class="explanation fragment">So <code>add1(array[h], 4)</code> passes a pointer to the first element of row h</p>
-        </section>
-
-        <!-- Step-by-step: all iterations -->
-        <section>
-          <h3>Loop Execution</h3>
-          <div style="font-size: 0.7em; max-width: 700px; margin: 0 auto; text-align: left;">
-            <div class="fragment">
-              <p><span style="color:#ff79c6;">h=0:</span> <code>add1(array[0], 4)</code> &rarr; ar = <code>&amp;array[0][0]</code>, increments row 0</p>
-            </div>
-            <div class="fragment">
-              <p><span style="color:#50fa7b;">h=1:</span> <code>add1(array[1], 4)</code> &rarr; ar = <code>&amp;array[1][0]</code>, increments row 1</p>
-            </div>
-            <div class="fragment">
-              <p><span style="color:#ffb86c;">h=2:</span> <code>add1(array[2], 4)</code> &rarr; ar = <code>&amp;array[2][0]</code>, increments row 2</p>
-            </div>
-          </div>
-          <div class="fragment" style="margin-top: 20px;">
-            <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 8px;">Result: every element +1</p>
-            <div class="mem-grid" style="font-size: 0.85em;">
-              <div></div>
-              <div class="mem-col-header">[0]</div>
-              <div class="mem-col-header">[1]</div>
-              <div class="mem-col-header">[2]</div>
-              <div class="mem-col-header">[3]</div>
-              <div class="mem-row-label">array[0]</div>
-              <div class="mem-cell highlight-row0"><div class="mem-cell-val val-changed">2</div></div>
-              <div class="mem-cell highlight-row0"><div class="mem-cell-val val-changed">3</div></div>
-              <div class="mem-cell highlight-row0"><div class="mem-cell-val val-changed">4</div></div>
-              <div class="mem-cell highlight-row0"><div class="mem-cell-val val-changed">5</div></div>
-              <div class="mem-row-label">array[1]</div>
-              <div class="mem-cell highlight-row1"><div class="mem-cell-val val-changed">6</div></div>
-              <div class="mem-cell highlight-row1"><div class="mem-cell-val val-changed">7</div></div>
-              <div class="mem-cell highlight-row1"><div class="mem-cell-val val-changed">8</div></div>
-              <div class="mem-cell highlight-row1"><div class="mem-cell-val val-changed">9</div></div>
-              <div class="mem-row-label">array[2]</div>
-              <div class="mem-cell highlight-row2"><div class="mem-cell-val val-changed">10</div></div>
-              <div class="mem-cell highlight-row2"><div class="mem-cell-val val-changed">11</div></div>
-              <div class="mem-cell highlight-row2"><div class="mem-cell-val val-changed">12</div></div>
-              <div class="mem-cell highlight-row2"><div class="mem-cell-val val-changed">13</div></div>
-            </div>
-          </div>
-          <p class="explanation fragment">Each call, <code>ar</code> points to a different row's start</p>
-        </section>
-
-        <!-- Transition: the alternative -->
-        <section>
-          <h3>What If We Replace line a?</h3>
-          <pre style="font-size: 0.5em;"><code class="language-c" data-trim data-line-numbers="1-3|5">
-// Original: 3 calls, one per row
-for (h = 0; h &lt; 3; h++)
-  add1(array[h], 4);
-
-// Replacement: 1 call for everything
-add1(array[0], 3 * 4);
-          </code></pre>
-          <p class="fragment" style="font-size: 0.8em; color: #8be9fd; margin-top: 20px;">Does this work? <span class="fragment" style="color: #50fa7b; font-weight: bold;">Yes!</span></p>
-        </section>
-
-        <!-- Why it works: linear view -->
-        <section data-auto-animate>
-          <h3>Why It Works</h3>
-          <p style="font-size: 0.65em; color: #8be9fd;">
-            <code>array[0]</code> decays to <code>&amp;array[0][0]</code> &mdash; pointer to the very first int
+          <h3>Global Variables</h3>
+          <table class="cmp-table" style="font-size: 0.5em;">
+            <tr>
+              <th>Name</th>
+              <th>Declaration</th>
+              <th>Type</th>
+              <th>Storage</th>
+            </tr>
+            <tr>
+              <td style="color:#bd93f9;">M1</td>
+              <td><code>#define M1 "How are ya, sweetie?"</code></td>
+              <td>Macro (text replacement)</td>
+              <td>String literal (read-only)</td>
+            </tr>
+            <tr>
+              <td style="color:#8be9fd;">M2</td>
+              <td><code>char M2[40] = "Beat the clock.";</code></td>
+              <td>char array (size 40)</td>
+              <td>Modifiable global array</td>
+            </tr>
+            <tr>
+              <td style="color:#ffb86c;">M3</td>
+              <td><code>char *M3 = "chat";</code></td>
+              <td>char pointer</td>
+              <td>Pointer to string literal</td>
+            </tr>
+          </table>
+          <p class="explanation fragment">
+            <code>M1</code> is replaced by the preprocessor. <code>M2</code> is a mutable array. <code>M3</code> is a pointer that can be reassigned.
           </p>
-          <div class="mem-linear" data-id="lin-alt" style="margin-top: 20px;">
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">1</div><div class="mem-lin-idx">ar[0]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">2</div><div class="mem-lin-idx">ar[1]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">3</div><div class="mem-lin-idx">ar[2]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">4</div><div class="mem-lin-idx">ar[3]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">5</div><div class="mem-lin-idx">ar[4]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">6</div><div class="mem-lin-idx">ar[5]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">7</div><div class="mem-lin-idx">ar[6]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">8</div><div class="mem-lin-idx">ar[7]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">9</div><div class="mem-lin-idx">ar[8]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">10</div><div class="mem-lin-idx">ar[9]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">11</div><div class="mem-lin-idx">ar[10]</div></div>
-            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">12</div><div class="mem-lin-idx">ar[11]</div></div>
-          </div>
-          <p style="font-size: 0.65em; margin-top: 10px;">
-            <code style="color:#ff79c6;">add1(array[0], 12)</code> &mdash; treat entire 2D array as <strong style="color:#8be9fd;">one flat array of 12 ints</strong>
-          </p>
-          <p class="explanation fragment">Memory is contiguous, so <code>ar[0]</code> through <code>ar[11]</code> covers all elements!</p>
         </section>
 
-        <!-- Comparison -->
+        <!-- printf vs puts -->
         <section>
-          <h3>Comparison</h3>
-          <table class="cmp-table">
+          <h3><code>printf</code> vs <code>puts</code></h3>
+          <table class="cmp-table" style="font-size: 0.6em;">
             <tr>
               <th></th>
-              <th>Original</th>
-              <th>Alternative</th>
+              <th><code>printf(str)</code></th>
+              <th><code>puts(str)</code></th>
             </tr>
             <tr>
-              <td style="color: #8be9fd;">Code</td>
-              <td>
-                <code style="font-size:0.85em;">for (h=0; h&lt;3; h++)<br>&nbsp;&nbsp;add1(array[h], 4);</code>
-              </td>
-              <td><code style="font-size:0.85em;">add1(array[0], 3*4);</code></td>
+              <td style="color:#8be9fd;">Newline</td>
+              <td style="color:#ff5555;">No &mdash; you must add <code>\n</code> yourself</td>
+              <td style="color:#50fa7b;">Yes &mdash; always appends <code>\n</code></td>
             </tr>
             <tr>
-              <td style="color: #8be9fd;">Calls</td>
-              <td>3</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td style="color: #8be9fd;">Result</td>
-              <td colspan="2" style="color: #50fa7b;">Same &#10003; &mdash; 2D array is contiguous in memory</td>
+              <td style="color:#8be9fd;">Format</td>
+              <td>Supports <code>%d</code>, <code>%s</code>, etc.</td>
+              <td>Just prints the string</td>
             </tr>
           </table>
         </section>
 
-        <!-- Key Takeaways -->
+        <!-- Lines 9-10: printf(M1) then puts(M1) -->
         <section>
-          <h3>Key Takeaways</h3>
-          <ul>
-            <li class="fragment"><code>int array[M][N]</code> is <strong>M&times;N contiguous</strong> ints in memory</li>
-            <li class="fragment"><code>array[h]</code> decays to <code>int *</code> pointing to row h</li>
-            <li class="fragment">Because memory is contiguous, you can treat a 2D array as 1D</li>
-          </ul>
+          <h3><code>printf(M1)</code> then <code>puts(M1)</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+printf(M1);   // no '\n' at end!
+puts(M1);     // appends '\n'
+          </code></pre>
+          <p style="font-size: 0.65em; margin-top: 15px;">
+            <code>printf</code> prints the string <strong>without</strong> a newline, then <code>puts</code> prints the same string <strong>with</strong> a newline:
+          </p>
+          <div class="term-box">
+            <span class="t-new">How are ya, sweetie?How are ya, sweetie?</span><br>
+            <span class="t-label">&uarr; no newline between them &mdash; they run together on one line</span>
+          </div>
+        </section>
+
+        <!-- Lines 11-12: puts(M2) and puts(M2+1) -->
+        <section>
+          <h3><code>puts(M2)</code> and <code>puts(M2+1)</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+puts(M2);      // prints from M2[0]
+puts(M2 + 1);  // prints from M2[1] — skips first char!
+          </code></pre>
+          <div class="str-mem" style="margin-top: 15px;">
+            <div class="str-cell c-m2"><div class="str-val" style="color:#ff79c6;">B</div><div class="str-idx">M2</div></div>
+            <div class="str-cell c-m2"><div class="str-val">e</div><div class="str-idx">M2+1</div></div>
+            <div class="str-cell c-m2"><div class="str-val">a</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">t</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">␣</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">t</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">h</div><div class="str-idx">[6]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">e</div><div class="str-idx">[7]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">␣</div><div class="str-idx">[8]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">c</div><div class="str-idx">[9]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">l</div><div class="str-idx">[10]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">o</div><div class="str-idx">[11]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">c</div><div class="str-idx">[12]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">k</div><div class="str-idx">[13]</div></div>
+            <div class="str-cell c-m2"><div class="str-val">.</div><div class="str-idx">[14]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[15]</div></div>
+          </div>
+          <div style="display: flex; justify-content: center; gap: 30px; font-size: 0.6em; margin-top: 6px;">
+            <span><code style="color:#ff79c6;">M2</code> &rarr; starts at [0]</span>
+            <span><code style="color:#50fa7b;">M2+1</code> &rarr; starts at [1], skips 'B'</span>
+          </div>
+          <div class="term-box">
+            <span class="t-hi">Beat the clock.</span><br>
+            <span class="t-new">eat the clock.</span>
+          </div>
+        </section>
+
+        <!-- fgets + strchr -->
+        <section>
+          <h3><code>fgets</code> + strip newline</h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+fgets(words, 80, stdin);  // user types: win a toy.⏎
+if (p = strchr(words, '\n')) *p = '\0';
+          </code></pre>
+          <p style="font-size: 0.6em; color: #8be9fd; margin-top: 10px;"><code>fgets</code> reads the entire line <em>including</em> <code>\n</code>, then <code>strchr</code> finds it and replaces with <code>\0</code>:</p>
+          <div class="str-mem">
+            <div class="str-cell c-words"><div class="str-val">w</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-words"><div class="str-val">i</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-words"><div class="str-val">n</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-words"><div class="str-val">␣</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-words"><div class="str-val">a</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-words"><div class="str-val">␣</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-words"><div class="str-val">t</div><div class="str-idx">[6]</div></div>
+            <div class="str-cell c-words"><div class="str-val">o</div><div class="str-idx">[7]</div></div>
+            <div class="str-cell c-words"><div class="str-val">y</div><div class="str-idx">[8]</div></div>
+            <div class="str-cell c-words"><div class="str-val">.</div><div class="str-idx">[9]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[10]</div></div>
+          </div>
+          <div class="term-box" style="margin-top: 10px;">
+            <span class="t-new">win a toy.</span>
+          </div>
+        </section>
+
+        <!-- scanf into words+6: before -->
+        <section>
+          <h3><code>scanf("%s", words+6)</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+scanf("%s", words + 6);  // user types: snoopy.
+          </code></pre>
+          <p style="font-size: 0.6em; color: #8be9fd; margin-top: 10px;"><code>words+6</code> points to index 6. <code>scanf</code> writes <code>"snoopy."</code> starting there.</p>
+          <p style="font-size: 0.6em; color: #6272a4; margin-top: 15px;">Before:</p>
+          <div class="str-mem" style="margin-top:4px;">
+            <div class="str-cell c-words"><div class="str-val">w</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-words"><div class="str-val">i</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-words"><div class="str-val">n</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-words"><div class="str-val">␣</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-words"><div class="str-val">a</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-words"><div class="str-val">␣</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-words" style="opacity:0.5;"><div class="str-val">t</div><div class="str-idx">[6]</div></div>
+            <div class="str-cell c-words" style="opacity:0.5;"><div class="str-val">o</div><div class="str-idx">[7]</div></div>
+            <div class="str-cell c-words" style="opacity:0.5;"><div class="str-val">y</div><div class="str-idx">[8]</div></div>
+            <div class="str-cell c-words" style="opacity:0.5;"><div class="str-val">.</div><div class="str-idx">[9]</div></div>
+            <div class="str-cell c-null" style="opacity:0.5;"><div class="str-val">\0</div><div class="str-idx">[10]</div></div>
+          </div>
+          <p class="explanation"><code>scanf("%s", ...)</code> reads one word (stops at whitespace) and writes it at the given address.</p>
+        </section>
+
+        <!-- scanf into words+6: after -->
+        <section>
+          <h3><code>puts(words)</code> after scanf</h3>
+          <p style="font-size: 0.6em; color: #6272a4;">After <code>scanf</code> writes <code>"snoopy."</code> at index 6:</p>
+          <div class="str-mem" style="margin-top:8px;">
+            <div class="str-cell c-words"><div class="str-val">w</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-words"><div class="str-val">i</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-words"><div class="str-val">n</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-words"><div class="str-val">␣</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-words"><div class="str-val">a</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-words"><div class="str-val">␣</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-over"><div class="str-val" style="color:#50fa7b;">s</div><div class="str-idx">[6]</div></div>
+            <div class="str-cell c-over"><div class="str-val" style="color:#50fa7b;">n</div><div class="str-idx">[7]</div></div>
+            <div class="str-cell c-over"><div class="str-val" style="color:#50fa7b;">o</div><div class="str-idx">[8]</div></div>
+            <div class="str-cell c-over"><div class="str-val" style="color:#50fa7b;">o</div><div class="str-idx">[9]</div></div>
+            <div class="str-cell c-over"><div class="str-val" style="color:#50fa7b;">p</div><div class="str-idx">[10]</div></div>
+            <div class="str-cell c-over"><div class="str-val" style="color:#50fa7b;">y</div><div class="str-idx">[11]</div></div>
+            <div class="str-cell c-over"><div class="str-val" style="color:#50fa7b;">.</div><div class="str-idx">[12]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[13]</div></div>
+          </div>
+          <div class="term-box" style="margin-top: 12px;">
+            <span class="t-new">win a snoopy.</span>
+          </div>
+          <p class="explanation"><code>"snoopy."</code> overwrites <code>"toy."</code> starting at index 6. The front part <code>"win a "</code> is untouched.</p>
+        </section>
+
+        <!-- words[3] = '\0' -->
+        <section>
+          <h3><code>words[3] = '\0'</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+words[3] = '\0';
+puts(words);
+          </code></pre>
+          <div class="str-mem" style="margin-top: 15px;">
+            <div class="str-cell c-words"><div class="str-val">w</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-words"><div class="str-val">i</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-words"><div class="str-val">n</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-words c-dim"><div class="str-val">a</div><div class="str-idx">[4]</div></div>
+            <div class="str-cell c-words c-dim"><div class="str-val">␣</div><div class="str-idx">[5]</div></div>
+            <div class="str-cell c-over c-dim"><div class="str-val">s</div><div class="str-idx">[6]</div></div>
+            <div class="str-cell c-over c-dim"><div class="str-val">n</div><div class="str-idx">[7]</div></div>
+            <div class="str-cell c-over c-dim"><div class="str-val">o</div><div class="str-idx">[8]</div></div>
+            <div class="str-cell c-over c-dim"><div class="str-val">...</div></div>
+          </div>
+          <div class="term-box">
+            <span class="t-new">win</span>
+          </div>
+          <p class="explanation">Same idea as <code>test.c</code> &mdash; inserting <code>\0</code> truncates the visible string.</p>
+        </section>
+
+        <!-- while (*M3) puts(M3++) -->
+        <section>
+          <h3><code>while (*M3) puts(M3++)</code></h3>
+          <p style="font-size: 0.6em; color: #8be9fd;">M3 initially points to <code>"chat"</code>. Each iteration prints from M3, then advances the pointer.</p>
+          <div class="str-mem" style="margin-top: 12px;">
+            <div class="str-cell c-m3"><div class="str-val">c</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-m3"><div class="str-val">h</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-m3"><div class="str-val">a</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-m3"><div class="str-val">t</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[4]</div></div>
+          </div>
+          <table class="cmp-table fragment" style="font-size: 0.5em; margin-top: 12px;">
+            <tr>
+              <th>Iter</th>
+              <th><code>*M3</code></th>
+              <th>M3 points to</th>
+              <th><code>puts</code> output</th>
+              <th>After <code>M3++</code></th>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>'c'</td>
+              <td style="color:#ffb86c;">&rarr; [0]</td>
+              <td style="color:#50fa7b;">chat</td>
+              <td>M3 &rarr; [1]</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>'h'</td>
+              <td style="color:#ffb86c;">&rarr; [1]</td>
+              <td style="color:#50fa7b;">hat</td>
+              <td>M3 &rarr; [2]</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>'a'</td>
+              <td style="color:#ffb86c;">&rarr; [2]</td>
+              <td style="color:#50fa7b;">at</td>
+              <td>M3 &rarr; [3]</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>'t'</td>
+              <td style="color:#ffb86c;">&rarr; [3]</td>
+              <td style="color:#50fa7b;">t</td>
+              <td>M3 &rarr; [4]</td>
+            </tr>
+            <tr>
+              <td>exit</td>
+              <td style="color:#ff5555;">'\0'</td>
+              <td style="color:#ffb86c;">&rarr; [4]</td>
+              <td colspan="2" style="color:#6272a4;">&mdash; loop ends</td>
+            </tr>
+          </table>
+          <p class="explanation fragment"><code>M3++</code> is post-increment: <code>puts</code> gets the <em>current</em> value, then M3 moves forward.</p>
+        </section>
+
+        <!-- puts(--M3) twice -->
+        <section>
+          <h3><code>puts(--M3)</code> twice</h3>
+          <p style="font-size: 0.6em; color: #8be9fd;">After the loop, M3 points to <code>\0</code> at index [4]. Now we go backwards:</p>
+          <div class="str-mem" style="margin-top: 12px;">
+            <div class="str-cell c-m3"><div class="str-val">c</div><div class="str-idx">[0]</div></div>
+            <div class="str-cell c-m3"><div class="str-val">h</div><div class="str-idx">[1]</div></div>
+            <div class="str-cell c-m3"><div class="str-val">a</div><div class="str-idx">[2]</div></div>
+            <div class="str-cell c-m3"><div class="str-val">t</div><div class="str-idx">[3]</div></div>
+            <div class="str-cell c-null"><div class="str-val">\0</div><div class="str-idx">[4] &larr; M3</div></div>
+          </div>
+          <div style="font-size: 0.65em; max-width: 650px; margin: 15px auto; text-align: left;">
+            <p class="fragment">
+              <code>puts(--M3)</code>: M3 moves to <span style="color:#ffb86c;">[3]</span> first, prints from 't' &rarr; <strong style="color:#50fa7b;">"t"</strong>
+            </p>
+            <p class="fragment">
+              <code>puts(--M3)</code>: M3 moves to <span style="color:#ffb86c;">[2]</span> first, prints from 'a' &rarr; <strong style="color:#50fa7b;">"at"</strong>
+            </p>
+          </div>
+          <p class="explanation fragment"><code>--M3</code> is pre-decrement: M3 moves <em>before</em> <code>puts</code> reads it.</p>
+        </section>
+
+        <!-- M3 = M1, puts(M3) -->
+        <section>
+          <h3><code>M3 = M1</code></h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+M3 = M1;   // M3 now points to "How are ya, sweetie?"
+puts(M3);
+          </code></pre>
+          <p style="font-size: 0.65em; margin-top: 15px;">
+            <code>M3</code> is a <code>char *</code> &mdash; we can reassign it to point to any string.
+          </p>
+          <p style="font-size: 0.65em; margin-top: 5px;">
+            <code>M1</code> is a macro that expands to the string literal <code style="color:#bd93f9;">"How are ya, sweetie?"</code>.
+          </p>
+          <div class="term-box" style="margin-top: 15px;">
+            <span class="t-new">How are ya, sweetie?</span>
+          </div>
+        </section>
+
+        <!-- Complete Output -->
+        <section>
+          <h3>Complete Output</h3>
+          <div class="term-box" style="font-size: 0.55em; line-height: 1.8;">
+            <span class="t-label">/* printf(M1) + puts(M1) */</span><br>
+            <span>How are ya, sweetie?How are ya, sweetie?</span><br>
+            <span class="t-label">/* puts(M2) */</span><br>
+            <span>Beat the clock.</span><br>
+            <span class="t-label">/* puts(M2+1) */</span><br>
+            <span>eat the clock.</span><br>
+            <span class="t-label">/* puts(words) &mdash; after fgets */</span><br>
+            <span>win a toy.</span><br>
+            <span class="t-label">/* puts(words) &mdash; after scanf */</span><br>
+            <span>win a snoopy.</span><br>
+            <span class="t-label">/* puts(words) &mdash; after words[3]='\0' */</span><br>
+            <span>win</span><br>
+            <span class="t-label">/* while (*M3) puts(M3++) */</span><br>
+            <span>chat</span><br>
+            <span>hat</span><br>
+            <span>at</span><br>
+            <span>t</span><br>
+            <span class="t-label">/* puts(--M3) twice */</span><br>
+            <span>t</span><br>
+            <span>at</span><br>
+            <span class="t-label">/* M3 = M1; puts(M3) */</span><br>
+            <span>How are ya, sweetie?</span>
+          </div>
         </section>
       </section>
     </div>
