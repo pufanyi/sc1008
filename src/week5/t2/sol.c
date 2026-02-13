@@ -8,7 +8,9 @@ int main() {
   int length;
   printf("Enter the string: \n");
   fgets(sourceStr, 40, stdin);
-  if (p = strchr(sourceStr, '\n')) {*p = '\0';}
+  if (p = strchr(sourceStr, '\n')) {
+    *p = '\0';
+  }
   printf("Enter the number of characters: \n");
   scanf("%d", &length);
   target = stringncpy(targetStr, sourceStr, length);

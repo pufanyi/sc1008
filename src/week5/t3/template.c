@@ -10,12 +10,16 @@ int main() {
   int result = INIT_VALUE;
   printf("Enter a source string: \n");
   fgets(source, 80, stdin);
-  if (p = strchr(source, '\n')) {*p = '\0';}
+  if (p = strchr(source, '\n')) {
+    *p = '\0';
+  }
   printf("Enter a target string: \n");
   fgets(target, 80, stdin);
-  if (p = strchr(target, '\n')) {*p = '\0';}
+  if (p = strchr(target, '\n')) {
+    *p = '\0';
+  }
   result = stringcmp(source, target);
-  if (result == 1){
+  if (result == 1) {
     printf("stringcmp(): greater than");
   } else if (result == 0) {
     printf("stringcmp(): equal");
