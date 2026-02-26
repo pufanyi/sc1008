@@ -18,7 +18,7 @@ int main() {
 void processString(char* str, int* totVowels, int* totDigits) {
   *totDigits = 0;
   *totVowels = 0;
-  int len = strlen(str); // O(n)
+  int len = strlen(str);  // O(n)
   // len(str) <- in Python/C++, is O(1)
   // str.length()
   for (int i = 0; i < len; ++i) {
