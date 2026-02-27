@@ -14,9 +14,10 @@ int main() {
 void saveChar() {
   char ch;
   ch = getchar();
-  if (ch != BLANK)
+  if (ch != BLANK) {
     saveChar();
-  else
+  } else {
     putchar('\n');
+  }
   putchar(ch);
 }
