@@ -19,5 +19,12 @@ int main() {
 }
 
 int rCountArray(int array[], int n, int a) {
-  /* Write your program code here */
+    if (n == 0) {
+        return 0;
+    }
+    int count = rCountArray(array, n - 1, a);
+    if (array[n - 1] == a) {
+        count++;
+    }
+    return count;
 }
