@@ -5,7 +5,7 @@
 void saveChar(void);
 
 int main() {
-  printf("Enter your word and end it with a space =>");
+  printf("Enter your word and end it with a space => ");
   saveChar();
   putchar('\n');
   return 0;
