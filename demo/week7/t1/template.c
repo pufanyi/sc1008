@@ -14,12 +14,19 @@ int main() {
 }
 
 int rSumup1(int n) {
-  if (n > 1) {
-    return n + rSumup1(n - 1);
-  } else {
+  if (n == 1) {
     return 1;
+  } else {
+    return n + rSumup1(n - 1);
   }
 }
 
 void rSumup2(int n, int* result) {
+  if (n == 1) {
+    *result = 1;
+  } else {
+    int temp;
+    rSumup2(n - 1, &temp);
+    *result = temp + n;
+  }
 }

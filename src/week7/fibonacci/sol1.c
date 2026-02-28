@@ -6,8 +6,8 @@ int fibonacci(int n, int *memory);
 int main() {
     int n;
     scanf("Enter a number n: %d", &n);
-    int *memory = (int*) malloc(n * sizeof(int));
-    for (int i = 0; i < n; i++) {
+    int *memory = (int *)malloc((n + 1) * sizeof(int));
+    for (int i = 0; i <= n; i++) {
         memory[i] = -1;
     }
     printf("Fibonacci of %d is %d\n", n, fibonacci(n, memory));
@@ -15,7 +15,7 @@ int main() {
     return 0;
 }
 
-int fibonacci(int n, int* memory) {
+int fibonacci(int n, int *memory) {
     if (n == 0) {
         return 0;
     }

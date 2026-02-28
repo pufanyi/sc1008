@@ -92,6 +92,58 @@
       color: #ffb86c;
     }
 
+
+    /* Tree visual for memoized DFS */
+    .memo-tree-box {
+      background: #1e1f29;
+      border: 1px solid #6272a4;
+      border-radius: 8px;
+      padding: 12px 16px;
+      text-align: left;
+      font-family: monospace;
+      font-size: 0.44em;
+      line-height: 1.45;
+      max-width: 860px;
+      margin: 10px auto;
+    }
+    .memo-tree, .memo-tree ul {
+      list-style: none;
+      margin: 0;
+      padding-left: 1.2em;
+      position: relative;
+    }
+    .memo-tree ul::before {
+      content: "";
+      position: absolute;
+      left: 0.35em;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid #6272a4;
+    }
+    .memo-tree li {
+      margin: 4px 0;
+      padding-left: 0.9em;
+      position: relative;
+    }
+    .memo-tree li::before {
+      content: "";
+      position: absolute;
+      left: 0.35em;
+      top: 0.7em;
+      width: 0.65em;
+      border-top: 1px solid #6272a4;
+    }
+    .memo-tree > li {
+      padding-left: 0;
+    }
+    .memo-tree > li::before {
+      display: none;
+    }
+    .memo-node { color: #8be9fd; }
+    .memo-base { color: #50fa7b; }
+    .memo-hit { color: #ff79c6; font-weight: bold; }
+    .memo-store { color: #ffb86c; }
+
     /* Explanation callout */
     .explanation {
       color: #ffb86c;
@@ -175,6 +227,93 @@
     .char-ch { color: #ffb86c; font-weight: bold; }
     .char-act { color: #f8f8f2; }
     .char-out { color: #50fa7b; font-weight: bold; }
+
+    /* Hand-drawn style animation for Question 2 */
+    .q2-sketch-stage {
+      position: relative;
+      max-width: 980px;
+      height: 390px;
+      margin: 14px auto 0;
+    }
+    .q2-sketch-card {
+      position: absolute;
+      width: 300px;
+      border: 3px solid #f8f8f2;
+      border-radius: 28px 10px 24px 12px;
+      background: rgba(30, 31, 41, 0.92);
+      padding: 14px 16px 10px;
+      text-align: left;
+      box-shadow: 0 0 0 2px rgba(248, 248, 242, 0.08);
+    }
+    .q2-sketch-card.left {
+      left: 12px;
+      top: 18px;
+      transform: rotate(-1.6deg);
+    }
+    .q2-sketch-card.right {
+      left: 340px;
+      top: 84px;
+      transform: rotate(1.2deg);
+    }
+    .q2-sketch-card.base {
+      left: 660px;
+      top: 156px;
+      transform: rotate(-0.9deg);
+      border-color: #50fa7b;
+    }
+    .q2-code {
+      margin: 0;
+      white-space: pre;
+      font-family: monospace;
+      font-size: 0.38em;
+      line-height: 1.23;
+      color: #f8f8f2;
+    }
+    .q2-code .q2-hi {
+      color: #8be9fd;
+      font-weight: bold;
+    }
+    .q2-state {
+      margin-top: 6px;
+      font-family: monospace;
+      font-size: 0.42em;
+      color: #ffb86c;
+    }
+    .q2-arrow-note {
+      position: absolute;
+      font-family: monospace;
+      font-size: 0.4em;
+      border: 1px dashed #8be9fd;
+      border-radius: 12px;
+      color: #8be9fd;
+      background: rgba(40, 42, 54, 0.85);
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+    .q2-arrow-note.call1 {
+      left: 278px;
+      top: 76px;
+      transform: rotate(8deg);
+    }
+    .q2-arrow-note.call2 {
+      left: 607px;
+      top: 162px;
+      transform: rotate(11deg);
+    }
+    .q2-arrow-note.ret1 {
+      left: 546px;
+      top: 260px;
+      color: #50fa7b;
+      border-color: #50fa7b;
+      transform: rotate(-10deg);
+    }
+    .q2-arrow-note.ret2 {
+      left: 292px;
+      top: 194px;
+      color: #50fa7b;
+      border-color: #50fa7b;
+      transform: rotate(-10deg);
+    }
   </style>
 </head>
 
@@ -389,6 +528,47 @@ int rDigitValue1(int num, int k) {
           </code></pre>
         </section>
 
+        <!-- Hand-drawn Animation -->
+        <section>
+          <h3>Sketch Animation: <code>rDigitValue1(12345, 3)</code></h3>
+          <p style="font-size: 0.56em; color: #6272a4;">Press next: stack grows by recursive calls, then returns the answer upward.</p>
+
+          <div class="q2-sketch-stage">
+            <div class="q2-sketch-card left fragment" data-fragment-index="0">
+              <pre class="q2-code">int rDigitValue1(int num, int k) {
+  if (k == 1) return num % 10;
+  <span class="q2-hi">return rDigitValue1(num / 10, k - 1);</span>
+}</pre>
+              <div class="q2-state">Frame A: num=12345, k=3</div>
+            </div>
+
+            <div class="q2-arrow-note call1 fragment" data-fragment-index="1">save frame A, call -> (1234, 2)</div>
+
+            <div class="q2-sketch-card right fragment" data-fragment-index="2">
+              <pre class="q2-code">int rDigitValue1(int num, int k) {
+  if (k == 1) return num % 10;
+  <span class="q2-hi">return rDigitValue1(num / 10, k - 1);</span>
+}</pre>
+              <div class="q2-state">Frame B: num=1234, k=2</div>
+            </div>
+
+            <div class="q2-arrow-note call2 fragment" data-fragment-index="3">save frame B, call -> (123, 1)</div>
+
+            <div class="q2-sketch-card base fragment" data-fragment-index="4">
+              <pre class="q2-code">int rDigitValue1(int num, int k) {
+  <span class="q2-hi">if (k == 1) return num % 10;</span>
+  return rDigitValue1(num / 10, k - 1);
+}</pre>
+              <div class="q2-state">Base frame: num=123, k=1 -> return 3</div>
+            </div>
+
+            <div class="q2-arrow-note ret1 fragment" data-fragment-index="5">return 3 <- to frame B</div>
+            <div class="q2-arrow-note ret2 fragment" data-fragment-index="6">return 3 <- to frame A</div>
+          </div>
+
+          <p class="explanation" style="margin-top: 10px;">Each frame keeps the same code, but with different <code>num</code> and <code>k</code>.</p>
+        </section>
+
         <!-- rDigitValue1 Diagram: num=12345, k=3 -->
         <section>
           <h3><code>rDigitValue1(12345, 3)</code></h3>
@@ -541,8 +721,8 @@ void saveChar() {
             Enter your word and end it with a space => hello <br>
             <span class="t-label">&uarr; user types "hello " (with trailing space)</span><br>
             <br>
-            <span class="t-new"> olleh</span><br>
-            <span class="t-label">&uarr; newline from putchar('\n'), then space + reversed chars</span>
+            <span class="t-new">␠olleh</span><br>
+            <span class="t-label">&uarr; newline from putchar('\n'), then ␠(space) + reversed chars</span>
           </div>
           <p class="explanation" style="margin-top: 15px;">
             The code <strong>reverses a word</strong> using the call stack as implicit storage.
@@ -787,20 +967,34 @@ int fibonacci(int n, int *memory) {
         <!-- Memoized Tree -->
         <section>
           <h3><code>fib(5)</code> &mdash; With Memoization</h3>
-          <div class="term-box" style="font-size: 0.42em; line-height: 1.5;">
-<span style="color:#8be9fd;">fib(5)</span><br>
-├── <span style="color:#8be9fd;">fib(4)</span><br>
-│&nbsp;&nbsp; ├── <span style="color:#8be9fd;">fib(3)</span><br>
-│&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span style="color:#8be9fd;">fib(2)</span><br>
-│&nbsp;&nbsp; │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span style="color:#50fa7b;">fib(1) = 1</span><br>
-│&nbsp;&nbsp; │&nbsp;&nbsp; │&nbsp;&nbsp; └── <span style="color:#50fa7b;">fib(0) = 0</span><br>
-│&nbsp;&nbsp; │&nbsp;&nbsp; │&nbsp;&nbsp; <span style="color:#ffb86c;">&rarr; mem[2] = 1</span><br>
-│&nbsp;&nbsp; │&nbsp;&nbsp; └── <span style="color:#50fa7b;">fib(1) = 1</span><br>
-│&nbsp;&nbsp; │&nbsp;&nbsp; <span style="color:#ffb86c;">&rarr; mem[3] = 2</span><br>
-│&nbsp;&nbsp; └── <span style="color:#50fa7b;">fib(2) &rarr; mem[2] = 1</span> <span style="color:#ff79c6;">&check; cached!</span><br>
-│&nbsp;&nbsp; <span style="color:#ffb86c;">&rarr; mem[4] = 3</span><br>
-└── <span style="color:#50fa7b;">fib(3) &rarr; mem[3] = 2</span> <span style="color:#ff79c6;">&check; cached!</span><br>
-<span style="color:#ffb86c;">&rarr; mem[5] = 5</span>
+          <div class="memo-tree-box">
+            <ul class="memo-tree">
+              <li>
+                <span class="memo-node">fib(5)</span> <span class="memo-store">&rarr; store mem[5] = 5</span>
+                <ul>
+                  <li>
+                    <span class="memo-node">fib(4)</span> <span class="memo-store">&rarr; store mem[4] = 3</span>
+                    <ul>
+                      <li>
+                        <span class="memo-node">fib(3)</span> <span class="memo-store">&rarr; store mem[3] = 2</span>
+                        <ul>
+                          <li>
+                            <span class="memo-node">fib(2)</span> <span class="memo-store">&rarr; store mem[2] = 1</span>
+                            <ul>
+                              <li><span class="memo-base">fib(1) = 1</span></li>
+                              <li><span class="memo-base">fib(0) = 0</span></li>
+                            </ul>
+                          </li>
+                          <li><span class="memo-base">fib(1) = 1</span></li>
+                        </ul>
+                      </li>
+                      <li><span class="memo-hit">fib(2) &rarr; cache hit: mem[2] = 1</span></li>
+                    </ul>
+                  </li>
+                  <li><span class="memo-hit">fib(3) &rarr; cache hit: mem[3] = 2</span></li>
+                </ul>
+              </li>
+            </ul>
           </div>
           <p style="font-size: 0.6em; color: #50fa7b; margin-top: 8px;">
             Only 9 calls! Repeated subproblems return immediately from cache.

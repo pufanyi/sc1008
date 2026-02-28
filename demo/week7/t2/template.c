@@ -24,4 +24,9 @@ int rDigitValue1(int num, int k) {
 }
 
 void rDigitValue2(int num, int k, int* result) {
+  if (k == 1) {
+    *result = num % 10;
+  } else {
+    rDigitValue2(num / 10, k - 1, result);
+  }
 }
