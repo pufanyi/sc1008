@@ -21,12 +21,11 @@
             << "|" << std::endl;              \
   std::cout << SEP << std::endl;
 
-#define OUTPUT(label)                                                       \
-  std::cout << "|" << std::setw(22) << label << "|" << std::setw(W) << num1 \
-            << "|" << std::setw(W) << num2 << "|" << std::setw(A)             \
-            << (void*)p << "|" << std::setw(W) << *p << "|" << std::setw(W) \
-            << ref << "|" << std::setw(A) << (void*)&ref << "|"             \
-            << std::endl;                                                   \
+#define OUTPUT(label)                                                         \
+  std::cout << "|" << std::setw(22) << label << "|" << std::setw(W) << num1   \
+            << "|" << std::setw(W) << num2 << "|" << std::setw(A) << (void*)p \
+            << "|" << std::setw(W) << *p << "|" << std::setw(W) << ref << "|" \
+            << std::setw(A) << (void*)&ref << "|" << std::endl;               \
   std::cout << SEP << std::endl;
 
 int main() {

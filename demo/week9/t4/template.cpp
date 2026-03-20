@@ -30,7 +30,8 @@ struct Student {
 void displayStudentInfo(Student* students, int count) {
   double sum = 0;
   for (int i = 0; i < count; ++i) {
-    std::cout << "Name: " << students[i].studentName << ", Final Mark: " << students[i].finalMark << std::endl;
+    std::cout << "Name: " << students[i].studentName
+              << ", Final Mark: " << students[i].finalMark << std::endl;
     sum += students[i].finalMark;
   }
   double average = sum / count;
@@ -44,8 +45,8 @@ int main() {
   std::cout << "Enter student size: ";
   std::cin >> numStudents;
 
-  Student *students = new Student[numStudents];
-  
+  Student* students = new Student[numStudents];
+
   for (int i = 0; i < numStudents; ++i) {
     std::cin.get();
     std::cout << "Enter student name: ";
@@ -66,7 +67,7 @@ int main() {
   }
 
   displayStudentInfo(students, numStudents);
-  
+
   delete[] students;
 
   return 0;

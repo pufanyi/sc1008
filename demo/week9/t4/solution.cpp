@@ -32,7 +32,8 @@ void displayStudentInfo(Student* students, int count) {
   std::cout << "Student Results:" << std::endl;
   float sumResults = 0.0;
   for (int i = 0; i < count; ++i) {
-    std::cout << "Name: " << students[i].studentName << ", Final Mark: " << students[i].finalMark << std::endl;
+    std::cout << "Name: " << students[i].studentName
+              << ", Final Mark: " << students[i].finalMark << std::endl;
     sumResults += (float)students[i].finalMark;
   }
   float average = sumResults / count;
