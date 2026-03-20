@@ -1,5 +1,11 @@
 #include <iostream>
 
+int calArea(int side) { return side * side; }
+
+int calArea(int l, int w) { return l * w; }
+
+float calArea(int b1, int b2, int h) { return 1.0 / 2.0 * (b1 + b2) * h; }
+
 int main() {
   int choice;
 

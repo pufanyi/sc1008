@@ -1,6 +1,21 @@
 #include <iostream>
 using namespace std;
 
+template <typename T>
+T calArea(T side) {
+  return side * side;
+}
+
+template <typename T>
+T calArea(T l, T w) {
+  return l * w;
+}
+
+template <typename T>
+double calArea(T b1, T b2, T h) {
+  return 1.0 / 2.0 * (b1 + b2) * h;
+}
+
 int main() {
   // Test cases
   int side1 = 5;
