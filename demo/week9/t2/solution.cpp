@@ -1,17 +1,5 @@
 #include <iostream>
 
-int calArea(int side) {
-  return side * side;
-}
-
-int calArea(int length, int width) {
-  return length * width;
-}
-
-int calArea(int base1, int base2, int height) {
-  return (base1 + base2) * height / 2;
-}
-
 int main() {
   int choice;
 
