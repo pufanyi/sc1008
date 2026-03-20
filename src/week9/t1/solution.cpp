@@ -57,7 +57,7 @@ int main() {
   OUTPUT("(iv) ref=num2; ref*=2")
 
   // (v)
-  ref = (long)&num2;
+  ref = &num2;
   OUTPUT("(v) ref = &num2")
 
   return 0;

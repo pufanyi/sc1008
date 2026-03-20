@@ -581,78 +581,20 @@ int &ref = *p;    // ref is alias for num1
           </div>
         </section>
 
-        <!-- Step (v): ref = &num2 -->
-        <section data-auto-animate>
+        <!-- Step (v): ref = &num2 — Compilation Error -->
+        <section>
           <h3>Step (v)</h3>
           <div class="operation-box" data-id="op">ref = &num2;</div>
-          <div class="memory-container">
-            <div class="memory-box" data-id="box-num1">
-              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
-              <div class="memory-value val-normal" data-id="val-num1">800</div>
-              <div class="memory-addr">addr: 8800</div>
-            </div>
-            <div class="spacer"></div>
-            <div class="memory-box" data-id="box-p">
-              <div class="memory-label">p</div>
-              <div class="memory-value val-normal" data-id="val-p">9976</div>
-            </div>
-            <div class="pointer-arrow">&rarr;</div>
-            <div class="memory-box" data-id="box-num2">
-              <div class="memory-label">num2</div>
-              <div class="memory-value val-normal" data-id="val-num2">400</div>
-              <div class="memory-addr">addr: 9976</div>
-            </div>
-          </div>
-        </section>
-
-        <section data-auto-animate>
-          <h3>Step (v)</h3>
-          <div class="operation-box" data-id="op">ref = &num2;</div>
-          <div class="memory-container">
-            <div class="memory-box" data-id="box-num1">
-              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
-              <div class="memory-value val-changed" data-id="val-num1">9976</div>
-              <div class="memory-addr">addr: 8800</div>
-            </div>
-            <div class="spacer"></div>
-            <div class="memory-box" data-id="box-p">
-              <div class="memory-label">p</div>
-              <div class="memory-value val-normal" data-id="val-p">9976</div>
-            </div>
-            <div class="pointer-arrow">&rarr;</div>
-            <div class="memory-box" data-id="box-num2">
-              <div class="memory-label">num2</div>
-              <div class="memory-value val-normal" data-id="val-num2">400</div>
-              <div class="memory-addr">addr: 9976</div>
-            </div>
-          </div>
-          <p class="explanation">ref = &num2 assigns address of num2 (9976) to num1. Does NOT rebind ref!</p>
-          <div class="answer-grid fragment">
-            <div class="answer-item">
-              <div class="answer-label">(a)<br><code>num1</code></div>
-              <div class="answer-value fragment">9976</div>
-            </div>
-            <div class="answer-item">
-              <div class="answer-label">(b)<br><code>num2</code></div>
-              <div class="answer-value fragment">400</div>
-            </div>
-            <div class="answer-item">
-              <div class="answer-label">(c)<br><code>p</code></div>
-              <div class="answer-value fragment">9976</div>
-            </div>
-            <div class="answer-item">
-              <div class="answer-label">(d)<br><code>*p</code></div>
-              <div class="answer-value fragment">400</div>
-            </div>
-            <div class="answer-item">
-              <div class="answer-label">(e)<br><code>ref</code></div>
-              <div class="answer-value fragment">9976</div>
-            </div>
-            <div class="answer-item">
-              <div class="answer-label">(f)<br><code>&ref</code></div>
-              <div class="answer-value fragment">8800</div>
-            </div>
-          </div>
+          <pre style="margin-top: 20px;"><code class="language-text" data-trim>
+error: invalid conversion from 'int*' to 'int'
+   ref = &num2;
+         ^~~~~
+         |
+         int*
+          </code></pre>
+          <p class="explanation fragment">&num2 is of type <code>int*</code>, but ref is <code>int&</code> (alias for an <code>int</code>)</p>
+          <p class="explanation fragment">Cannot assign a pointer to an integer without explicit cast</p>
+          <p class="explanation fragment">This would compile in C (with warning), but NOT in C++</p>
         </section>
 
         <!-- Summary -->
@@ -728,13 +670,7 @@ int &ref = *p;    // ref is alias for num1
             <tr class="fragment">
               <td>(v)</td>
               <td>ref = &num2</td>
-              <td class="val-changed">9976</td>
-              <td>400</td>
-              <td>9976</td>
-              <td>400</td>
-              <td class="val-changed">9976</td>
-              <td>8800</td>
-              <td class="points-to">num2</td>
+              <td colspan="7" class="val-unknown" style="text-align: center;">Compilation Error: invalid conversion from int* to int</td>
             </tr>
           </table>
         </section>
@@ -749,6 +685,66 @@ int &ref = *p;    // ref is alias for num1
             <li class="fragment"><code>&ref</code> always returns &num1 (8800)</li>
             <li class="fragment">Changing <code>p</code> does NOT affect what <code>ref</code> refers to</li>
             <li class="fragment">Pointer vs Reference: pointers can be reassigned, references cannot</li>
+            <li class="fragment"><code>ref = &var</code> &mdash; compilation error! Cannot assign <code>int*</code> to <code>int&</code></li>
+          </ul>
+        </section>
+      </section>
+
+      <!-- Why avoid using namespace std -->
+      <section>
+        <section>
+          <h2>Why avoid <code>using namespace std;</code>?</h2>
+          <p style="font-size: 0.7em; color: #6272a4;">For this course it's fine, but good to know for the future</p>
+        </section>
+
+        <section>
+          <h3>Name Collision</h3>
+          <pre><code class="language-cpp" data-trim>
+#include &lt;algorithm&gt;
+using namespace std;
+
+int count = 0;  // Conflicts with std::count!
+          </code></pre>
+          <p class="explanation fragment">std has thousands of names: count, find, sort, distance, map, array, ...</p>
+          <p class="explanation fragment">Your variable names may silently shadow or conflict with them</p>
+        </section>
+
+        <section>
+          <h3>The Real Danger: Headers</h3>
+          <pre><code class="language-cpp" data-trim>
+// mylib.hpp
+#include &lt;vector&gt;
+using namespace std;  // This pollutes EVERY file
+                      // that #includes mylib.hpp!
+
+class vector { ... }; // Now ambiguous with std::vector
+          </code></pre>
+          <p class="explanation fragment">Anyone who <code>#include "mylib.hpp"</code> is forced into <code>using namespace std</code></p>
+          <p class="explanation fragment">They can't opt out &mdash; you've polluted their namespace</p>
+        </section>
+
+        <section>
+          <h3>What to Do Instead</h3>
+          <pre><code class="language-cpp" data-trim>
+// Option 1: Prefix with std::
+std::cout << "Hello" << std::endl;
+std::vector&lt;int&gt; v;
+
+// Option 2: Import only what you need
+using std::cout;
+using std::endl;
+using std::vector;
+          </code></pre>
+          <p class="explanation fragment">A few extra characters, but avoids all the problems</p>
+        </section>
+
+        <section>
+          <h3>Summary</h3>
+          <ul>
+            <li class="fragment">In <code>.cpp</code> files for small projects / coursework &mdash; OK to use</li>
+            <li class="fragment">In <code>.hpp</code> / header files &mdash; <strong>never</strong> use it</li>
+            <li class="fragment">In production / team projects &mdash; avoid it</li>
+            <li class="fragment">Best practice: always use <code>std::</code> prefix</li>
           </ul>
         </section>
       </section>
