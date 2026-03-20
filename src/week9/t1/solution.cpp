@@ -1,8 +1,8 @@
 #include <iomanip>
 #include <iostream>
 
-#define W 10
-#define A 14
+#define W 12
+#define A 16
 #define SEP                                                        \
   "+" << std::string(22, '-') << "+" << std::string(W, '-') << "+" \
       << std::string(W, '-') << "+" << std::string(A, '-') << "+"  \
@@ -23,9 +23,9 @@
 
 #define OUTPUT(label)                                                       \
   std::cout << "|" << std::setw(22) << label << "|" << std::setw(W) << num1 \
-            << "|" << std::setw(W) << num2 << "|  " << std::setw(A - 2)     \
+            << "|" << std::setw(W) << num2 << "|" << std::setw(A)             \
             << (void*)p << "|" << std::setw(W) << *p << "|" << std::setw(W) \
-            << ref << "|  " << std::setw(A - 2) << (void*)&ref << "|"       \
+            << ref << "|" << std::setw(A) << (void*)&ref << "|"             \
             << std::endl;                                                   \
   std::cout << SEP << std::endl;
 
