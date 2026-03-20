@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Week 9 Slides</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/monokai.min.css">
+
+  <style>
+    .memory-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin: 20px 0;
+    }
+    .memory-box {
+      border: 2px solid #bd93f9;
+      padding: 15px 25px;
+      text-align: center;
+      border-radius: 8px;
+      background: #44475a;
+    }
+    .memory-label {
+      font-size: 0.8em;
+      color: #8be9fd;
+      margin-bottom: 5px;
+    }
+    .memory-value {
+      font-size: 1.6em;
+      font-weight: bold;
+      font-family: monospace;
+    }
+    .memory-addr {
+      font-size: 0.65em;
+      color: #6272a4;
+      margin-top: 5px;
+    }
+    .val-changed { color: #50fa7b; }
+    .val-normal { color: #f8f8f2; }
+    .val-unknown { color: #ff5555; }
+
+    .ref-badge {
+      background: #ff79c6;
+      color: #282a36;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75em;
+      margin-left: 6px;
+      font-weight: bold;
+    }
+
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      max-width: 850px;
+      margin: 15px auto 0;
+    }
+    .answer-item {
+      background: #44475a;
+      padding: 8px 3px;
+      border-radius: 6px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .answer-label {
+      font-size: 0.55em;
+      color: #8be9fd;
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+    .answer-label code {
+      font-size: 1.1em;
+      color: #ff79c6;
+    }
+    .answer-value {
+      font-size: 1.1em;
+      font-family: monospace;
+      color: #50fa7b;
+      min-height: 1.4em;
+    }
+    .operation-box {
+      background: #6272a4;
+      padding: 10px 25px;
+      border-radius: 8px;
+      display: inline-block;
+      font-family: monospace;
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+    .pointer-arrow {
+      color: #50fa7b;
+      font-size: 2em;
+    }
+    .explanation {
+      color: #ffb86c;
+      font-size: 0.75em;
+      margin-top: 10px;
+    }
+    .summary-table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      font-size: 0.45em;
+      border: 1px solid #6272a4;
+    }
+    .summary-table th, .summary-table td {
+      padding: 6px 8px;
+      text-align: center;
+      border: 1px solid #6272a4 !important;
+    }
+    .summary-table th {
+      background: #44475a;
+      color: #8be9fd;
+    }
+    .summary-table tbody tr:nth-child(even) {
+      background: rgba(68, 71, 90, 0.5);
+    }
+    .summary-table td {
+      font-family: monospace;
+    }
+    .summary-table .val-changed { color: #50fa7b; }
+    .summary-table .points-to { color: #ff79c6; }
+
+    .ref-note {
+      font-size: 0.6em;
+      color: #ff79c6;
+      margin-top: 5px;
+      font-style: italic;
+    }
+    .spacer {
+      width: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Title -->
+      <section>
+        <h2>NTU SC1008 Tutorial</h2>
+        <h3>Week 9 Slides</h3>
+        <p>Pu Fanyi</p>
+        <p><a href="https://pufanyi.com">pufanyi.com</a></p>
+        <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
+      </section>
+
+      <!-- Question 1 -->
+      <section>
+        <!-- Intro -->
+        <section>
+          <h2>Question 1: References & Pointers</h2>
+        </section>
+
+        <!-- Problem Setup -->
+        <section data-auto-animate>
+          <h3>Problem Setup</h3>
+          <pre data-id="code"><code class="language-cpp" data-trim>
+int num1 = 100;
+int num2 = 200;
+int *p = &num1;
+int &ref = *p;
+          </code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Problem Setup</h3>
+          <pre data-id="code"><code class="language-cpp" data-trim>
+int num1 = 100;   // address: 8800
+int num2 = 200;   // address: 9976
+int *p = &num1;
+int &ref = *p;    // ref is alias for num1
+          </code></pre>
+          <p style="font-size: 0.7em;">Determine: (a) num1 (b) num2 (c) p (d) *p (e) ref (f) &ref</p>
+        </section>
+
+        <!-- Initial State -->
+        <section>
+          <h3>Initial Memory Layout</h3>
+          <div class="memory-container">
+            <div class="memory-box">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal">8800</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-normal">100</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal">200</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+          <p class="ref-note">ref is an alias for num1 (bound via *p at initialization)</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>num1</code></div>
+              <div class="answer-value fragment">100</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>num2</code></div>
+              <div class="answer-value fragment">200</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>*p</code></div>
+              <div class="answer-value fragment">100</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>ref</code></div>
+              <div class="answer-value fragment">100</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(f)<br><code>&ref</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (i): *p = 50 -->
+        <section data-auto-animate>
+          <h3>Step (i)</h3>
+          <div class="operation-box" data-id="op">*p = 50;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">8800</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-normal" data-id="val-num1">100</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">200</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (i)</h3>
+          <div class="operation-box" data-id="op">*p = 50;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">8800</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-changed" data-id="val-num1">50</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">200</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+          <p class="explanation">*p modifies value at address p points to (num1). ref = num1 = 50</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>num1</code></div>
+              <div class="answer-value fragment">50</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>num2</code></div>
+              <div class="answer-value fragment">200</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>*p</code></div>
+              <div class="answer-value fragment">50</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>ref</code></div>
+              <div class="answer-value fragment">50</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(f)<br><code>&ref</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (ii): ref = ref / 2 -->
+        <section data-auto-animate>
+          <h3>Step (ii)</h3>
+          <div class="operation-box" data-id="op">ref = ref / 2;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">8800</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-normal" data-id="val-num1">50</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">200</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (ii)</h3>
+          <div class="operation-box" data-id="op">ref = ref / 2;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">8800</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-changed" data-id="val-num1">25</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">200</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+          <p class="explanation">ref is alias for num1, so ref = 50/2 = 25 modifies num1</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>num1</code></div>
+              <div class="answer-value fragment">25</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>num2</code></div>
+              <div class="answer-value fragment">200</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>*p</code></div>
+              <div class="answer-value fragment">25</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>ref</code></div>
+              <div class="answer-value fragment">25</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(f)<br><code>&ref</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (iii): p = &num2; *p = 400 — split into two sub-steps -->
+        <!-- iii before -->
+        <section data-auto-animate>
+          <h3>Step (iii)</h3>
+          <div class="operation-box" data-id="op"><strong>p = &num2;</strong> *p = 400;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">8800</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-normal" data-id="val-num1">25</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">200</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- iii after p = &num2 -->
+        <section data-auto-animate>
+          <h3>Step (iii)</h3>
+          <div class="operation-box" data-id="op"><strong>p = &num2;</strong> *p = 400;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-normal" data-id="val-num1">25</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-changed" data-id="val-p">9976</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">200</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+          <p class="explanation">p now points to num2. ref still aliases num1!</p>
+        </section>
+
+        <!-- iii after *p = 400 -->
+        <section data-auto-animate>
+          <h3>Step (iii)</h3>
+          <div class="operation-box" data-id="op">p = &num2; <strong>*p = 400;</strong></div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-normal" data-id="val-num1">25</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">9976</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-changed" data-id="val-num2">400</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+          <p class="explanation">*p = 400 modifies num2 (the variable p now points to)</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>num1</code></div>
+              <div class="answer-value fragment">25</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>num2</code></div>
+              <div class="answer-value fragment">400</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">9976</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>*p</code></div>
+              <div class="answer-value fragment">400</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>ref</code></div>
+              <div class="answer-value fragment">25</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(f)<br><code>&ref</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (iv): ref = num2; ref = ref * 2 — split into two sub-steps -->
+        <!-- iv before -->
+        <section data-auto-animate>
+          <h3>Step (iv)</h3>
+          <div class="operation-box" data-id="op"><strong>ref = num2;</strong> ref = ref * 2;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-normal" data-id="val-num1">25</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">9976</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">400</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- iv after ref = num2 -->
+        <section data-auto-animate>
+          <h3>Step (iv)</h3>
+          <div class="operation-box" data-id="op"><strong>ref = num2;</strong> ref = ref * 2;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-changed" data-id="val-num1">400</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">9976</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">400</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+          <p class="explanation">ref = num2 copies value 400 into num1 (not rebinding ref!)</p>
+        </section>
+
+        <!-- iv after ref = ref * 2 -->
+        <section data-auto-animate>
+          <h3>Step (iv)</h3>
+          <div class="operation-box" data-id="op">ref = num2; <strong>ref = ref * 2;</strong></div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-changed" data-id="val-num1">800</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">9976</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">400</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+          <p class="explanation">ref = 400 * 2 = 800. num1 becomes 800, num2 unchanged</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>num1</code></div>
+              <div class="answer-value fragment">800</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>num2</code></div>
+              <div class="answer-value fragment">400</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">9976</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>*p</code></div>
+              <div class="answer-value fragment">400</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>ref</code></div>
+              <div class="answer-value fragment">800</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(f)<br><code>&ref</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step (v): ref = &num2 -->
+        <section data-auto-animate>
+          <h3>Step (v)</h3>
+          <div class="operation-box" data-id="op">ref = &num2;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-normal" data-id="val-num1">800</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">9976</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">400</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Step (v)</h3>
+          <div class="operation-box" data-id="op">ref = &num2;</div>
+          <div class="memory-container">
+            <div class="memory-box" data-id="box-num1">
+              <div class="memory-label">num1 <span class="ref-badge">ref</span></div>
+              <div class="memory-value val-changed" data-id="val-num1">9976</div>
+              <div class="memory-addr">addr: 8800</div>
+            </div>
+            <div class="spacer"></div>
+            <div class="memory-box" data-id="box-p">
+              <div class="memory-label">p</div>
+              <div class="memory-value val-normal" data-id="val-p">9976</div>
+            </div>
+            <div class="pointer-arrow">&rarr;</div>
+            <div class="memory-box" data-id="box-num2">
+              <div class="memory-label">num2</div>
+              <div class="memory-value val-normal" data-id="val-num2">400</div>
+              <div class="memory-addr">addr: 9976</div>
+            </div>
+          </div>
+          <p class="explanation">ref = &num2 assigns address of num2 (9976) to num1. Does NOT rebind ref!</p>
+          <div class="answer-grid fragment">
+            <div class="answer-item">
+              <div class="answer-label">(a)<br><code>num1</code></div>
+              <div class="answer-value fragment">9976</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(b)<br><code>num2</code></div>
+              <div class="answer-value fragment">400</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(c)<br><code>p</code></div>
+              <div class="answer-value fragment">9976</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(d)<br><code>*p</code></div>
+              <div class="answer-value fragment">400</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(e)<br><code>ref</code></div>
+              <div class="answer-value fragment">9976</div>
+            </div>
+            <div class="answer-item">
+              <div class="answer-label">(f)<br><code>&ref</code></div>
+              <div class="answer-value fragment">8800</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Summary -->
+        <section>
+          <h3>Summary</h3>
+          <table class="summary-table">
+            <tr>
+              <th>Step</th>
+              <th>Operation</th>
+              <th>num1</th>
+              <th>num2</th>
+              <th>p</th>
+              <th>*p</th>
+              <th>ref</th>
+              <th>&ref</th>
+              <th>p &rarr;</th>
+            </tr>
+            <tr>
+              <td>init</td>
+              <td></td>
+              <td>100</td>
+              <td>200</td>
+              <td>8800</td>
+              <td>100</td>
+              <td>100</td>
+              <td>8800</td>
+              <td class="points-to">num1</td>
+            </tr>
+            <tr class="fragment">
+              <td>(i)</td>
+              <td>*p = 50</td>
+              <td class="val-changed">50</td>
+              <td>200</td>
+              <td>8800</td>
+              <td class="val-changed">50</td>
+              <td class="val-changed">50</td>
+              <td>8800</td>
+              <td class="points-to">num1</td>
+            </tr>
+            <tr class="fragment">
+              <td>(ii)</td>
+              <td>ref = ref / 2</td>
+              <td class="val-changed">25</td>
+              <td>200</td>
+              <td>8800</td>
+              <td class="val-changed">25</td>
+              <td class="val-changed">25</td>
+              <td>8800</td>
+              <td class="points-to">num1</td>
+            </tr>
+            <tr class="fragment">
+              <td>(iii)</td>
+              <td>p=&num2; *p=400</td>
+              <td>25</td>
+              <td class="val-changed">400</td>
+              <td class="val-changed">9976</td>
+              <td class="val-changed">400</td>
+              <td>25</td>
+              <td>8800</td>
+              <td class="points-to">num2</td>
+            </tr>
+            <tr class="fragment">
+              <td>(iv)</td>
+              <td>ref=num2; ref*=2</td>
+              <td class="val-changed">800</td>
+              <td>400</td>
+              <td>9976</td>
+              <td>400</td>
+              <td class="val-changed">800</td>
+              <td>8800</td>
+              <td class="points-to">num2</td>
+            </tr>
+            <tr class="fragment">
+              <td>(v)</td>
+              <td>ref = &num2</td>
+              <td class="val-changed">9976</td>
+              <td>400</td>
+              <td>9976</td>
+              <td>400</td>
+              <td class="val-changed">9976</td>
+              <td>8800</td>
+              <td class="points-to">num2</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li class="fragment"><code>int &ref = *p</code> &mdash; ref binds to the variable p points to</li>
+            <li class="fragment">References <strong>cannot be rebound</strong> &mdash; ref always aliases num1</li>
+            <li class="fragment"><code>ref = x</code> modifies num1, not the reference itself</li>
+            <li class="fragment"><code>&ref</code> always returns &num1 (8800)</li>
+            <li class="fragment">Changing <code>p</code> does NOT affect what <code>ref</code> refers to</li>
+            <li class="fragment">Pointer vs Reference: pointers can be reassigned, references cannot</li>
+          </ul>
+        </section>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/markdown/markdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/math/math.min.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      transition: 'slide',
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+    });
+  </script>
+</body>
+
+</html>

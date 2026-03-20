@@ -8,3 +8,5 @@ All codes are available on [GitHub](https://github.com/pufanyi/SC1008).
 - [Week 5](week5/index.md)
 - Week 6 (Taught by Zong Yu Lee)
 - [Week 7](week7/index.md)
+- Week 8 (No Class)
+- [Week 9](week9/index.md)
