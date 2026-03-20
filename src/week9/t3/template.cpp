@@ -1,10 +1,20 @@
 #include <iostream>
 using namespace std;
 
-// TO-DO: Write your functions here
-//
-//
-//
+template <typename T>
+T calArea(T side) {
+  return side * side;
+}
+
+template <typename T>
+T calArea(T length, T width) {
+  return length * width;
+}
+
+template <typename T>
+T calArea(T base1, T base2, T height) {
+  return (base1 + base2) * height / 2;
+}
 
 int main() {
   // Test cases
