@@ -3,8 +3,9 @@
 
 using namespace std;
 
+int next;
+
 int main() {
-  int next;
   std::cin >> next;
   cout << "The next number is: " << next + 1 << endl;
   return 0;
