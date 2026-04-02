@@ -94,9 +94,52 @@ This **pass by value + `std::move`** idiom is a common modern C++ pattern. It wo
 
 ---
 
-### Part 3: Getters & `const` Correctness
+### Part 3: Getters
 
 Now, let's implement the getters. The primary job of a getter is to **read data without modifying the object**.
+
+#### Step 1: Basic Getters
+
+The simplest approach — just return the values:
+
+```cpp
+std::string getName() { return name; }
+int getAge() { return age; }
+double getGPA() { return gpa; }
+```
+
+This works, but we can do better.
+
+#### Step 2: `const` Member Functions
+
+Notice that getters should never modify the object's state. We can make this guarantee explicit by adding the `const` keyword at the **end** of the function signature:
+
+```cpp
+std::string getName() const { return name; }
+int getAge() const { return age; }
+double getGPA() const { return gpa; }
+```
+
+This is a crucial concept called **`const` correctness**. It guarantees to the compiler that calling this method **will not alter the internal state** of the class.
+
+Why does this matter? If you declare a `const` object, the compiler will **only allow** you to call methods that are marked as `const`. If you forget to add `const` to your getter, the compiler will throw an error — protecting you from accidentally modifying a constant object.
+
+Consider the following example:
+
+```cpp
+--8<-- "src/week11/t1/test.cpp"
+```
+
+Here, `a` is declared as `const A`. The compiler only allows calling `getA()` because it is marked `const`. If `getA()` were not marked `const`, this code would fail to compile.
+
+!!! tip "Further Reading: `mutable`"
+    If you want to dive deeper, you can also look into the `mutable` keyword, which is an exception to the `const` rule — it allows a member to be modified even inside a `const` method. But that's out of scope for today.
+
+#### Step 3: Return by Const Reference
+
+For **primitive types** like `int` and `double`, returning by value is perfectly fine — they are small and fit right into CPU registers.
+
+But for `std::string`, returning by value means **copying the entire string** every time the getter is called. We can avoid this by returning a **const reference** instead:
 
 ```cpp
 const std::string& getName() const { return name; }
@@ -104,33 +147,7 @@ int getAge() const { return age; }
 double getGPA() const { return gpa; }
 ```
 
-There are two important things to notice here.
-
-#### Return Type: By Value vs. By Const Reference
-
-For **primitive types** like `int` and `double`, returning by value is perfectly fine because they are small and fit right into CPU registers. But for `std::string`, we want to return a `const std::string&` (a **const reference**) to avoid unnecessary string copying every time the getter is called.
-
-#### The Trailing `const` Keyword
-
-Also, notice the `const` keyword at the **end** of the function signature:
-
-```cpp
-std::string getName() const;
-//                    ^^^^^
-```
-
-This is a crucial concept called **`const` correctness**. It guarantees to the compiler that calling this method **will not alter the internal state** of the class.
-
-Why does this matter? Consider the following example:
-
-```cpp
---8<-- "src/week11/t1/test.cpp"
-```
-
-If you declare a `const` object (like `const A a(0);`), the compiler will **only allow** you to call methods that are marked as `const`. If you forget to add `const` to your getter, the compiler will throw an error, protecting you from accidentally modifying a constant object.
-
-!!! tip "Further Reading: `mutable`"
-    If you want to dive deeper, you can also look into the `mutable` keyword, which is an exception to the `const` rule — it allows a member to be modified even inside a `const` method. But that's out of scope for today.
+`const std::string&` returns a reference to the internal string without copying it. The `const` on the return type prevents the caller from modifying the string through this reference.
 
 ---
 

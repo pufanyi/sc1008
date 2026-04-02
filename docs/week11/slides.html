@@ -365,58 +365,44 @@ Student(std::string studentName, int studentAge, double studentGPA)
           </aside>
         </section>
 
-        <!-- Part 3: Getters -->
+        <!-- Step 1: Basic Getters -->
         <section data-auto-animate>
           <h3>Part 3: Getters</h3>
-          <p style="font-size: 0.65em; color: #6272a4;" data-id="getter-sub">A getter's job: <strong>read data without modifying the object</strong></p>
-          <pre data-id="getter-code" style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="1|2|3">
-const std::string&amp; getName() const { return name; }
+          <p style="font-size: 0.65em; color: #6272a4;" data-id="getter-label">Step 1: Basic Getters</p>
+          <pre data-id="getter-code" style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
+std::string getName() { return name; }
+int getAge() { return age; }
+double getGPA() { return gpa; }
+          </code></pre>
+          <p class="fragment" style="font-size: 0.65em;">The simplest approach &mdash; just return the values. This works, but we can do better.</p>
+          <aside class="notes">
+            Now, let's implement the getters. The primary job of a getter is to read data without modifying the object. The simplest approach is to just return the values. This works, but we can improve it.
+          </aside>
+        </section>
+
+        <!-- Step 2: const member functions -->
+        <section data-auto-animate>
+          <h3>Part 3: Getters</h3>
+          <p style="font-size: 0.65em; color: #8be9fd;" data-id="getter-label">Step 2: <code>const</code> Member Functions</p>
+          <pre data-id="getter-code" style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
+std::string getName() const { return name; }
 int getAge() const { return age; }
 double getGPA() const { return gpa; }
           </code></pre>
-          <aside class="notes">
-            Now, let's implement the getters. The primary job of a getter is to read data without modifying the object.
-          </aside>
-        </section>
-
-        <!-- Return type: value vs const ref -->
-        <section>
-          <h3>Return Type: Value vs Const Reference</h3>
-          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="1|2-3">
-const std::string&amp; getName() const { return name; }  // const reference
-int getAge() const { return age; }                    // by value
-double getGPA() const { return gpa; }                 // by value
-          </code></pre>
-          <ul>
-            <li class="fragment" style="font-size: 0.65em;">
-              <strong style="color: #50fa7b;"><code>int</code>, <code>double</code></strong> &mdash; return by <strong>value</strong>. Small types that fit into CPU registers.
-            </li>
-            <li class="fragment" style="font-size: 0.65em;">
-              <strong style="color: #ff79c6;"><code>std::string</code></strong> &mdash; return by <strong>const reference</strong>. Avoids copying the entire string every time the getter is called.
-            </li>
-          </ul>
-          <aside class="notes">
-            For primitive types like int and double, returning by value is perfectly fine because they are small and fit right into CPU registers. But for std::string, we want to return a const reference to avoid unnecessary string copying.
-          </aside>
-        </section>
-
-        <!-- The trailing const -->
-        <section data-auto-animate>
-          <h3>The Trailing <code>const</code></h3>
-          <pre data-id="const-code" style="font-size: 0.5em;"><code class="language-cpp" data-trim>
+          <pre class="fragment" style="font-size: 0.45em;"><code class="language-cpp" data-trim>
 std::string getName() const;
 //                    ^^^^^
           </code></pre>
-          <p class="fragment" style="font-size: 0.7em;">This is <strong style="color: #ff79c6;">const correctness</strong> &mdash; it guarantees to the compiler<br>that calling this method <strong>will not alter the internal state</strong> of the class.</p>
+          <p class="fragment" style="font-size: 0.65em;">This is <strong style="color: #8be9fd;">const correctness</strong> &mdash; guarantees to the compiler that<br>calling this method <strong>will not alter the internal state</strong> of the class.</p>
           <aside class="notes">
-            Also, notice the const keyword at the end of the function signature. This is a crucial concept called const correctness. It guarantees to the compiler that calling this method will not alter the internal state of the class.
+            Notice the const keyword at the end of the function signature. This is called const correctness. It guarantees to the compiler that calling this method will not alter the internal state of the class.
           </aside>
         </section>
 
         <!-- Why const matters: demo -->
-        <section data-auto-animate>
+        <section>
           <h3>Why Does <code>const</code> Matter?</h3>
-          <pre data-id="const-demo" style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers="1-4|6-7|8">
+          <pre style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers="6|10-11">
 class A {
  private:
   int a;
@@ -441,7 +427,29 @@ int main() {
             Bonus: look into the <code>mutable</code> keyword for exceptions to this rule (out of scope for today).
           </p>
           <aside class="notes">
-            Why does this matter? If you declare a const object like const A a(0), the compiler will only allow you to call methods marked as const. If you forget to add const to your getter, the compiler will throw an error, protecting you from accidentally modifying a constant object. If you want to dive deeper, you can also look into the mutable keyword, which is an exception to this rule, but that's out of scope for today.
+            Why does this matter? If you declare a const object, the compiler will only allow you to call methods marked as const. If you forget to add const to your getter, the compiler will throw an error. If you want to dive deeper, you can look into the mutable keyword, but that's out of scope for today.
+          </aside>
+        </section>
+
+        <!-- Step 3: Return by const reference -->
+        <section data-auto-animate>
+          <h3>Part 3: Getters</h3>
+          <p style="font-size: 0.65em; color: #50fa7b;" data-id="getter-label">Step 3: Return by Const Reference</p>
+          <pre data-id="getter-code" style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
+const std::string&amp; getName() const { return name; }
+int getAge() const { return age; }
+double getGPA() const { return gpa; }
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.6em;">
+              <code>int</code>, <code>double</code> &mdash; return by value is fine. Small types that fit into CPU registers.
+            </li>
+            <li class="fragment" style="font-size: 0.6em;">
+              <code>std::string</code> &mdash; returning by value copies the entire string every time. Use <strong style="color: #50fa7b;"><code>const std::string&amp;</code></strong> to return a reference without copying.
+            </li>
+          </ul>
+          <aside class="notes">
+            For primitive types, returning by value is fine. But for std::string, returning by value copies the entire string every time the getter is called. We can return a const reference instead to avoid the copy. The const on the return type prevents the caller from modifying the string through this reference.
           </aside>
         </section>
 
