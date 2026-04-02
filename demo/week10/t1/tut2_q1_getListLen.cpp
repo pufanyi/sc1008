@@ -8,10 +8,17 @@ struct ListNode {
 
 // TO-DO: You need to implement this function
 int getListLen(const ListNode* head) {
-  // TO-DO: WRITE YOUR CODE HERE
-  //
-  //
-  //
+  int count = 0;
+  // const ListNode *currentNode = head;
+  // while (currentNode != nullptr) {
+  //   count++;
+  //   currentNode = currentNode->next;
+  // }
+  for (const ListNode* currentNode = head; currentNode != nullptr;
+       currentNode = currentNode->next) {
+    count++;
+  }
+  return count;
 }
 
 int main() {

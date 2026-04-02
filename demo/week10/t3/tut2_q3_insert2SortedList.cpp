@@ -53,10 +53,33 @@ void insertNode2ListEnd(Node*& head, double newValue) {
 }
 
 void insertNode2SortedList(Node*& head, double number) {
-  // TO-DO: WRITE YOUR CODE HERE
-  //
-  //
-  //
+  Node* x = new Node();
+  x->value = number;
+  x->next = nullptr;
+
+  if (head == nullptr) {
+    head = x;
+    return;
+  }
+
+  if (number <= head->value) {
+    x->next = head;
+    head = x;
+    return;
+  }
+
+  Node* currentNode = head;
+  while (currentNode != nullptr) {
+    if (currentNode->next == nullptr || currentNode->next->value > number) {
+      // insert
+      Node* a = currentNode;
+      Node* b = currentNode->next;
+      a->next = x;
+      x->next = b;
+      return;
+    }
+    currentNode = currentNode->next;
+  }
 }
 
 int main() {

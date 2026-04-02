@@ -31,10 +31,13 @@ void deleteList(StringNode*& head) {
 
 // Function to create a linked list from an array of strings
 void arrayToLinkedList(const string* arr, int size, StringNode*& head) {
-  // TO-DO: WRITE YOUR CODE HERE
-  //
-  //
-  //
+  head = nullptr;
+  for (int i = 0; i < size; ++i) {
+    StringNode* currentNode = new StringNode();
+    currentNode->name = arr[i];
+    currentNode->next = head;
+    head = currentNode;
+  }
 }
 
 int main() {
