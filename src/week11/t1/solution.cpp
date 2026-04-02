@@ -3,16 +3,10 @@
 
 class Student {
  private:  // TODO: define the private members here
-  std::string name;
-  int age;
-  double gpa;
-
  public:
   // Constructor
   Student(std::string studentName, int studentAge, double studentGPA) {
-    name = studentName;
-    age = studentAge;
-    gpa = studentGPA;
+    // TODO: Define the constructor
   }
 
   // Display function
@@ -23,6 +17,7 @@ class Student {
   }
 
   // Getters
+  // TODO: Implement the getters here
 
   // Setters
   // TODO: Implement the setters here
