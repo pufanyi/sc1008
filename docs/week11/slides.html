@@ -267,59 +267,18 @@ private:
           </aside>
         </section>
 
-        <!-- Part 2: Constructor - Parameters -->
-        <section>
-          <h3>Part 2: The Constructor</h3>
-          <p style="font-size: 0.7em;">Let's look closely at the parameters:</p>
-          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
-Student(std::string studentName, int studentAge, double studentGPA)
-          </code></pre>
-          <ul>
-            <li class="fragment" style="font-size: 0.65em;">
-              <code>int</code> and <code>double</code> &mdash; <strong style="color: #50fa7b;">pass by value</strong>. Small and cheap to copy.
-            </li>
-            <li class="fragment" style="font-size: 0.65em;">
-              <code>std::string</code> &mdash; also <strong style="color: #ff79c6;">pass by value</strong>, because we need to <strong>store</strong> it. We'll use <code>std::move</code> to transfer ownership.
-            </li>
-          </ul>
-          <aside class="notes">
-            Next up is the public constructor. For primitive types like int and double, passing by value is completely fine. For std::string, we also pass by value here because the constructor needs to store the string — we'll use std::move to transfer ownership efficiently.
-          </aside>
-        </section>
-
-        <!-- What is std::move? -->
-        <section>
-          <h3>What is <code>std::move</code>?</h3>
-          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim>
-: name(std::move(studentName))  // transfer, don't copy
-          </code></pre>
-          <ul>
-            <li class="fragment" style="font-size: 0.6em;">
-              Casts its argument to an <strong>rvalue reference</strong> &mdash; tells the compiler it's safe to <strong>move from</strong> this object instead of copying.
-            </li>
-            <li class="fragment" style="font-size: 0.6em;">
-              For <code>std::string</code>: transfers the internal buffer pointer instead of allocating new memory and copying all characters.
-            </li>
-            <li class="fragment" style="font-size: 0.6em;">
-              <strong style="color: #50fa7b;">Pass by value + <code>std::move</code></strong> &mdash; a common modern C++ idiom when you need to store a copy.
-            </li>
-          </ul>
-          <aside class="notes">
-            std::move doesn't actually move anything by itself — it casts its argument to an rvalue reference, signaling to the compiler that it's safe to move from this object. For std::string, this means transferring the internal buffer pointer instead of copying. This pass-by-value + std::move pattern is a common modern C++ idiom.
-          </aside>
-        </section>
-
-        <!-- Constructor: Body Assignment (bad way) -->
+        <!-- Step 1: Body Assignment -->
         <section data-auto-animate>
-          <h3>Initializing Members</h3>
-          <p style="font-size: 0.65em; color: #6272a4;" data-id="subtitle">Approach 1: Body Assignment</p>
+          <h3>Part 2: The Constructor</h3>
+          <p style="font-size: 0.65em; color: #6272a4;" data-id="step-label">Step 1: Body Assignment</p>
           <pre data-id="constructor-code" style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers>
 Student(std::string studentName, int studentAge, double studentGPA) {
-  name = std::move(studentName);
+  name = studentName;
   age = studentAge;
   gpa = studentGPA;
 }
           </code></pre>
+          <p class="fragment" style="font-size: 0.65em;">The most straightforward approach &mdash; just assign values in the body.</p>
           <div class="issue-box fragment">
             <p style="font-size: 0.65em; margin: 0;">
               <strong style="color: #ff5555;">Two-step process:</strong>
@@ -334,13 +293,13 @@ Student(std::string studentName, int studentAge, double studentGPA) {
           </aside>
         </section>
 
-        <!-- Constructor: Member Initializer List (good way) -->
+        <!-- Step 2: Member Initializer List -->
         <section data-auto-animate>
-          <h3>Initializing Members</h3>
-          <p style="font-size: 0.65em; color: #50fa7b;" data-id="subtitle">Approach 2: Member Initializer List &check;</p>
+          <h3>Part 2: The Constructor</h3>
+          <p style="font-size: 0.65em; color: #50fa7b;" data-id="step-label">Step 2: Member Initializer List</p>
           <pre data-id="constructor-code" style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers>
 Student(std::string studentName, int studentAge, double studentGPA)
-    : name(std::move(studentName)), age(studentAge), gpa(studentGPA) {}
+    : name(studentName), age(studentAge), gpa(studentGPA) {}
           </code></pre>
           <div class="good-box fragment">
             <p style="font-size: 0.65em; margin: 0;">
@@ -348,9 +307,61 @@ Student(std::string studentName, int studentAge, double studentGPA)
               Constructs and initializes each member <strong>directly</strong>. No wasted default construction.
             </p>
           </div>
-          <p class="fragment explanation">This is cleaner, faster, and the <strong>standard practice</strong> for constructors in C++.</p>
+          <p class="fragment explanation">Cleaner, faster, and the <strong>standard practice</strong> for constructors in C++.</p>
           <aside class="notes">
-            Instead, we should use the Member Initializer List. This constructs and initializes the member variables directly in one step. It's cleaner, faster, and the standard practice for constructors in C++.
+            Instead, we use the Member Initializer List. This constructs and initializes the member variables directly in one step. It's cleaner, faster, and the standard practice for constructors in C++.
+          </aside>
+        </section>
+
+        <!-- Step 3: Pass by Const Reference -->
+        <section data-auto-animate>
+          <h3>Part 2: The Constructor</h3>
+          <p style="font-size: 0.65em; color: #8be9fd;" data-id="step-label">Step 3: Pass by Const Reference</p>
+          <pre data-id="constructor-code" style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers>
+Student(const std::string&amp; studentName, int studentAge, double studentGPA)
+    : name(studentName), age(studentAge), gpa(studentGPA) {}
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.6em;">
+              <code>int</code>, <code>double</code> &mdash; pass by value is fine. Small and cheap to copy.
+            </li>
+            <li class="fragment" style="font-size: 0.6em;">
+              <code>std::string</code> &mdash; use <strong style="color: #8be9fd;">const reference</strong> to avoid copying the entire string.
+            </li>
+            <li class="fragment" style="font-size: 0.6em;">
+              <code>&amp;</code> avoids the copy. <code>const</code> guarantees we won't modify the original.
+            </li>
+          </ul>
+          <p class="fragment explanation">This is the approach <strong>taught in lectures</strong>.</p>
+          <aside class="notes">
+            Now let's look at the parameters. For primitive types, pass by value is fine. But for std::string, passing by value creates an unnecessary copy. We use const reference instead — the ampersand avoids the copy, and const guarantees we won't modify the original. This is the approach taught in lectures.
+          </aside>
+        </section>
+
+        <!-- Step 4: std::move (Bonus) -->
+        <section data-auto-animate>
+          <h3>Part 2: The Constructor</h3>
+          <p style="font-size: 0.65em; color: #ffb86c;" data-id="step-label">Step 4: <code>std::move</code> (Bonus)</p>
+          <pre data-id="constructor-code" style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers>
+Student(std::string studentName, int studentAge, double studentGPA)
+    : name(std::move(studentName)), age(studentAge), gpa(studentGPA) {}
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.6em;">
+              <code>std::move</code> casts to an <strong>rvalue reference</strong> &mdash; transfers the string's internal buffer instead of copying.
+            </li>
+            <li class="fragment" style="font-size: 0.6em;">
+              Pass by value + <code>std::move</code>: especially efficient when caller passes a temporary like <code>"Alice"</code>.
+            </li>
+          </ul>
+          <div class="fragment info-box">
+            <p style="font-size: 0.6em; margin: 0;">
+              <strong style="color: #ffb86c;">Not covered in lectures &mdash; not required for exams.</strong><br>
+              Included for those who want to understand the final solution.
+            </p>
+          </div>
+          <aside class="notes">
+            There's one more approach: pass by value and use std::move. std::move tells the compiler to transfer the string's internal buffer instead of copying. This is not covered in lectures and not required for exams — it's a bonus for those who want to understand the final solution code.
           </aside>
         </section>
 
