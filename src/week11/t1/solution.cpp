@@ -2,12 +2,14 @@
 #include <string>
 
 class Student {
- private:  // TODO: define the private members here
+ private:
+  std::string name;
+  int age;
+  double gpa;
+
  public:
   // Constructor
-  Student(std::string studentName, int studentAge, double studentGPA) {
-    // TODO: Define the constructor
-  }
+  Student(std::string studentName, int studentAge, double studentGPA) : name(std::move(studentName)), age(studentAge), gpa(studentGPA) { }
 
   // Display function
   void displayDetails() const {
@@ -17,10 +19,30 @@ class Student {
   }
 
   // Getters
-  // TODO: Implement the getters here
+  const std::string &getName() const {
+    return this->name;
+  }
+
+  int getAge() const {
+    return this->age;
+  }
+
+  double getGPA() const {
+    return this->gpa;
+  }
 
   // Setters
-  // TODO: Implement the setters here
+  void setName(std::string newName) {
+    this->name = std::move(newName);
+  }
+
+  void setAge(int newAge) {
+    this->age = newAge;
+  }
+
+  void setGPA(double newGPA) {
+    this->gpa = newGPA;
+  }
 };
 
 int main() {

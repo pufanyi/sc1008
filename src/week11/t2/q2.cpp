@@ -1,58 +1,40 @@
 #include <iostream>
-#include <string>
 using namespace std;
-
-// Define the structure of a linked list node
-struct StringNode {
-  string name;
-  StringNode* next;
+class VisitorCounter {
+private:
+int* count; // Pointer to dynamically allocated memory for visit count
+public:
+VisitorCounter(int initialCount) {
+count = new int(initialCount);
+cout << "Constructor called with the count as " << *count << endl;
+}
+~VisitorCounter() {
+cout << "Destructor called with the count being " << *count << endl;
+delete count;
+}
+void increment() {
+(*count)++;
+}
+void display() const {
+cout << "Visitor Count: " << *count << endl;
+}
 };
-
-// Function to print the linked list
-void printList(StringNode* head) {
-  StringNode* temp = head;
-  cout << "Linked list: ";
-  while (temp) {
-    cout << temp->name << " -> ";
-    temp = temp->next;
-  }
-  cout << "NULL" << endl;
-}
-
-// Function to free allocated memory
-void deleteList(StringNode*& head) {
-  while (head) {
-    StringNode* temp = head;
-    head = head->next;
-    delete temp;
-  }
-  head = nullptr;
-}
-
-// Function to create a linked list from an array of strings
-void arrayToLinkedList(const string* arr, int size, StringNode*& head) {
-  // TO-DO: WRITE YOUR CODE HERE
-  //
-  //
-  //
-}
-
 int main() {
-  // Case 1
-  string students[] = {"Alice", "Bob", "Charlie", "David"};
-  int size = sizeof(students) / sizeof(students[0]);
-  StringNode* head1 = nullptr;
-  arrayToLinkedList(students, size, head1);
-  printList(head1);
-
-  // Case 2
-  string companyNames[] = {"Microsoft", "Google", "Tecent", "Alibaba", "HP"};
-  size = sizeof(companyNames) / sizeof(companyNames[0]);
-  StringNode* head2 = nullptr;
-  arrayToLinkedList(companyNames, size, head2);
-  printList(head2);
-
-  deleteList(head1);
-  deleteList(head2);
-  return 0;
+VisitorCounter counter(10);
+cout << "\nOriginal Counter:\n";
+counter.display();
+// Copy the counter
+VisitorCounter counterCopy = counter;
+cout << "counterCopy:\n";
+counterCopy.display();
+// Increase copied object's count
+counterCopy.increment();
+counterCopy.increment();
+cout << "\nAfter modifying copied counter...\n";
+cout << "Original Counter: "<<endl;
+counter.display();
+cout << "counterCopy: "<<endl;
+counterCopy.display();
+cout <<endl <<endl;
+return 0;
 }
