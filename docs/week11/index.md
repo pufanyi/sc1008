@@ -6,9 +6,162 @@
 
 ## Question 1
 
+We are asked to implement a `Student` class with some basic attributes: name, age, and GPA. We'll walk through the implementation step by step, and along the way, we'll point out some modern C++ practices that will make your code much more robust and efficient.
+
+### Starter Code
+
+The following starter code provides the skeleton of the `Student` class. The `main()` function and `displayDetails()` method are already written — your job is to fill in the `TODO` sections.
+
+```cpp
+--8<-- "src/week11/t1/q1.cpp"
+```
+
+---
+
+### Part 1: Private Members
+
+First, let's define the private members. This part is straightforward. We need an `std::string` for the name, an `int` for the age, and a `double` for the GPA. We keep these `private` to enforce **encapsulation** — this means external code cannot directly access or modify these variables; it must go through the public interface we provide.
+
+```cpp
+private:
+  std::string name;
+  int age;
+  double gpa;
+```
+
+---
+
+### Part 2: The Constructor & Pass-by-Reference
+
+Next up is the public constructor. We need a parameterized constructor to initialize our three members. But before we write the body, let's look closely at the parameters.
+
+```cpp
+Student(const std::string& studentName, int studentAge, double studentGPA)
+```
+
+Notice how we pass the arguments:
+
+- For **primitive types** like `int age` and `double gpa`, **passing by value** is completely fine because they are small and cheap to copy.
+- However, for **objects** like `std::string`, we use **pass by const reference** (`const std::string&`). As you've learned in the lectures, passing a string by value creates an unnecessary, hidden copy in memory, which is inefficient. By using an ampersand (`&`), we pass a **reference** to the original string, avoiding the copy overhead. The `const` keyword is added to guarantee that our constructor won't accidentally modify the passed-in string.
+
+#### Body Assignment (The Basic Way)
+
+Now, how should we initialize the members? The most basic way is doing assignments inside the function body:
+
+```cpp
+Student(const std::string& studentName, int studentAge, double studentGPA) {
+  name = studentName;
+  age = studentAge;
+  gpa = studentGPA;
+}
+```
+
+While this works, it's **not** the most efficient or standard way in C++. Doing this means the compiler first creates the member variables with **default values** (e.g., an empty string for `name`, 0 for `age`, etc.), and then **overwrites** them with your assignments. That's two steps where one would suffice.
+
+#### Member Initializer List (The Recommended Way)
+
+Instead, we should use the **Member Initializer List**:
+
+```cpp
+Student(const std::string& studentName, int studentAge, double studentGPA)
+    : name(studentName), age(studentAge), gpa(studentGPA) {}
+```
+
+This syntax constructs and initializes the member variables **directly in one step**. It's cleaner, faster, and is considered the **standard practice** for writing constructors in C++.
+
+---
+
+### Part 3: Getters & `const` Correctness
+
+Now, let's implement the getters. The primary job of a getter is to **read data without modifying the object**.
+
+```cpp
+const std::string& getName() const { return name; }
+int getAge() const { return age; }
+double getGPA() const { return gpa; }
+```
+
+There are two important things to notice here.
+
+#### Return Type: By Value vs. By Const Reference
+
+For **primitive types** like `int` and `double`, returning by value is perfectly fine because they are small and fit right into CPU registers. But for `std::string`, we want to return a `const std::string&` (a **const reference**) to avoid unnecessary string copying every time the getter is called.
+
+#### The Trailing `const` Keyword
+
+Also, notice the `const` keyword at the **end** of the function signature:
+
+```cpp
+std::string getName() const;
+//                    ^^^^^
+```
+
+This is a crucial concept called **`const` correctness**. It guarantees to the compiler that calling this method **will not alter the internal state** of the class.
+
+Why does this matter? Consider the following example:
+
+```cpp
+--8<-- "src/week11/t1/test.cpp"
+```
+
+If you declare a `const` object (like `const A a(0);`), the compiler will **only allow** you to call methods that are marked as `const`. If you forget to add `const` to your getter, the compiler will throw an error, protecting you from accidentally modifying a constant object.
+
+!!! tip "Further Reading: `mutable`"
+    If you want to dive deeper, you can also look into the `mutable` keyword, which is an exception to the `const` rule — it allows a member to be modified even inside a `const` method. But that's out of scope for today.
+
+---
+
+### Part 4: Setters
+
+Finally, the setters. These are straightforward as they modify the state.
+
+```cpp
+void setName(std::string studentName) { name = std::move(studentName); }
+void setAge(int studentAge) { age = studentAge; }
+void setGPA(double studentGPA) { gpa = studentGPA; }
+```
+
+For setting the string `name`, we pass it **by value** and use `std::move` to transfer ownership efficiently. This is a common C++ idiom: the caller can pass either an lvalue (triggering one copy into the parameter) or an rvalue (triggering a move into the parameter), and the `std::move` inside the body avoids a second copy in either case.
+
+For the primitive types, simple assignment is all we need.
+
+Note that here, we **don't** add `const` at the end of the function, because setters inherently modify the object's state.
+
+---
+
+### Complete Solution
+
+Putting it all together, here is the full implementation:
+
 ```cpp
 --8<-- "src/week11/t1/solution.cpp"
 ```
+
+---
+
+### Testing
+
+Let's compile and run the test cases provided to verify everything works as expected.
+
+Expected output:
+
+```
+Initial Student Details:
+Student Name: Alice
+Age: 20
+GPA: 3.8
+
+Student Name: Charlie
+Age: 19
+GPA: 3.5
+
+Updated Student Details:
+Student Name: Bob
+Age: 22
+GPA: 3.9
+```
+
+The output matches the expected results perfectly.
 
 ## Question 2
 

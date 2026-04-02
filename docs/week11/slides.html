@@ -77,6 +77,22 @@
       margin: 15px auto;
       max-width: 800px;
     }
+    .good-box {
+      background: rgba(80, 250, 123, 0.1);
+      border: 2px solid #50fa7b;
+      border-radius: 10px;
+      padding: 15px 25px;
+      margin: 15px auto;
+      max-width: 800px;
+    }
+    .info-box {
+      background: rgba(139, 233, 253, 0.1);
+      border: 2px solid #8be9fd;
+      border-radius: 10px;
+      padding: 15px 25px;
+      margin: 15px auto;
+      max-width: 800px;
+    }
     .heap-box {
       border: 2px dashed #ff79c6;
       padding: 12px 20px;
@@ -140,18 +156,6 @@
       font-size: 0.85em;
       color: #f8f8f2;
     }
-    .rule-number {
-      display: inline-block;
-      background: #bd93f9;
-      color: #282a36;
-      width: 30px;
-      height: 30px;
-      line-height: 30px;
-      border-radius: 50%;
-      font-weight: bold;
-      margin-right: 10px;
-      font-size: 0.8em;
-    }
     .vs-table {
       margin: 0 auto;
       border-collapse: collapse;
@@ -165,6 +169,21 @@
     .vs-table th {
       background: #44475a;
       color: #8be9fd;
+    }
+    .compare-table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      font-size: 0.6em;
+    }
+    .compare-table th, .compare-table td {
+      padding: 12px 20px;
+      border: 1px solid #6272a4 !important;
+      text-align: left;
+    }
+    .compare-table th {
+      background: #44475a;
+      color: #8be9fd;
+      text-align: center;
     }
   </style>
 </head>
@@ -181,21 +200,372 @@
         <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
       </section>
 
-      <!-- Question 2: Copy Constructor -->
+      <!-- ==================== Question 1: Student Class ==================== -->
       <section>
-        <!-- Intro -->
+
+        <!-- Q1 Intro -->
+        <section>
+          <h2>Question 1: Student Class</h2>
+          <p style="font-size: 0.7em; color: #6272a4;">Implementing a class with name, age, and GPA</p>
+          <p class="fragment" style="font-size: 0.65em;">Key concepts: <strong style="color: #8be9fd;">pass-by-reference</strong>, <strong style="color: #50fa7b;">member initializer lists</strong>, <strong style="color: #ff79c6;">const correctness</strong></p>
+          <aside class="notes">
+            Alright, let's go through the first question of this tutorial. We are asked to implement a Student class with some basic attributes: name, age, and GPA. I'll walk you through the implementation, and along the way, I'll point out some modern C++ practices that will make your code much more robust and efficient.
+          </aside>
+        </section>
+
+        <!-- Starter Code -->
+        <section>
+          <h3>Starter Code</h3>
+          <pre style="font-size: 0.38em;"><code class="language-cpp" data-trim data-line-numbers="4-6|7-10|12-17|19-20|22-23">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Student {
+ private:  // TODO: define the private members here
+ public:
+  // Constructor
+  Student(std::string studentName, int studentAge, double studentGPA) {
+    // TODO: Define the constructor
+  }
+
+  // Display function
+  void displayDetails() const {
+    std::cout &lt;&lt; "Student Name: " &lt;&lt; name &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Age: " &lt;&lt; age &lt;&lt; std::endl;
+    std::cout &lt;&lt; "GPA: " &lt;&lt; gpa &lt;&lt; std::endl;
+  }
+
+  // Getters
+  // TODO: Implement the getters here
+
+  // Setters
+  // TODO: Implement the setters here
+};
+          </code></pre>
+          <aside class="notes">
+            Here's the starter code. The main function and displayDetails are already written. We need to fill in four TODO sections: private members, constructor, getters, and setters. Let's go through them one by one.
+          </aside>
+        </section>
+
+        <!-- Part 1: Private Members -->
+        <section>
+          <h3>Part 1: Private Members</h3>
+          <pre style="font-size: 0.5em;"><code class="language-cpp" data-trim data-line-numbers>
+private:
+  std::string name;
+  int age;
+  double gpa;
+          </code></pre>
+          <div class="fragment info-box">
+            <p style="font-size: 0.7em; margin: 0;">
+              <strong style="color: #8be9fd;">Encapsulation</strong> &mdash; keeping members <code>private</code> means external code
+              cannot directly access or modify them. It must go through our public interface.
+            </p>
+          </div>
+          <aside class="notes">
+            First, let's define the private members. This part is straightforward. We need an std::string for the name, an int for the age, and a double for the GPA. We keep these private to enforce encapsulation.
+          </aside>
+        </section>
+
+        <!-- Part 2: Constructor - Parameters -->
+        <section>
+          <h3>Part 2: The Constructor</h3>
+          <p style="font-size: 0.7em;">Let's look closely at the parameters:</p>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
+Student(const std::string&amp; studentName, int studentAge, double studentGPA)
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.65em;">
+              <code>int</code> and <code>double</code> &mdash; <strong style="color: #50fa7b;">pass by value</strong> is fine. They are small and cheap to copy.
+            </li>
+            <li class="fragment" style="font-size: 0.65em;">
+              <code>std::string</code> &mdash; use <strong style="color: #ff79c6;">pass by const reference</strong> (<code>const std::string&amp;</code>).
+            </li>
+          </ul>
+          <aside class="notes">
+            Next up is the public constructor. Notice how we pass the arguments. For primitive types like int and double, passing by value is completely fine because they are small and cheap to copy. However, for objects like std::string, we use pass by const reference.
+          </aside>
+        </section>
+
+        <!-- Why const reference? -->
+        <section>
+          <h3>Why <code>const std::string&amp;</code>?</h3>
+          <table class="compare-table">
+            <tr>
+              <th></th>
+              <th style="color: #ff5555;">By Value</th>
+              <th style="color: #50fa7b;">By Const Reference</th>
+            </tr>
+            <tr class="fragment">
+              <td>What happens</td>
+              <td>Creates a <strong>full copy</strong> of the string</td>
+              <td>Passes a <strong>reference</strong> to the original</td>
+            </tr>
+            <tr class="fragment">
+              <td>Cost</td>
+              <td style="color: #ff5555;">Allocates memory, copies characters</td>
+              <td style="color: #50fa7b;">Just passes an address (8 bytes)</td>
+            </tr>
+            <tr class="fragment">
+              <td>Safety</td>
+              <td>Cannot modify original</td>
+              <td><code>const</code> prevents modification</td>
+            </tr>
+          </table>
+          <p class="fragment explanation">The <code>&amp;</code> avoids the copy. The <code>const</code> guarantees we won't modify the original.</p>
+          <aside class="notes">
+            Passing a string by value creates an unnecessary, hidden copy in memory, which is inefficient. By using an ampersand, we pass a reference to the original string, avoiding the copy overhead. The const keyword is added to guarantee that our constructor won't accidentally modify the passed-in string.
+          </aside>
+        </section>
+
+        <!-- Constructor: Body Assignment (bad way) -->
+        <section data-auto-animate>
+          <h3>Initializing Members</h3>
+          <p style="font-size: 0.65em; color: #6272a4;" data-id="subtitle">Approach 1: Body Assignment</p>
+          <pre data-id="constructor-code" style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers>
+Student(const std::string&amp; studentName, int studentAge, double studentGPA) {
+  name = studentName;
+  age = studentAge;
+  gpa = studentGPA;
+}
+          </code></pre>
+          <div class="issue-box fragment">
+            <p style="font-size: 0.65em; margin: 0;">
+              <strong style="color: #ff5555;">Two-step process:</strong>
+            </p>
+            <ol style="font-size: 0.6em; margin: 8px 0 0 0;">
+              <li>Compiler default-constructs each member (empty string, 0, 0.0)</li>
+              <li>Then overwrites them with your assignments</li>
+            </ol>
+          </div>
+          <aside class="notes">
+            Now, how should we initialize the members? The most basic way is doing assignments inside the function body. While this works, it's not the most efficient or standard way in C++. Doing this means the compiler first creates the member variables with default values, and then overwrites them with your assignments.
+          </aside>
+        </section>
+
+        <!-- Constructor: Member Initializer List (good way) -->
+        <section data-auto-animate>
+          <h3>Initializing Members</h3>
+          <p style="font-size: 0.65em; color: #50fa7b;" data-id="subtitle">Approach 2: Member Initializer List &check;</p>
+          <pre data-id="constructor-code" style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers>
+Student(const std::string&amp; studentName, int studentAge, double studentGPA)
+    : name(studentName), age(studentAge), gpa(studentGPA) {}
+          </code></pre>
+          <div class="good-box fragment">
+            <p style="font-size: 0.65em; margin: 0;">
+              <strong style="color: #50fa7b;">One-step process:</strong><br>
+              Constructs and initializes each member <strong>directly</strong>. No wasted default construction.
+            </p>
+          </div>
+          <p class="fragment explanation">This is cleaner, faster, and the <strong>standard practice</strong> for constructors in C++.</p>
+          <aside class="notes">
+            Instead, we should use the Member Initializer List. This syntax constructs and initializes the member variables directly in one step. It's cleaner, faster, and is considered the standard practice for writing constructors in C++.
+          </aside>
+        </section>
+
+        <!-- Part 3: Getters -->
+        <section data-auto-animate>
+          <h3>Part 3: Getters</h3>
+          <p style="font-size: 0.65em; color: #6272a4;" data-id="getter-sub">A getter's job: <strong>read data without modifying the object</strong></p>
+          <pre data-id="getter-code" style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="1|2|3">
+const std::string&amp; getName() const { return name; }
+int getAge() const { return age; }
+double getGPA() const { return gpa; }
+          </code></pre>
+          <aside class="notes">
+            Now, let's implement the getters. The primary job of a getter is to read data without modifying the object.
+          </aside>
+        </section>
+
+        <!-- Return type: value vs const ref -->
+        <section>
+          <h3>Return Type: Value vs Const Reference</h3>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="1|2-3">
+const std::string&amp; getName() const { return name; }  // const reference
+int getAge() const { return age; }                    // by value
+double getGPA() const { return gpa; }                 // by value
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.65em;">
+              <strong style="color: #50fa7b;"><code>int</code>, <code>double</code></strong> &mdash; return by <strong>value</strong>. Small types that fit into CPU registers.
+            </li>
+            <li class="fragment" style="font-size: 0.65em;">
+              <strong style="color: #ff79c6;"><code>std::string</code></strong> &mdash; return by <strong>const reference</strong>. Avoids copying the entire string every time the getter is called.
+            </li>
+          </ul>
+          <aside class="notes">
+            For primitive types like int and double, returning by value is perfectly fine because they are small and fit right into CPU registers. But for std::string, we want to return a const reference to avoid unnecessary string copying.
+          </aside>
+        </section>
+
+        <!-- The trailing const -->
+        <section data-auto-animate>
+          <h3>The Trailing <code>const</code></h3>
+          <pre data-id="const-code" style="font-size: 0.5em;"><code class="language-cpp" data-trim>
+std::string getName() const;
+//                    ^^^^^
+          </code></pre>
+          <p class="fragment" style="font-size: 0.7em;">This is <strong style="color: #ff79c6;">const correctness</strong> &mdash; it guarantees to the compiler<br>that calling this method <strong>will not alter the internal state</strong> of the class.</p>
+          <aside class="notes">
+            Also, notice the const keyword at the end of the function signature. This is a crucial concept called const correctness. It guarantees to the compiler that calling this method will not alter the internal state of the class.
+          </aside>
+        </section>
+
+        <!-- Why const matters: demo -->
+        <section data-auto-animate>
+          <h3>Why Does <code>const</code> Matter?</h3>
+          <pre data-id="const-demo" style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers="1-4|6-7|8">
+class A {
+ private:
+  int a;
+ public:
+  A(int a = 0) : a(a) {}
+  int getA() const { return a; }
+};
+
+int main() {
+  const A a(0);       // a is a CONST object
+  std::cout &lt;&lt; a.getA() &lt;&lt; std::endl;  // OK: getA() is const
+  return 0;
+}
+          </code></pre>
+          <div class="fragment info-box">
+            <p style="font-size: 0.65em; margin: 0;">
+              If you declare a <code>const</code> object, the compiler will <strong>only allow</strong> you to call methods marked as <code>const</code>.
+              If you forget <code>const</code> on your getter, the compiler throws an error.
+            </p>
+          </div>
+          <p class="fragment" style="font-size: 0.6em; color: #6272a4;">
+            Bonus: look into the <code>mutable</code> keyword for exceptions to this rule (out of scope for today).
+          </p>
+          <aside class="notes">
+            Why does this matter? If you declare a const object like const A a(0), the compiler will only allow you to call methods marked as const. If you forget to add const to your getter, the compiler will throw an error, protecting you from accidentally modifying a constant object. If you want to dive deeper, you can also look into the mutable keyword, which is an exception to this rule, but that's out of scope for today.
+          </aside>
+        </section>
+
+        <!-- Part 4: Setters -->
+        <section>
+          <h3>Part 4: Setters</h3>
+          <p style="font-size: 0.65em; color: #6272a4;">Setters modify the state &mdash; <strong>not</strong> marked <code>const</code></p>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="1|2|3">
+void setName(std::string studentName) { name = std::move(studentName); }
+void setAge(int studentAge) { age = studentAge; }
+void setGPA(double studentGPA) { gpa = studentGPA; }
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.6em;">
+              <strong style="color: #ff79c6;"><code>setName</code></strong>: pass by <strong>value</strong>, then <code>std::move</code> to transfer ownership efficiently.
+            </li>
+            <li class="fragment" style="font-size: 0.6em;">
+              <strong style="color: #8be9fd;"><code>setAge</code>, <code>setGPA</code></strong>: primitives &mdash; simple assignment is all we need.
+            </li>
+          </ul>
+          <aside class="notes">
+            Finally, the setters. For setting the string name, we pass it by value and use std::move to transfer ownership efficiently. For the primitive types, simple assignment is all we need. Note that here, we don't add const at the end of the function, because setters inherently modify the object.
+          </aside>
+        </section>
+
+        <!-- Complete Solution -->
+        <section>
+          <h3>Complete Solution</h3>
+          <pre style="font-size: 0.3em;"><code class="language-cpp" data-trim data-line-numbers="4-6|9-10|13-15|18-20">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Student {
+ private:
+  std::string name;
+  int age;
+  double gpa;
+
+ public:
+  Student(const std::string&amp; studentName, int studentAge, double studentGPA)
+      : name(studentName), age(studentAge), gpa(studentGPA) {}
+
+  void displayDetails() const {
+    std::cout &lt;&lt; "Student Name: " &lt;&lt; name &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Age: " &lt;&lt; age &lt;&lt; std::endl;
+    std::cout &lt;&lt; "GPA: " &lt;&lt; gpa &lt;&lt; std::endl;
+  }
+
+  const std::string&amp; getName() const { return name; }
+  int getAge() const { return age; }
+  double getGPA() const { return gpa; }
+
+  void setName(std::string studentName) { name = std::move(studentName); }
+  void setAge(int studentAge) { age = studentAge; }
+  void setGPA(double studentGPA) { gpa = studentGPA; }
+};
+          </code></pre>
+          <aside class="notes">
+            Alright, that covers the full implementation. We've set up the constructor efficiently, enforced const correctness on our getters, and implemented our setters.
+          </aside>
+        </section>
+
+        <!-- Testing -->
+        <section>
+          <h3>Testing</h3>
+          <pre style="font-size: 0.4em;"><code class="language-text" data-trim>
+Initial Student Details:
+Student Name: Alice
+Age: 20
+GPA: 3.8
+
+Student Name: Charlie
+Age: 19
+GPA: 3.5
+
+Updated Student Details:
+Student Name: Bob
+Age: 22
+GPA: 3.9
+          </code></pre>
+          <p class="fragment explanation">Output matches the expected results &mdash; we're good to go!</p>
+          <aside class="notes">
+            Let's compile and run the test cases provided to verify everything works as expected. As we can see, the output matches the expected results perfectly. We're good to go.
+          </aside>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+          <h3>Q1: Key Takeaways</h3>
+          <ul>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              <strong style="color: #8be9fd;">Pass by const reference</strong> for objects like <code>std::string</code> to avoid unnecessary copies
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              <strong style="color: #50fa7b;">Member initializer list</strong> directly constructs members in one step &mdash; preferred over body assignment
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              <strong style="color: #ff79c6;">Trailing <code>const</code></strong> on getters guarantees they don't modify object state
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              <strong style="color: #ffb86c;">Return by const reference</strong> for non-trivial types; by value for primitives
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              <strong style="color: #bd93f9;">Pass by value + <code>std::move</code></strong> is a common setter idiom for strings
+            </li>
+          </ul>
+        </section>
+
+      </section>
+
+      <!-- ==================== Question 2: Copy Constructor ==================== -->
+      <section>
+
+        <!-- Q2 Intro -->
         <section>
           <h2>Question 2: Copy Constructor</h2>
           <p style="font-size: 0.7em; color: #6272a4;">Identifying issues in the VisitorCounter class</p>
+          <aside class="notes">
+            Now let's move on to question 2. This question is about understanding what happens when you copy an object that manages dynamic memory, and why you need a custom copy constructor.
+          </aside>
         </section>
 
         <!-- Show the original code -->
         <section>
           <h3>The Code</h3>
-          <pre style="font-size: 0.4em;"><code class="language-cpp" data-trim data-line-numbers>
-#include &lt;iostream&gt;
-using namespace std;
-
+          <pre style="font-size: 0.38em;"><code class="language-cpp" data-trim data-line-numbers="1-5|6-10|12-16|18|20-22">
 class VisitorCounter {
 private:
     int* count; // Pointer to dynamically allocated memory
@@ -220,12 +590,15 @@ public:
     }
 };
           </code></pre>
+          <aside class="notes">
+            Here's the VisitorCounter class. Notice: it has a pointer member that uses new and delete. It has a constructor and destructor, but NO copy constructor.
+          </aside>
         </section>
 
         <!-- Show the test code -->
         <section>
           <h3>The Test Code</h3>
-          <pre style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers>
+          <pre style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers="2-4|6-8|11-12|14-17">
 int main() {
     VisitorCounter counter(10);
     cout &lt;&lt; "\nOriginal Counter:\n";
@@ -248,6 +621,9 @@ int main() {
     return 0;
 }
           </code></pre>
+          <aside class="notes">
+            The test code creates a counter, copies it, then increments the copy. The question is: what happens to the original?
+          </aside>
         </section>
 
         <!-- What happens? -->
@@ -261,16 +637,19 @@ VisitorCounter(const VisitorCounter&amp; other) {
 }
           </code></pre>
           <p class="fragment explanation">This is a <strong style="color: #ff5555;">shallow copy</strong> &mdash; both objects share the same memory</p>
+          <aside class="notes">
+            Since no copy constructor is defined, the compiler generates a default one. This default just copies each member directly — which for a pointer means copying the address, not the pointed-to data. This is called a shallow copy.
+          </aside>
         </section>
 
-        <!-- Shallow Copy Diagram - Before -->
+        <!-- Shallow Copy Diagram -->
         <section data-auto-animate>
           <h3>Shallow Copy: Memory Layout</h3>
           <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim>
 VisitorCounter counter(10);
 VisitorCounter counterCopy = counter;  // shallow copy!
           </code></pre>
-          <div class="diagram-wrapper" style="margin-top: 30px;">
+          <div class="diagram-wrapper" data-id="shallow-diagram" style="margin-top: 30px;">
             <div class="stack-region">
               <div class="stack-label">Stack</div>
               <div style="display: flex; gap: 30px;">
@@ -296,6 +675,9 @@ VisitorCounter counterCopy = counter;  // shallow copy!
             </div>
           </div>
           <p class="explanation">Both pointers point to the <strong>same</strong> heap memory!</p>
+          <aside class="notes">
+            Both counter and counterCopy now have a count pointer holding the same address 0xA00. They both point to the same integer on the heap.
+          </aside>
         </section>
 
         <!-- Issue 1: Unintended Sharing -->
@@ -336,28 +718,32 @@ counterCopy.increment();  // (*count)++ → 12
               Modifying the copy unexpectedly changes the original.
             </p>
           </div>
+          <aside class="notes">
+            When we increment the copy, it modifies the value at 0xA00. But since counter also points to 0xA00, counter.display() now shows 12 as well. Modifying the copy unexpectedly changes the original!
+          </aside>
         </section>
 
         <!-- Issue 2: Double Free -->
-        <section data-auto-animate>
+        <section>
           <h3>Issue 2: Double Free</h3>
           <p style="font-size: 0.7em;">When <code>main()</code> ends, destructors run in reverse order:</p>
-          <div style="text-align: left; max-width: 600px; margin: 20px auto;">
-            <p class="fragment" style="font-size: 0.7em;" data-id="step1">
-              <span class="rule-number">1</span>
+          <ol style="max-width: 600px; margin: 20px auto;">
+            <li class="fragment" style="font-size: 0.7em;">
               <code>counterCopy</code> destructor: <code style="color: #50fa7b;">delete count;</code> &mdash; frees 0xA00 &check;
-            </p>
-            <p class="fragment" style="font-size: 0.7em;" data-id="step2">
-              <span class="rule-number">2</span>
+            </li>
+            <li class="fragment" style="font-size: 0.7em;">
               <code>counter</code> destructor: <code style="color: #ff5555;">delete count;</code> &mdash; frees 0xA00 <strong>again!</strong>
-            </p>
-          </div>
+            </li>
+          </ol>
           <div class="issue-box fragment">
             <p style="font-size: 0.75em; margin: 0; color: #ff5555;">
               <strong>Undefined Behavior!</strong><br>
               <span style="color: #f8f8f2; font-size: 0.9em;">Double free can cause crashes, memory corruption, or security vulnerabilities</span>
             </p>
           </div>
+          <aside class="notes">
+            When main ends, destructors run in reverse order. counterCopy's destructor deletes the memory at 0xA00. Then counter's destructor tries to delete the same memory again — that's a double free, which is undefined behavior.
+          </aside>
         </section>
 
         <!-- Summary of Issues -->
@@ -377,14 +763,17 @@ counterCopy.increment();  // (*count)++ → 12
               <strong style="color: #ff5555;">No Copy Assignment Operator</strong> &mdash; <code>a = b;</code> would have the same issues
             </li>
           </ol>
+          <aside class="notes">
+            To summarize, we have four issues: shallow copy, unintended sharing, double free, and the same problems would also apply to copy assignment.
+          </aside>
         </section>
 
         <!-- The Fix: Deep Copy -->
-        <section>
+        <section data-auto-animate>
           <h3>The Fix: Deep Copy Constructor</h3>
-          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
+          <pre data-id="fix-code" style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="1-2|3">
 VisitorCounter(const VisitorCounter&amp; other) {
-    count = new int(*other.count);  // Allocate NEW memory
+    count = new int(*other.count);  // Allocate NEW memory, copy the VALUE
     cout &lt;&lt; "Copy constructor called with count "
          &lt;&lt; *count &lt;&lt; endl;
 }
@@ -418,12 +807,15 @@ VisitorCounter(const VisitorCounter&amp; other) {
             </div>
           </div>
           <p class="explanation fragment">Each object owns its own memory &mdash; independent and safe!</p>
+          <aside class="notes">
+            The fix is to write a deep copy constructor. Instead of copying the pointer, we allocate new memory and copy the value. Now each object has its own memory on the heap — completely independent.
+          </aside>
         </section>
 
         <!-- Copy Assignment Operator -->
         <section>
           <h3>Also Fix: Copy Assignment Operator</h3>
-          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="1|2|3|5">
 VisitorCounter&amp; operator=(const VisitorCounter&amp; other) {
     if (this != &amp;other) {          // Self-assignment check
         *count = *other.count;     // Copy the VALUE
@@ -432,33 +824,36 @@ VisitorCounter&amp; operator=(const VisitorCounter&amp; other) {
 }
           </code></pre>
           <p class="explanation fragment">Without this, <code>a = b;</code> would still cause shallow copy issues</p>
+          <aside class="notes">
+            We also need a copy assignment operator. Without it, using the equals sign to assign one object to another would still cause the same shallow copy problems. Notice the self-assignment check to handle the edge case of a = a.
+          </aside>
         </section>
 
         <!-- Rule of Three -->
         <section>
           <h3>The Rule of Three</h3>
           <p style="font-size: 0.7em; color: #6272a4;">If a class needs any one of these, it probably needs all three:</p>
-          <div style="text-align: left; max-width: 650px; margin: 25px auto;">
-            <p class="fragment" style="font-size: 0.75em;">
-              <span class="rule-number">1</span>
+          <ol style="max-width: 650px; margin: 25px auto;">
+            <li class="fragment" style="font-size: 0.75em;">
               <strong style="color: #8be9fd;">Destructor</strong> &mdash; clean up resources
-            </p>
-            <p class="fragment" style="font-size: 0.75em;">
-              <span class="rule-number">2</span>
+            </li>
+            <li class="fragment" style="font-size: 0.75em;">
               <strong style="color: #8be9fd;">Copy Constructor</strong> &mdash; deep copy on initialization
-            </p>
-            <p class="fragment" style="font-size: 0.75em;">
-              <span class="rule-number">3</span>
+            </li>
+            <li class="fragment" style="font-size: 0.75em;">
               <strong style="color: #8be9fd;">Copy Assignment Operator</strong> &mdash; deep copy on assignment
-            </p>
-          </div>
+            </li>
+          </ol>
           <p class="fragment explanation">If your class manages a resource (heap memory, file handle, etc.), you need all three!</p>
+          <aside class="notes">
+            This leads to the famous Rule of Three: if your class needs a custom destructor, copy constructor, or copy assignment operator, it almost certainly needs all three. This applies whenever your class manages a resource like heap memory.
+          </aside>
         </section>
 
         <!-- Complete Fixed Code -->
         <section>
           <h3>Complete Fixed Class</h3>
-          <pre style="font-size: 0.36em;"><code class="language-cpp" data-trim data-line-numbers>
+          <pre style="font-size: 0.33em;"><code class="language-cpp" data-trim data-line-numbers="6-10|12-16|18-23|25-29">
 class VisitorCounter {
 private:
     int* count;
@@ -499,6 +894,9 @@ public:
     }
 };
           </code></pre>
+          <aside class="notes">
+            Here's the complete fixed class with all three members of the Rule of Three: constructor, copy constructor with deep copy, copy assignment operator, and destructor.
+          </aside>
         </section>
 
         <!-- Shallow vs Deep Comparison -->
@@ -531,18 +929,25 @@ public:
               <td style="color: #50fa7b;">Safe cleanup</td>
             </tr>
           </table>
+          <aside class="notes">
+            Here's a side-by-side comparison of shallow versus deep copy. The key difference: shallow copy shares the memory, deep copy creates independent copies.
+          </aside>
         </section>
 
         <!-- Key Takeaways -->
         <section>
-          <h3>Key Takeaways</h3>
+          <h3>Q2: Key Takeaways</h3>
           <ul>
-            <li class="fragment" style="font-size: 0.75em;">Default copy constructor does <strong>shallow copy</strong> &mdash; fine for simple types, dangerous for pointers</li>
-            <li class="fragment" style="font-size: 0.75em;">If your class uses <code>new</code>, you need a <strong>deep copy</strong> constructor</li>
-            <li class="fragment" style="font-size: 0.75em;">Remember the <strong>Rule of Three</strong>: destructor + copy constructor + copy assignment</li>
-            <li class="fragment" style="font-size: 0.75em;">Always test: does copying an object cause unexpected sharing or crashes?</li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">Default copy constructor does <strong>shallow copy</strong> &mdash; fine for simple types, dangerous for pointers</li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">If your class uses <code>new</code>, you need a <strong>deep copy</strong> constructor</li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">Remember the <strong>Rule of Three</strong>: destructor + copy constructor + copy assignment</li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">Always test: does copying an object cause unexpected sharing or crashes?</li>
           </ul>
+          <aside class="notes">
+            To wrap up Q2: default copy constructors are shallow and dangerous with pointers. If your class uses new, implement the Rule of Three. Always test whether copying behaves correctly.
+          </aside>
         </section>
+
       </section>
     </div>
   </div>
