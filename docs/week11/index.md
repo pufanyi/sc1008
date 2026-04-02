@@ -31,26 +31,36 @@ private:
 
 ---
 
-### Part 2: The Constructor & Pass-by-Reference
+### Part 2: The Constructor & `std::move`
 
 Next up is the public constructor. We need a parameterized constructor to initialize our three members. But before we write the body, let's look closely at the parameters.
 
 ```cpp
-Student(const std::string& studentName, int studentAge, double studentGPA)
+Student(std::string studentName, int studentAge, double studentGPA)
 ```
 
-Notice how we pass the arguments:
+Notice how we pass the arguments. For **primitive types** like `int age` and `double gpa`, **passing by value** is completely fine because they are small and cheap to copy.
 
-- For **primitive types** like `int age` and `double gpa`, **passing by value** is completely fine because they are small and cheap to copy.
-- However, for **objects** like `std::string`, we use **pass by const reference** (`const std::string&`). As you've learned in the lectures, passing a string by value creates an unnecessary, hidden copy in memory, which is inefficient. By using an ampersand (`&`), we pass a **reference** to the original string, avoiding the copy overhead. The `const` keyword is added to guarantee that our constructor won't accidentally modify the passed-in string.
+For **objects** like `std::string`, we also pass by value here — because the constructor needs to **store** this string into the member variable `name`. We will then use `std::move` to transfer ownership of the string into the member, avoiding an unnecessary copy.
+
+#### What is `std::move`?
+
+`std::move` doesn't actually "move" anything by itself — it simply casts its argument to an **rvalue reference**, signaling to the compiler that it's safe to *move from* this object rather than copy it. For a `std::string`, a move means transferring the internal buffer pointer instead of allocating new memory and copying all the characters — much more efficient.
+
+With the **pass by value + `std::move`** pattern:
+
+- If the caller passes an **lvalue** (e.g., an existing variable), the string is copied once into the parameter, then moved into the member.
+- If the caller passes an **rvalue** (e.g., a string literal `"Alice"`), the string is moved into the parameter, then moved again into the member — **no copy at all**.
+
+This is a common modern C++ idiom whenever a function needs to take ownership of a value. We'll see it again in the setters.
 
 #### Body Assignment (The Basic Way)
 
 Now, how should we initialize the members? The most basic way is doing assignments inside the function body:
 
 ```cpp
-Student(const std::string& studentName, int studentAge, double studentGPA) {
-  name = studentName;
+Student(std::string studentName, int studentAge, double studentGPA) {
+  name = std::move(studentName);
   age = studentAge;
   gpa = studentGPA;
 }
@@ -63,8 +73,8 @@ While this works, it's **not** the most efficient or standard way in C++. Doing 
 Instead, we should use the **Member Initializer List**:
 
 ```cpp
-Student(const std::string& studentName, int studentAge, double studentGPA)
-    : name(studentName), age(studentAge), gpa(studentGPA) {}
+Student(std::string studentName, int studentAge, double studentGPA)
+    : name(std::move(studentName)), age(studentAge), gpa(studentGPA) {}
 ```
 
 This syntax constructs and initializes the member variables **directly in one step**. It's cleaner, faster, and is considered the **standard practice** for writing constructors in C++.
@@ -121,9 +131,7 @@ void setAge(int studentAge) { age = studentAge; }
 void setGPA(double studentGPA) { gpa = studentGPA; }
 ```
 
-For setting the string `name`, we pass it **by value** and use `std::move` to transfer ownership efficiently. This is a common C++ idiom: the caller can pass either an lvalue (triggering one copy into the parameter) or an rvalue (triggering a move into the parameter), and the `std::move` inside the body avoids a second copy in either case.
-
-For the primitive types, simple assignment is all we need.
+For `setName`, we use the same **pass by value + `std::move`** pattern from the constructor — pass the string by value, then move it into the member. For the primitive types, simple assignment is all we need.
 
 Note that here, we **don't** add `const` at the end of the function, because setters inherently modify the object's state.
 
