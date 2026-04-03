@@ -7,9 +7,7 @@ class A {
  public:
   A(int a = 0) : a(a) {}
 
-  int getA() const {
-    return a;
-  }
+  int getA() const { return a; }
 };
 
 int main() {
@@ -17,4 +15,3 @@ int main() {
   std::cout << a.getA() << std::endl;
   return 0;
 }
-

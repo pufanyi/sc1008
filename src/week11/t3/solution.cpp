@@ -1,97 +1,42 @@
-
 #include <iostream>
-using namespace std;
+#include <string>
 
-// Node structure
-struct Node {
-  double value;  // Can be any data type
-  Node* next;
+class Pen {
+ private:
+  std::string color;
+  double price;
+
+ public:
+  Pen(std::string initialColor, double initialPrice) {
+    color = initialColor;
+    price = initialPrice;
+  }
+
+  Pen& setColor(std::string newColor) {
+    color = newColor;
+    return *this;
+  }
+
+  Pen& setPrice(double newPrice) {
+    price = newPrice;
+    return *this;
+  }
+
+  void display() const {
+    std::cout << "Color: " << color << std::endl;
+    std::cout << "Price: $" << price << std::endl;
+  }
 };
 
-// Function to print the linked list
-void printList(Node* head) {
-  Node* current = head;  // Start at the head of the list
-
-  while (current) {  // Equivalent to "current != nullptr"
-    cout << current->value << " -> ";
-    current = current->next;
-  }
-  cout << "NULL" << endl;
-}
-
-void destroyList(Node*& head) {
-  Node* nodePtr = head;  // Start at head of list
-  Node* garbage = nullptr;
-
-  while (nodePtr != nullptr) {
-    // garbage keeps track of node to be deleted
-    garbage = nodePtr;
-    // Move on to the next node, if any
-    nodePtr = nodePtr->next;
-    // Delete the "garbage" node
-    delete garbage;
-    garbage = nullptr;
-  }
-  head = nullptr;
-}
-
-void insertNode2ListEnd(Node*& head, double newValue) {
-  Node* newNode = new Node;
-  newNode->value = newValue;
-  newNode->next = nullptr;
-
-  if (head == nullptr) {
-    head = newNode;
-    return;
-  }
-
-  Node* temp = head;
-  while (temp->next != nullptr) {  // Traverse to the last node
-    temp = temp->next;
-  }
-  temp->next = newNode;  // Link last node to new node
-}
-
-void insertNode2SortedList(Node*& head, double number) {
-  Node* newNode = new Node;
-  newNode->value = number;
-  newNode->next = nullptr;
-
-  Node* currentNode = head;
-  if (number < head->value) {
-    newNode->next = head;
-    head = newNode;
-    return;
-  }
-
-  while (currentNode->next != nullptr && currentNode->next->value <= number) {
-    currentNode = currentNode->next;
-  }
-  auto tempNode = currentNode->next;
-  currentNode->next = newNode;
-  newNode->next = tempNode;
-}
-
 int main() {
-  // Create the linked list
-  Node* head = nullptr;  // Start with an empty list
+  // Creating a Pen object and using method chaining
+  Pen myPen("Blue", 1.5);
+  std::cout << "The original color and price of the pen: " << std::endl;
+  myPen.display();
 
-  // Insert values
-  insertNode2ListEnd(head, 2.5);
-  insertNode2ListEnd(head, 7.9);
-  insertNode2ListEnd(head, 12.6);
+  std::cout << std::endl
+            << "The color and price of the pen after setting: " << std::endl;
+  myPen.setColor("Red").setPrice(2.0).display();
 
-  cout << "Original list: ";
-  printList(head);
-
-  insertNode2SortedList(head, 10.5);
-  cout << "New list: ";
-  printList(head);
-
-  insertNode2SortedList(head, 1.5);
-  cout << "New list: ";
-  printList(head);
-
-  destroyList(head);
   return 0;
 }
