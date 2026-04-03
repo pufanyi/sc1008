@@ -175,32 +175,6 @@ Putting it all together, here is the full implementation:
 --8<-- "src/week11/t1/solution.cpp"
 ```
 
----
-
-### Testing
-
-Let's compile and run the test cases provided to verify everything works as expected.
-
-Expected output:
-
-```
-Initial Student Details:
-Student Name: Alice
-Age: 20
-GPA: 3.8
-
-Student Name: Charlie
-Age: 19
-GPA: 3.5
-
-Updated Student Details:
-Student Name: Bob
-Age: 22
-GPA: 3.9
-```
-
-The output matches the expected results perfectly.
-
 ## Question 2
 
 Andy implemented a `VisitorCounter` class that uses a pointer to dynamically allocated memory. We need to identify the issues in his implementation and discuss how to fix them.
@@ -434,22 +408,6 @@ void display() const {
 --8<-- "src/week11/t3/solution.cpp"
 ```
 
----
-
-### Testing
-
-Expected output:
-
-```
-The original color and price of the pen:
-Color: Blue
-Price: $1.5
-
-The color and price of the pen after setting:
-Color: Red
-Price: $2
-```
-
 ## Question 4
 
 This question introduces **friend functions** — a way to give an external (non-member) function access to a class's private members.
@@ -529,16 +487,3 @@ Even though `length`, `width`, and `height` are private, this function can acces
 --8<-- "src/week11/t4/solution.cpp"
 ```
 
----
-
-### Testing
-
-Expected output:
-
-```
-Box Dimensions:
-Length: 5
-Width: 3
-Height: 2
-Box Volume: 30 cubic units
-```
