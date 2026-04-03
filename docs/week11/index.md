@@ -167,22 +167,22 @@ Andy implemented a `VisitorCounter` class that uses a pointer to dynamically all
 --8<-- "src/week11/t2/q2.cpp"
 ```
 
-### Issue 1: Shallow Copy
+### Issue 1: Default Copy Copies the Pointer's Value
 
-Since Andy didn't define a copy constructor, the compiler generates a **default** one that simply copies each member. For a pointer, this means copying the **address**, not the pointed-to data:
+Since Andy didn't define a copy constructor, the compiler generates a **default** one that copies every member's **value**. C++ always copies values — this is all it does. But for a pointer, the "value" **is the address**:
 
 ```cpp
 // Compiler-generated default copy constructor:
 VisitorCounter(const VisitorCounter& other) {
-    count = other.count;  // Copies the POINTER, not the data!
+    count = other.count;  // Copies the pointer's VALUE (an address)
 }
 ```
 
-After `VisitorCounter counterCopy = counter;`, both `counter.count` and `counterCopy.count` point to the **same** `int` on the heap.
+After `VisitorCounter counterCopy = counter;`, both `counter.count` and `counterCopy.count` hold the same address — they point to the **same** `int` on the heap. No new memory was allocated; the pointed-to data was never copied.
 
 ### Issue 2: Unintended Sharing
 
-Because both objects share the same memory, modifying the copy also modifies the original:
+Because both pointers hold the same address, modifying the copy also modifies the original:
 
 ```cpp
 counterCopy.increment();  // (*count)++ → 11
@@ -200,9 +200,9 @@ When `main()` ends, destructors run in **reverse** order of construction:
 
 This is **undefined behavior** — it can cause crashes, memory corruption, or security vulnerabilities.
 
-### The Fix: Deep Copy
+### The Fix: Custom Copy Constructor
 
-We need to implement a **deep copy constructor** that allocates new memory and copies the value:
+We need to implement a custom copy constructor that allocates **new memory** and copies the **pointed-to data**, not just the pointer's value:
 
 ```cpp
 // Copy Constructor
@@ -226,8 +226,8 @@ Now each object has its own independent copy of the data.
 If a class needs any one of the following, it probably needs **all three**:
 
 1. **Destructor** — clean up resources
-2. **Copy Constructor** — deep copy on initialization
-3. **Copy Assignment Operator** — deep copy on assignment
+2. **Copy Constructor** — copy pointed-to data on initialization
+3. **Copy Assignment Operator** — copy pointed-to data on assignment
 
 If your class manages a resource (heap memory, file handle, etc.), you need all three.
 
@@ -261,7 +261,7 @@ public:
 Notice what's **gone**:
 
 - No destructor needed — `unique_ptr` auto-deletes the memory
-- No copy constructor needed — `unique_ptr` **cannot be copied** (compile-time error), so shallow copy bugs are impossible
+- No copy constructor needed — `unique_ptr` **cannot be copied** (compile-time error), so accidental pointer-value-only copies are impossible
 - No copy assignment operator needed — same reason
 
 If you need to transfer ownership, use `std::move`:
@@ -292,7 +292,7 @@ No double free is possible — the memory is freed exactly once, when the refere
 |                | Raw Pointer        | `unique_ptr`       | `shared_ptr`         |
 |----------------|--------------------|--------------------|----------------------|
 | Ownership      | Unclear            | Exclusive          | Shared (ref counted) |
-| Copyable?      | Yes (shallow!)     | No (move only)     | Yes (safe)           |
+| Copyable?      | Yes (address only) | No (move only)     | Yes (safe)           |
 | Auto cleanup?  | No                 | Yes                | Yes                  |
 | Double free?   | Possible           | Impossible         | Impossible           |
 

@@ -514,94 +514,58 @@ class Student {
           </aside>
         </section>
 
-        <!-- Show the original code -->
+        <!-- Show the key setup -->
         <section>
-          <h3>The Code</h3>
-          <pre style="font-size: 0.38em;"><code class="language-cpp" data-trim data-line-numbers="1-5|6-10|12-16|18|20-22">
+          <h3>The Setup</h3>
+          <pre style="font-size: 0.42em;"><code class="language-cpp" data-trim>
 class VisitorCounter {
 private:
     int* count; // Pointer to dynamically allocated memory
-
 public:
     VisitorCounter(int initialCount) {
-        count = new int(initialCount);
-        cout &lt;&lt; "Constructor called with the count as "
-             &lt;&lt; *count &lt;&lt; endl;
+        count = new int(initialCount); // allocates on heap
     }
-
-    ~VisitorCounter() {
-        cout &lt;&lt; "Destructor called with the count being "
-             &lt;&lt; *count &lt;&lt; endl;
-        delete count;
-    }
-
+    ~VisitorCounter() { delete count; }
     void increment() { (*count)++; }
-
     void display() const {
         cout &lt;&lt; "Visitor Count: " &lt;&lt; *count &lt;&lt; endl;
     }
+    // No copy constructor defined!
 };
           </code></pre>
-          <aside class="notes">
-            Here's the VisitorCounter class. Notice: it has a pointer member that uses new and delete. It has a constructor and destructor, but NO copy constructor.
-          </aside>
-        </section>
-
-        <!-- Show the test code -->
-        <section>
-          <h3>The Test Code</h3>
-          <pre style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers="2-4|6-8|11-12|14-17">
-int main() {
-    VisitorCounter counter(10);
-    cout &lt;&lt; "\nOriginal Counter:\n";
-    counter.display();
-
-    // Copy the counter
-    VisitorCounter counterCopy = counter;
-    cout &lt;&lt; "counterCopy:\n";
-    counterCopy.display();
-
-    // Increase copied object's count
-    counterCopy.increment();
-    counterCopy.increment();
-    cout &lt;&lt; "\nAfter modifying copied counter...\n";
-    cout &lt;&lt; "Original Counter: " &lt;&lt; endl;
-    counter.display();
-    cout &lt;&lt; "counterCopy: " &lt;&lt; endl;
-    counterCopy.display();
-
-    return 0;
-}
+          <pre class="fragment" style="font-size: 0.42em;"><code class="language-cpp" data-trim>
+VisitorCounter counter(10);
+VisitorCounter counterCopy = counter;  // What happens here?
+counterCopy.increment();
+counterCopy.increment();
+counter.display();  // What does this print?
           </code></pre>
           <aside class="notes">
-            The test code creates a counter, copies it, then increments the copy. The question is: what happens to the original?
+            Here's the VisitorCounter class — it has a pointer member managed with new and delete, but no copy constructor. The question is: when we copy counter and increment the copy, what happens to the original?
           </aside>
         </section>
 
         <!-- What happens? -->
         <section>
-          <h3>What Goes Wrong?</h3>
+          <h3>What Does the Default Copy Constructor Do?</h3>
           <p style="font-size: 0.75em;">No copy constructor defined &rarr; compiler generates a <strong>default</strong> one</p>
           <pre class="fragment" style="font-size: 0.45em;"><code class="language-cpp" data-trim>
 // Compiler-generated default copy constructor:
 VisitorCounter(const VisitorCounter&amp; other) {
-    count = other.count;  // Copies the POINTER, not the data!
+    count = other.count;  // Copies the VALUE of the pointer
 }
           </code></pre>
-          <p class="fragment explanation">This is a <strong style="color: #ff5555;">shallow copy</strong> &mdash; both objects share the same memory</p>
+          <p class="fragment explanation">C++ copies every member's <strong>value</strong>. For a pointer, its value <strong style="color: #ff5555;">is the address</strong> &mdash; so both pointers end up holding the same address.</p>
           <aside class="notes">
-            Since no copy constructor is defined, the compiler generates a default one. This default just copies each member directly — which for a pointer means copying the address, not the pointed-to data. This is called a shallow copy.
+            Since no copy constructor is defined, the compiler generates a default one. The default copy constructor copies every member's value — this is all C++ ever does. But here's the key insight: a pointer's value IS an address. So copying the pointer's value means both objects now store the same address and therefore point to the same memory on the heap.
           </aside>
         </section>
 
-        <!-- Shallow Copy Diagram -->
+        <!-- Step-by-step Copy Diagram: Before copy -->
         <section data-auto-animate>
-          <h3>Shallow Copy: Memory Layout</h3>
-          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim>
-VisitorCounter counter(10);
-VisitorCounter counterCopy = counter;  // shallow copy!
-          </code></pre>
-          <div class="diagram-wrapper" data-id="shallow-diagram" style="margin-top: 30px;">
+          <h3>Default Copy: Step by Step</h3>
+          <p style="font-size: 0.65em; color: #6272a4;">Step 1: Before the copy &mdash; <code>VisitorCounter counter(10);</code></p>
+          <div class="diagram-wrapper" data-id="copy-diagram" style="margin-top: 30px;">
             <div class="stack-region">
               <div class="stack-label">Stack</div>
               <div style="display: flex; gap: 30px;">
@@ -609,7 +573,38 @@ VisitorCounter counterCopy = counter;  // shallow copy!
                   <div class="obj-name">counter</div>
                   <div class="obj-field">count: <span style="color: #ffb86c;">0xA00</span></div>
                 </div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+              <div class="pointer-arrow">&rarr;</div>
+            </div>
+            <div class="heap-region">
+              <div class="heap-region-label">Heap</div>
+              <div class="heap-box">
+                <div class="heap-label">0xA00</div>
+                <div class="memory-value val-normal">10</div>
+              </div>
+            </div>
+          </div>
+          <p class="explanation"><code>counter.count</code> stores the address <strong style="color: #ffb86c;">0xA00</strong>, pointing to the integer <strong>10</strong> on the heap.</p>
+          <aside class="notes">
+            Before the copy, counter has a pointer member count whose value is the address 0xA00. On the heap at that address, there's an integer with value 10.
+          </aside>
+        </section>
+
+        <!-- Step-by-step Copy Diagram: After copy -->
+        <section data-auto-animate>
+          <h3>Default Copy: Step by Step</h3>
+          <p style="font-size: 0.65em; color: #6272a4;">Step 2: Copy the pointer's value &mdash; <code>VisitorCounter counterCopy = counter;</code></p>
+          <div class="diagram-wrapper" data-id="copy-diagram" style="margin-top: 30px;">
+            <div class="stack-region">
+              <div class="stack-label">Stack</div>
+              <div style="display: flex; gap: 30px;">
                 <div class="obj-box">
+                  <div class="obj-name">counter</div>
+                  <div class="obj-field">count: <span style="color: #ffb86c;">0xA00</span></div>
+                </div>
+                <div class="obj-box fragment" data-fragment-index="1">
                   <div class="obj-name">counterCopy</div>
                   <div class="obj-field">count: <span style="color: #ffb86c;">0xA00</span></div>
                 </div>
@@ -626,9 +621,9 @@ VisitorCounter counterCopy = counter;  // shallow copy!
               </div>
             </div>
           </div>
-          <p class="explanation">Both pointers point to the <strong>same</strong> heap memory!</p>
+          <p class="explanation fragment" data-fragment-index="2">The pointer's <strong>value</strong> (<span style="color: #ffb86c;">0xA00</span>) is copied &mdash; so both pointers now point to the <strong>same</strong> heap memory!</p>
           <aside class="notes">
-            Both counter and counterCopy now have a count pointer holding the same address 0xA00. They both point to the same integer on the heap.
+            The default copy constructor copies the value of each member. The value of counter.count is 0xA00 — that's an address. So counterCopy.count also gets the value 0xA00. Now both pointers hold the same address, meaning they point to the exact same integer on the heap. No new memory was allocated — the data itself was never copied.
           </aside>
         </section>
 
@@ -701,10 +696,10 @@ counterCopy.increment();  // (*count)++ → 12
         <!-- Summary of Issues -->
         <section>
           <h3>Summary of Issues</h3>
+          <p class="fragment" style="font-size: 0.7em; margin-bottom: 15px; text-align: left; max-width: 650px; margin-left: auto; margin-right: auto;">
+            <strong style="color: #8be9fd;">Root cause:</strong> The default copy constructor copies the pointer's <strong>value</strong> (an address), not the pointed-to data. Both objects end up pointing to the same memory.
+          </p>
           <ol>
-            <li class="fragment" style="font-size: 0.75em; margin-bottom: 15px;">
-              <strong style="color: #ff5555;">Shallow Copy</strong> &mdash; default copy constructor copies the pointer, not the pointed-to data
-            </li>
             <li class="fragment" style="font-size: 0.75em; margin-bottom: 15px;">
               <strong style="color: #ff5555;">Unintended Sharing</strong> &mdash; modifying one object affects the other
             </li>
@@ -716,7 +711,7 @@ counterCopy.increment();  // (*count)++ → 12
             </li>
           </ol>
           <aside class="notes">
-            To summarize, we have four issues: shallow copy, unintended sharing, double free, and the same problems would also apply to copy assignment.
+            To summarize: the root cause is that the default copy constructor copies the pointer's value — which is just an address. This leads to unintended sharing, double free, and the same problems would also apply to copy assignment.
           </aside>
         </section>
 
@@ -758,9 +753,9 @@ VisitorCounter(const VisitorCounter&amp; other) {
               </div>
             </div>
           </div>
-          <p class="explanation fragment">Each object owns its own memory &mdash; independent and safe!</p>
+          <p class="explanation fragment">Now each object has its <strong>own</strong> memory &mdash; copying the pointer's value alone isn't enough, we must also copy the pointed-to data.</p>
           <aside class="notes">
-            The fix is to write a deep copy constructor. Instead of copying the pointer, we allocate new memory and copy the value. Now each object has its own memory on the heap — completely independent.
+            The fix is to write a custom copy constructor. Instead of just copying the pointer's value (the address), we allocate new memory and copy the pointed-to data. Now each object has its own memory on the heap — completely independent.
           </aside>
         </section>
 
@@ -775,9 +770,9 @@ VisitorCounter&amp; operator=(const VisitorCounter&amp; other) {
     return *this;
 }
           </code></pre>
-          <p class="explanation fragment">Without this, <code>a = b;</code> would still cause shallow copy issues</p>
+          <p class="explanation fragment">Without this, <code>a = b;</code> would still only copy the pointer's value</p>
           <aside class="notes">
-            We also need a copy assignment operator. Without it, using the equals sign to assign one object to another would still cause the same shallow copy problems. Notice the self-assignment check to handle the edge case of a = a.
+            We also need a copy assignment operator. Without it, using the equals sign to assign one object to another would still only copy the pointer's value — the same problem. Notice the self-assignment check to handle the edge case of a = a.
           </aside>
         </section>
 
@@ -851,24 +846,24 @@ public:
           </aside>
         </section>
 
-        <!-- Shallow vs Deep Comparison -->
+        <!-- Default vs Custom Copy Comparison -->
         <section>
-          <h3>Shallow Copy vs Deep Copy</h3>
+          <h3>Default Copy vs Custom Copy</h3>
           <table class="vs-table">
             <tr>
               <th></th>
-              <th style="color: #ff5555;">Shallow Copy</th>
-              <th style="color: #50fa7b;">Deep Copy</th>
+              <th style="color: #ff5555;">Default (copy pointer value)</th>
+              <th style="color: #50fa7b;">Custom (copy pointed-to data)</th>
             </tr>
             <tr class="fragment">
-              <td>Pointer</td>
-              <td>Copies pointer value</td>
-              <td>Allocates new memory</td>
+              <td>What's copied</td>
+              <td>The address (<code>0xA00</code>)</td>
+              <td>The data (<code>10</code>) into new memory</td>
             </tr>
             <tr class="fragment">
-              <td>Data</td>
-              <td>Shared between objects</td>
-              <td>Independent copies</td>
+              <td>Result</td>
+              <td>Two pointers &rarr; same memory</td>
+              <td>Two pointers &rarr; separate memory</td>
             </tr>
             <tr class="fragment">
               <td>Modify copy</td>
@@ -882,7 +877,7 @@ public:
             </tr>
           </table>
           <aside class="notes">
-            Here's a side-by-side comparison of shallow versus deep copy. The key difference: shallow copy shares the memory, deep copy creates independent copies.
+            Here's the comparison. The default copy constructor copies the pointer's value — the address — so both objects point to the same memory. A custom copy constructor allocates new memory and copies the pointed-to data, so each object is independent.
           </aside>
         </section>
 
@@ -890,13 +885,13 @@ public:
         <section>
           <h3>Q2: Key Takeaways</h3>
           <ul>
-            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">Default copy constructor does <strong>shallow copy</strong> &mdash; fine for simple types, dangerous for pointers</li>
-            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">If your class uses <code>new</code>, you need a <strong>deep copy</strong> constructor</li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">The default copy constructor copies every member's <strong>value</strong> &mdash; for a pointer, that value is an <strong>address</strong></li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">If your class uses <code>new</code>, you need a custom copy constructor that also copies the <strong>pointed-to data</strong></li>
             <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">Remember the <strong>Rule of Three</strong>: destructor + copy constructor + copy assignment</li>
             <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">Always test: does copying an object cause unexpected sharing or crashes?</li>
           </ul>
           <aside class="notes">
-            To wrap up Q2: default copy constructors are shallow and dangerous with pointers. If your class uses new, implement the Rule of Three. Always test whether copying behaves correctly.
+            To wrap up Q2: the default copy constructor copies member values. For pointers, that value is just an address, so both objects end up pointing to the same memory. If your class uses new, write a custom copy constructor that allocates new memory and copies the data. And remember the Rule of Three.
           </aside>
         </section>
 
@@ -952,7 +947,7 @@ public:
             </p>
           </div>
           <aside class="notes">
-            Here's the VisitorCounter rewritten with unique_ptr. Notice how much simpler it is — no destructor, no copy constructor, no assignment operator. unique_ptr automatically deletes the memory when the object is destroyed. And since unique_ptr cannot be copied, the compiler will prevent shallow copy bugs at compile time. If you need to copy, you'd explicitly write a deep copy — but the default behavior is safe.
+            Here's the VisitorCounter rewritten with unique_ptr. Notice how much simpler it is — no destructor, no copy constructor, no assignment operator. unique_ptr automatically deletes the memory when the object is destroyed. And since unique_ptr cannot be copied, the compiler prevents accidental pointer-value-only copies at compile time. If you need to copy, you'd explicitly write a custom copy constructor — but the default behavior is safe.
           </aside>
         </section>
 
@@ -997,7 +992,7 @@ std::cout &lt;&lt; p1.use_count();   // 2
             </tr>
             <tr class="fragment">
               <td>Copyable?</td>
-              <td style="color: #ff5555;">Yes (shallow!)</td>
+              <td style="color: #ff5555;">Yes (address only)</td>
               <td>No (move only)</td>
               <td style="color: #50fa7b;">Yes (ref count)</td>
             </tr>
@@ -1018,7 +1013,7 @@ std::cout &lt;&lt; p1.use_count();   // 2
             Modern C++ guideline: <strong>prefer smart pointers over raw <code>new</code>/<code>delete</code></strong>
           </p>
           <aside class="notes">
-            Here's a comparison. Raw pointers have unclear ownership, allow shallow copies, need manual cleanup, and risk double free. unique_ptr has exclusive ownership and blocks copying. shared_ptr allows safe sharing with reference counting. The modern C++ guideline is clear: prefer smart pointers over raw new and delete.
+            Here's a comparison. Raw pointers have unclear ownership, and copying only copies the address — not the data. unique_ptr has exclusive ownership and blocks copying. shared_ptr allows safe sharing with reference counting. The modern C++ guideline is clear: prefer smart pointers over raw new and delete.
           </aside>
         </section>
 
