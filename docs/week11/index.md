@@ -8,16 +8,6 @@
 
 We are asked to implement a `Student` class with some basic attributes: name, age, and GPA. We'll walk through the implementation step by step, and along the way, we'll point out some modern C++ practices that will make your code much more robust and efficient.
 
-### Starter Code
-
-The following starter code provides the skeleton of the `Student` class. The `main()` function and `displayDetails()` method are already written — your job is to fill in the `TODO` sections.
-
-```cpp
---8<-- "src/week11/t1/q1.cpp"
-```
-
----
-
 ### Part 1: Private Members
 
 First, let's define the private members. This part is straightforward. We need an `std::string` for the name, an `int` for the age, and a `double` for the GPA. We keep these `private` to enforce **encapsulation** — this means external code cannot directly access or modify these variables; it must go through the public interface we provide.
@@ -28,8 +18,6 @@ private:
   int age;
   double gpa;
 ```
-
----
 
 ### Part 2: The Constructor
 
@@ -92,8 +80,6 @@ This **pass by value + `std::move`** idiom is a common modern C++ pattern. It wo
 !!! info
     This is **not covered in lectures** and **not required for exams**. It's included here for those who want to understand the approach used in our final solution.
 
----
-
 ### Part 3: Getters
 
 Now, let's implement the getters. The primary job of a getter is to **read data without modifying the object**.
@@ -149,8 +135,6 @@ double getGPA() const { return gpa; }
 
 `const std::string&` returns a reference to the internal string without copying it. The `const` on the return type prevents the caller from modifying the string through this reference.
 
----
-
 ### Part 4: Setters
 
 Finally, the setters. These are straightforward as they modify the state.
@@ -164,8 +148,6 @@ void setGPA(double studentGPA) { gpa = studentGPA; }
 For `setName`, we use the same **pass by value + `std::move`** pattern from the constructor — pass the string by value, then move it into the member. For the primitive types, simple assignment is all we need.
 
 Note that here, we **don't** add `const` at the end of the function, because setters inherently modify the object's state.
-
----
 
 ### Complete Solution
 
@@ -185,8 +167,6 @@ Andy implemented a `VisitorCounter` class that uses a pointer to dynamically all
 --8<-- "src/week11/t2/q2.cpp"
 ```
 
----
-
 ### Issue 1: Shallow Copy
 
 Since Andy didn't define a copy constructor, the compiler generates a **default** one that simply copies each member. For a pointer, this means copying the **address**, not the pointed-to data:
@@ -200,8 +180,6 @@ VisitorCounter(const VisitorCounter& other) {
 
 After `VisitorCounter counterCopy = counter;`, both `counter.count` and `counterCopy.count` point to the **same** `int` on the heap.
 
----
-
 ### Issue 2: Unintended Sharing
 
 Because both objects share the same memory, modifying the copy also modifies the original:
@@ -213,8 +191,6 @@ counterCopy.increment();  // (*count)++ → 12
 counter.display();  // Also prints 12!
 ```
 
----
-
 ### Issue 3: Double Free
 
 When `main()` ends, destructors run in **reverse** order of construction:
@@ -223,8 +199,6 @@ When `main()` ends, destructors run in **reverse** order of construction:
 2. `counter` destructor: `delete count;` — tries to free `0xA00` **again**
 
 This is **undefined behavior** — it can cause crashes, memory corruption, or security vulnerabilities.
-
----
 
 ### The Fix: Deep Copy
 
@@ -247,8 +221,6 @@ VisitorCounter& operator=(const VisitorCounter& other) {
 
 Now each object has its own independent copy of the data.
 
----
-
 ### The Rule of Three
 
 If a class needs any one of the following, it probably needs **all three**:
@@ -258,8 +230,6 @@ If a class needs any one of the following, it probably needs **all three**:
 3. **Copy Assignment Operator** — deep copy on assignment
 
 If your class manages a resource (heap memory, file handle, etc.), you need all three.
-
----
 
 ### The Modern Alternative: Smart Pointers
 
@@ -333,14 +303,6 @@ No double free is possible — the memory is freed exactly once, when the refere
 
 This question is about the **`this` pointer** and **method chaining**. We need to implement a `Pen` class where setters return a reference to the current object, allowing calls like `myPen.setColor("Red").setPrice(2.0).display();`.
 
-### Starter Code
-
-```cpp
---8<-- "src/week11/t3/q3.cpp"
-```
-
----
-
 ### What is `this`?
 
 In C++, every non-static member function has access to a special pointer called `this`. It points to the **current object** — the one on which the method was called.
@@ -350,8 +312,6 @@ myPen.setColor("Red");
 // Inside setColor, `this` is a pointer to `myPen`
 // So `*this` IS `myPen`
 ```
-
----
 
 ### Method Chaining
 
@@ -369,8 +329,6 @@ myPen.setColor("Red").setPrice(2.0).display();
 
 For this to work, the setters must return `Pen&` (a reference to a `Pen` object), and specifically return `*this`.
 
----
-
 ### The Setters
 
 ```cpp
@@ -387,8 +345,6 @@ Pen& setPrice(double newPrice) {
 
 The return type is `Pen&` — a reference to the same object. By returning `*this`, the next method call in the chain operates on the same `Pen` instance.
 
----
-
 ### The Display Method
 
 ```cpp
@@ -400,8 +356,6 @@ void display() const {
 
 `display()` is the end of the chain — it doesn't need to return anything. It's also marked `const` since it only reads the object's state.
 
----
-
 ### Complete Solution
 
 ```cpp
@@ -412,21 +366,11 @@ void display() const {
 
 This question introduces **friend functions** — a way to give an external (non-member) function access to a class's private members.
 
-### Starter Code
-
-```cpp
---8<-- "src/week11/t4/q4.cpp"
-```
-
----
-
 ### What is a Friend Function?
 
 Normally, only member functions can access a class's `private` members. A **friend function** is an exception — by declaring a function as `friend` inside the class, we grant it access to all private and protected members.
 
 A friend function is **not** a member of the class. It's a regular standalone function that happens to have special access privileges.
-
----
 
 ### Step 1: Declare the Friend Function
 
@@ -438,8 +382,6 @@ friend void displayDimensions(const Box& box);
 
 This tells the compiler: "The function `displayDimensions` is allowed to access my private members." The `friend` keyword only appears in the **declaration inside the class**, not in the function definition.
 
----
-
 ### Step 2: Implement `calculateVolume()`
 
 This is a regular member function — it already has access to private members:
@@ -450,8 +392,6 @@ void calculateVolume() {
             << " cubic units" << std::endl;
 }
 ```
-
----
 
 ### Step 3: Define the Friend Function
 
@@ -468,8 +408,6 @@ void displayDimensions(const Box& box) {
 
 Even though `length`, `width`, and `height` are private, this function can access them because it was declared as a `friend` inside `Box`.
 
----
-
 ### Friend Function vs Member Function
 
 | | Member Function | Friend Function |
@@ -479,11 +417,8 @@ Even though `length`, `width`, and `height` are private, this function can acces
 | Has `this` pointer | Yes | No |
 | Defined with `ClassName::` | Yes | No |
 
----
-
 ### Complete Solution
 
 ```cpp
 --8<-- "src/week11/t4/solution.cpp"
 ```
-

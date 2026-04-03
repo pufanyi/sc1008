@@ -213,40 +213,6 @@
           </aside>
         </section>
 
-        <!-- Starter Code -->
-        <section>
-          <h3>Starter Code</h3>
-          <pre style="font-size: 0.38em;"><code class="language-cpp" data-trim data-line-numbers="4-6|7-10|12-17|19-20|22-23">
-#include &lt;iostream&gt;
-#include &lt;string&gt;
-
-class Student {
- private:  // TODO: define the private members here
- public:
-  // Constructor
-  Student(std::string studentName, int studentAge, double studentGPA) {
-    // TODO: Define the constructor
-  }
-
-  // Display function
-  void displayDetails() const {
-    std::cout &lt;&lt; "Student Name: " &lt;&lt; name &lt;&lt; std::endl;
-    std::cout &lt;&lt; "Age: " &lt;&lt; age &lt;&lt; std::endl;
-    std::cout &lt;&lt; "GPA: " &lt;&lt; gpa &lt;&lt; std::endl;
-  }
-
-  // Getters
-  // TODO: Implement the getters here
-
-  // Setters
-  // TODO: Implement the setters here
-};
-          </code></pre>
-          <aside class="notes">
-            Here's the starter code. The main function and displayDetails are already written. We need to fill in four TODO sections: private members, constructor, getters, and setters. Let's go through them one by one.
-          </aside>
-        </section>
-
         <!-- Part 1: Private Members -->
         <section>
           <h3>Part 1: Private Members</h3>
@@ -1071,56 +1037,6 @@ std::cout &lt;&lt; p1.use_count();   // 2
           </aside>
         </section>
 
-        <!-- Starter Code -->
-        <section>
-          <h3>Starter Code</h3>
-          <pre style="font-size: 0.38em;"><code class="language-cpp" data-trim data-line-numbers="4-6|10-13|15-18|20-23|31-39">
-#include &lt;iostream&gt;
-#include &lt;string&gt;
-
-class Pen {
- private:
-  std::string color;
-  double price;
-
- public:
-  Pen(std::string initialColor, double initialPrice) {
-    color = initialColor;
-    price = initialPrice;
-  }
-
-  Pen&amp; setColor(std::string newColor) {
-    // TO-DO: Write your code here
-    //
-  }
-
-  Pen&amp; setPrice(double newPrice) {
-    // TO-DO: Write your code here
-    //
-  }
-
-  void display() const {
-    // TO-DO: Write your code here
-    //
-  }
-};
-
-int main() {
-  Pen myPen("Blue", 1.5);
-  std::cout &lt;&lt; "The original color and price of the pen: " &lt;&lt; std::endl;
-  myPen.display();
-
-  std::cout &lt;&lt; std::endl
-            &lt;&lt; "The color and price of the pen after setting: " &lt;&lt; std::endl;
-  myPen.setColor("Red").setPrice(2.0).display();
-  return 0;
-}
-          </code></pre>
-          <aside class="notes">
-            Here's the starter code. Notice the return type of the setters is Pen& — a reference to a Pen object. Also notice the chained call in main: setColor, then setPrice, then display, all in one line. We need to fill in the TODOs.
-          </aside>
-        </section>
-
         <!-- What is this? -->
         <section>
           <h3>What is <code>this</code>?</h3>
@@ -1300,46 +1216,6 @@ class Pen {
           <p class="fragment" style="font-size: 0.65em;">Key concept: <strong style="color: #8be9fd;">friend functions</strong> &mdash; external functions that can access private members</p>
           <aside class="notes">
             Now let's look at question 4. This one introduces friend functions — a way to give a non-member function access to a class's private members. We need to implement a Box class with a friend function that displays the box dimensions.
-          </aside>
-        </section>
-
-        <!-- Starter Code -->
-        <section>
-          <h3>Starter Code</h3>
-          <pre style="font-size: 0.35em;"><code class="language-cpp" data-trim data-line-numbers="3-7|11-15|18-21|24-26|30-31">
-#include &lt;iostream&gt;
-
-class Box {
- private:
-  double length;
-  double width;
-  double height;
-
- public:
-  // Constructor to initialize the box dimensions
-  Box(double l, double w, double h) {
-    length = l;
-    width = w;
-    height = h;
-  }
-
-  // Member function that can access the private members
-  void calculateVolume() {
-    // TODO: Write your code here
-    //
-  }
-
-  // Declare a friend function to display private members
-  // TODO: Write your code here
-  //
-};
-
-// Define the friend function
-// TODO: Write your code here
-//
-          </code></pre>
-          <aside class="notes">
-            Here's the starter code. The Box class has three private members: length, width, and height. The constructor is done. We need to fill in: calculateVolume, the friend declaration, and the friend function definition.
           </aside>
         </section>
 
