@@ -17,7 +17,7 @@ class Box {
   // Member function that can access the private members
   void calculateVolume() {
     // Caclulate and display the volume of the box
-    std::cout << "Box Volume: " << length * width * height << std::endl;
+    std::cout << "Box Volume: " << length * width * height << " cubic units" << std::endl;
   }
 
   // Declare a friend function to display private members
