@@ -1081,6 +1081,514 @@ std::cout &lt;&lt; p1.use_count();   // 2
         </section>
 
       </section>
+
+      <!-- ==================== Question 3: Pen Class (this & Method Chaining) ==================== -->
+      <section>
+
+        <!-- Q3 Intro -->
+        <section>
+          <h2>Question 3: Pen Class</h2>
+          <p style="font-size: 0.7em; color: #6272a4;"><code>this</code> operator and method chaining</p>
+          <p class="fragment" style="font-size: 0.65em;">Key concepts: <strong style="color: #8be9fd;">the <code>this</code> pointer</strong>, <strong style="color: #50fa7b;">returning <code>*this</code></strong>, <strong style="color: #ff79c6;">method chaining</strong></p>
+          <aside class="notes">
+            Let's move on to question 3. This one is about the this pointer and method chaining. We need to implement a Pen class where setters return a reference to the current object, enabling us to chain multiple method calls together.
+          </aside>
+        </section>
+
+        <!-- Starter Code -->
+        <section>
+          <h3>Starter Code</h3>
+          <pre style="font-size: 0.38em;"><code class="language-cpp" data-trim data-line-numbers="4-6|10-13|15-18|20-23|31-39">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Pen {
+ private:
+  std::string color;
+  double price;
+
+ public:
+  Pen(std::string initialColor, double initialPrice) {
+    color = initialColor;
+    price = initialPrice;
+  }
+
+  Pen&amp; setColor(std::string newColor) {
+    // TO-DO: Write your code here
+    //
+  }
+
+  Pen&amp; setPrice(double newPrice) {
+    // TO-DO: Write your code here
+    //
+  }
+
+  void display() const {
+    // TO-DO: Write your code here
+    //
+  }
+};
+
+int main() {
+  Pen myPen("Blue", 1.5);
+  std::cout &lt;&lt; "The original color and price of the pen: " &lt;&lt; std::endl;
+  myPen.display();
+
+  std::cout &lt;&lt; std::endl
+            &lt;&lt; "The color and price of the pen after setting: " &lt;&lt; std::endl;
+  myPen.setColor("Red").setPrice(2.0).display();
+  return 0;
+}
+          </code></pre>
+          <aside class="notes">
+            Here's the starter code. Notice the return type of the setters is Pen& — a reference to a Pen object. Also notice the chained call in main: setColor, then setPrice, then display, all in one line. We need to fill in the TODOs.
+          </aside>
+        </section>
+
+        <!-- What is this? -->
+        <section>
+          <h3>What is <code>this</code>?</h3>
+          <p style="font-size: 0.7em;">Every non-static member function has access to a special pointer: <code style="color: #8be9fd;">this</code></p>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim>
+myPen.setColor("Red");
+// Inside setColor:
+//   this   → pointer to myPen
+//   *this  → the myPen object itself
+          </code></pre>
+          <div class="info-box fragment">
+            <p style="font-size: 0.7em; margin: 0;">
+              <code>this</code> is a <strong>pointer</strong> to the current object<br>
+              <code>*this</code> <strong>dereferences</strong> it &mdash; giving us the object itself
+            </p>
+          </div>
+          <aside class="notes">
+            In C++, every non-static member function has access to a special pointer called this. It points to the current object — the one on which the method was called. So if we call myPen.setColor, inside that function, this is a pointer to myPen, and *this is myPen itself.
+          </aside>
+        </section>
+
+        <!-- Method Chaining Concept -->
+        <section>
+          <h3>Method Chaining</h3>
+          <pre style="font-size: 0.42em;"><code class="language-cpp" data-trim>
+// Without chaining:
+myPen.setColor("Red");
+myPen.setPrice(2.0);
+myPen.display();
+
+// With chaining:
+myPen.setColor("Red").setPrice(2.0).display();
+          </code></pre>
+          <div class="fragment good-box">
+            <p style="font-size: 0.7em; margin: 0;">
+              If a setter <strong>returns <code>*this</code></strong> (a reference to the current object),<br>
+              we can immediately call another method on it!
+            </p>
+          </div>
+          <p class="fragment explanation">The return type must be <code>Pen&amp;</code> (reference), not <code>Pen</code> (copy)</p>
+          <aside class="notes">
+            The idea behind method chaining is: if a setter returns *this — a reference to the current object — we can immediately call another method on the returned reference. This lets us write compact, readable code. The return type must be a reference, not a copy, so that each chained call operates on the same object.
+          </aside>
+        </section>
+
+        <!-- How Chaining Works Step by Step -->
+        <section>
+          <h3>How It Works</h3>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim>
+myPen.setColor("Red").setPrice(2.0).display();
+          </code></pre>
+          <ol style="max-width: 750px; margin: 20px auto;">
+            <li class="fragment" style="font-size: 0.65em; margin-bottom: 10px;">
+              <code>myPen.setColor("Red")</code> &rarr; sets color to "Red", returns <code>*this</code> (which is <code>myPen</code>)
+            </li>
+            <li class="fragment" style="font-size: 0.65em; margin-bottom: 10px;">
+              <code>.setPrice(2.0)</code> &rarr; called on the returned reference, sets price to 2.0, returns <code>*this</code>
+            </li>
+            <li class="fragment" style="font-size: 0.65em; margin-bottom: 10px;">
+              <code>.display()</code> &rarr; called on the returned reference, prints the pen details
+            </li>
+          </ol>
+          <p class="fragment explanation">Each setter returns the same object, so the next call in the chain operates on it</p>
+          <aside class="notes">
+            Let's trace through the chain step by step. First, setColor is called on myPen, sets the color, and returns *this — which is myPen. Then setPrice is called on that returned reference, sets the price, and returns *this again. Finally display is called on the same reference, and prints the details. Each call operates on the same myPen object.
+          </aside>
+        </section>
+
+        <!-- The Setters -->
+        <section>
+          <h3>Implementing the Setters</h3>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="1-4|6-9">
+Pen&amp; setColor(std::string newColor) {
+  color = newColor;
+  return *this;  // Return the current object by reference
+}
+
+Pen&amp; setPrice(double newPrice) {
+  price = newPrice;
+  return *this;
+}
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.65em;">Return type is <code style="color: #8be9fd;">Pen&amp;</code> &mdash; a reference to the same object</li>
+            <li class="fragment" style="font-size: 0.65em;"><code style="color: #50fa7b;">return *this;</code> &mdash; returns the current object, enabling the next chained call</li>
+          </ul>
+          <aside class="notes">
+            Here are the setters. Both set the member variable, then return *this. The return type Pen& means we're returning a reference — not a copy — so the next method in the chain operates on the exact same Pen object.
+          </aside>
+        </section>
+
+        <!-- The Display Method -->
+        <section>
+          <h3>Implementing <code>display()</code></h3>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
+void display() const {
+  std::cout &lt;&lt; "Color: " &lt;&lt; color &lt;&lt; std::endl;
+  std::cout &lt;&lt; "Price: $" &lt;&lt; price &lt;&lt; std::endl;
+}
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.65em;">Returns <code>void</code> &mdash; it's the end of the chain</li>
+            <li class="fragment" style="font-size: 0.65em;">Marked <code style="color: #ff79c6;">const</code> &mdash; it only reads the object's state</li>
+          </ul>
+          <aside class="notes">
+            The display method simply prints the color and price. It returns void since it's the end of the chain. And it's marked const because it doesn't modify the object.
+          </aside>
+        </section>
+
+        <!-- Complete Solution -->
+        <section>
+          <h3>Complete Solution</h3>
+          <pre style="font-size: 0.33em;"><code class="language-cpp" data-trim data-line-numbers="10-13|15-18|20-23|25-28">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Pen {
+ private:
+  std::string color;
+  double price;
+
+ public:
+  Pen(std::string initialColor, double initialPrice) {
+    color = initialColor;
+    price = initialPrice;
+  }
+
+  Pen&amp; setColor(std::string newColor) {
+    color = newColor;
+    return *this;
+  }
+
+  Pen&amp; setPrice(double newPrice) {
+    price = newPrice;
+    return *this;
+  }
+
+  void display() const {
+    std::cout &lt;&lt; "Color: " &lt;&lt; color &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Price: $" &lt;&lt; price &lt;&lt; std::endl;
+  }
+};
+          </code></pre>
+          <aside class="notes">
+            Here's the complete solution. The setters return *this to enable chaining, and display is a const method that ends the chain.
+          </aside>
+        </section>
+
+        <!-- Testing -->
+        <section>
+          <h3>Testing</h3>
+          <pre style="font-size: 0.42em;"><code class="language-text" data-trim>
+The original color and price of the pen:
+Color: Blue
+Price: $1.5
+
+The color and price of the pen after setting:
+Color: Red
+Price: $2
+          </code></pre>
+          <p class="fragment explanation">Method chaining works as expected!</p>
+          <aside class="notes">
+            Running the code, we get the expected output. The original pen is Blue at $1.5, and after chaining setColor and setPrice, it becomes Red at $2. Method chaining works perfectly.
+          </aside>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+          <h3>Q3: Key Takeaways</h3>
+          <ul>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              <strong style="color: #8be9fd;"><code>this</code></strong> is a pointer to the current object; <code>*this</code> dereferences it
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              <strong style="color: #50fa7b;">Method chaining</strong>: setters return <code>*this</code> so calls can be chained
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              Return type must be <strong style="color: #ff79c6;"><code>Pen&amp;</code></strong> (reference) &mdash; not <code>Pen</code> (copy)
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              The chain's last method (like <code>display()</code>) can return <code>void</code>
+            </li>
+          </ul>
+        </section>
+
+      </section>
+
+      <!-- ==================== Question 4: Box Class (Friend Function) ==================== -->
+      <section>
+
+        <!-- Q4 Intro -->
+        <section>
+          <h2>Question 4: Box Class</h2>
+          <p style="font-size: 0.7em; color: #6272a4;">Friend functions</p>
+          <p class="fragment" style="font-size: 0.65em;">Key concept: <strong style="color: #8be9fd;">friend functions</strong> &mdash; external functions that can access private members</p>
+          <aside class="notes">
+            Now let's look at question 4. This one introduces friend functions — a way to give a non-member function access to a class's private members. We need to implement a Box class with a friend function that displays the box dimensions.
+          </aside>
+        </section>
+
+        <!-- Starter Code -->
+        <section>
+          <h3>Starter Code</h3>
+          <pre style="font-size: 0.35em;"><code class="language-cpp" data-trim data-line-numbers="3-7|11-15|18-21|24-26|30-31">
+#include &lt;iostream&gt;
+
+class Box {
+ private:
+  double length;
+  double width;
+  double height;
+
+ public:
+  // Constructor to initialize the box dimensions
+  Box(double l, double w, double h) {
+    length = l;
+    width = w;
+    height = h;
+  }
+
+  // Member function that can access the private members
+  void calculateVolume() {
+    // TODO: Write your code here
+    //
+  }
+
+  // Declare a friend function to display private members
+  // TODO: Write your code here
+  //
+};
+
+// Define the friend function
+// TODO: Write your code here
+//
+          </code></pre>
+          <aside class="notes">
+            Here's the starter code. The Box class has three private members: length, width, and height. The constructor is done. We need to fill in: calculateVolume, the friend declaration, and the friend function definition.
+          </aside>
+        </section>
+
+        <!-- What is a Friend Function? -->
+        <section>
+          <h3>What is a Friend Function?</h3>
+          <div class="info-box">
+            <p style="font-size: 0.7em; margin: 0;">
+              A <strong style="color: #8be9fd;">friend function</strong> is a non-member function that is granted
+              access to a class's <code>private</code> and <code>protected</code> members.
+            </p>
+          </div>
+          <ul style="margin-top: 25px;">
+            <li class="fragment" style="font-size: 0.65em; margin-bottom: 10px;">
+              Declared with <code style="color: #50fa7b;">friend</code> keyword <strong>inside</strong> the class
+            </li>
+            <li class="fragment" style="font-size: 0.65em; margin-bottom: 10px;">
+              Defined <strong>outside</strong> the class &mdash; no <code>Box::</code> prefix
+            </li>
+            <li class="fragment" style="font-size: 0.65em; margin-bottom: 10px;">
+              Called like a regular function: <code>displayDimensions(myBox)</code>, not <code>myBox.displayDimensions()</code>
+            </li>
+            <li class="fragment" style="font-size: 0.65em; margin-bottom: 10px;">
+              Does <strong>not</strong> have a <code>this</code> pointer &mdash; must receive the object as a parameter
+            </li>
+          </ul>
+          <aside class="notes">
+            A friend function is a regular standalone function that has been granted special access to a class's private members. You declare it with the friend keyword inside the class, but define it outside. It's called like a normal function, not as a member. And since it's not a member, it doesn't have a this pointer — it must receive the object as a parameter.
+          </aside>
+        </section>
+
+        <!-- Step 1: Friend Declaration -->
+        <section>
+          <h3>Step 1: Declare the Friend</h3>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers="3">
+class Box {
+  // ... private members and constructor ...
+
+  friend void displayDimensions(const Box&amp; box);
+};
+          </code></pre>
+          <div class="fragment info-box">
+            <p style="font-size: 0.7em; margin: 0;">
+              This tells the compiler: <em>"<code>displayDimensions</code> is allowed to access my private members"</em>
+            </p>
+          </div>
+          <p class="fragment explanation">The <code>friend</code> keyword only appears in the declaration <strong>inside</strong> the class</p>
+          <aside class="notes">
+            First, we declare the friend function inside the class. This single line tells the compiler that displayDimensions is allowed to access Box's private members. Note that the friend keyword only appears here — not in the function definition.
+          </aside>
+        </section>
+
+        <!-- Step 2: calculateVolume -->
+        <section>
+          <h3>Step 2: <code>calculateVolume()</code></h3>
+          <pre style="font-size: 0.45em;"><code class="language-cpp" data-trim data-line-numbers>
+void calculateVolume() {
+  std::cout &lt;&lt; "Box Volume: " &lt;&lt; length * width * height
+            &lt;&lt; " cubic units" &lt;&lt; std::endl;
+}
+          </code></pre>
+          <p class="fragment" style="font-size: 0.7em;">
+            This is a regular <strong>member function</strong> &mdash; it can access private members directly via <code>this</code>
+          </p>
+          <aside class="notes">
+            calculateVolume is a regular member function — it has access to private members through the this pointer, so it can directly use length, width, and height to compute the volume.
+          </aside>
+        </section>
+
+        <!-- Step 3: Friend Function Definition -->
+        <section>
+          <h3>Step 3: Define the Friend Function</h3>
+          <pre style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers="1|3-6">
+void displayDimensions(const Box&amp; box) {
+  std::cout &lt;&lt; "Box Dimensions: " &lt;&lt; std::endl;
+  std::cout &lt;&lt; "Length: " &lt;&lt; box.length &lt;&lt; std::endl;
+  std::cout &lt;&lt; "Width: "  &lt;&lt; box.width  &lt;&lt; std::endl;
+  std::cout &lt;&lt; "Height: " &lt;&lt; box.height &lt;&lt; std::endl;
+}
+          </code></pre>
+          <ul>
+            <li class="fragment" style="font-size: 0.65em;">
+              No <code style="color: #ff79c6;">Box::</code> prefix &mdash; it's <strong>not</strong> a member function
+            </li>
+            <li class="fragment" style="font-size: 0.65em;">
+              Accesses <code>box.length</code>, <code>box.width</code>, <code>box.height</code> directly &mdash; allowed because it's a <code style="color: #50fa7b;">friend</code>
+            </li>
+            <li class="fragment" style="font-size: 0.65em;">
+              Takes <code>const Box&amp;</code> &mdash; receives the object by reference, won't modify it
+            </li>
+          </ul>
+          <aside class="notes">
+            The friend function is defined outside the class, with no Box:: prefix. Even though length, width, and height are private, it can access them through the box parameter because it was declared as a friend. We pass by const reference since we only need to read the data.
+          </aside>
+        </section>
+
+        <!-- Comparison Table -->
+        <section>
+          <h3>Member Function vs Friend Function</h3>
+          <table class="vs-table" style="font-size: 0.55em;">
+            <tr>
+              <th></th>
+              <th style="color: #8be9fd;">Member Function</th>
+              <th style="color: #50fa7b;">Friend Function</th>
+            </tr>
+            <tr class="fragment">
+              <td>Private access?</td>
+              <td>Yes (via <code>this</code>)</td>
+              <td>Yes (via passed object)</td>
+            </tr>
+            <tr class="fragment">
+              <td>Call syntax</td>
+              <td><code>myBox.calculateVolume()</code></td>
+              <td><code>displayDimensions(myBox)</code></td>
+            </tr>
+            <tr class="fragment">
+              <td>Has <code>this</code>?</td>
+              <td style="color: #50fa7b;">Yes</td>
+              <td style="color: #ff5555;">No</td>
+            </tr>
+            <tr class="fragment">
+              <td>Defined with <code>Box::</code>?</td>
+              <td style="color: #50fa7b;">Yes</td>
+              <td style="color: #ff5555;">No</td>
+            </tr>
+          </table>
+          <aside class="notes">
+            Here's a comparison. Both can access private members, but they differ in how: member functions use this, friend functions receive the object as a parameter. Member functions are called on the object, friend functions take the object as an argument.
+          </aside>
+        </section>
+
+        <!-- Complete Solution -->
+        <section>
+          <h3>Complete Solution</h3>
+          <pre style="font-size: 0.3em;"><code class="language-cpp" data-trim data-line-numbers="3-7|18-21|24|28-33">
+#include &lt;iostream&gt;
+
+class Box {
+ private:
+  double length;
+  double width;
+  double height;
+
+ public:
+  Box(double l, double w, double h) {
+    length = l;
+    width = w;
+    height = h;
+  }
+
+  void calculateVolume() {
+    std::cout &lt;&lt; "Box Volume: " &lt;&lt; length * width * height
+              &lt;&lt; " cubic units" &lt;&lt; std::endl;
+  }
+
+  friend void displayDimensions(const Box&amp; box);
+};
+
+void displayDimensions(const Box&amp; box) {
+  std::cout &lt;&lt; "Box Dimensions: " &lt;&lt; std::endl;
+  std::cout &lt;&lt; "Length: " &lt;&lt; box.length &lt;&lt; std::endl;
+  std::cout &lt;&lt; "Width: "  &lt;&lt; box.width  &lt;&lt; std::endl;
+  std::cout &lt;&lt; "Height: " &lt;&lt; box.height &lt;&lt; std::endl;
+}
+          </code></pre>
+          <aside class="notes">
+            Here's the complete solution. The friend declaration is inside the class, the friend function definition is outside. calculateVolume is a regular member function.
+          </aside>
+        </section>
+
+        <!-- Testing -->
+        <section>
+          <h3>Testing</h3>
+          <pre style="font-size: 0.42em;"><code class="language-text" data-trim>
+Box Dimensions:
+Length: 5
+Width: 3
+Height: 2
+Box Volume: 30 cubic units
+          </code></pre>
+          <p class="fragment explanation">Friend function successfully accesses private members!</p>
+          <aside class="notes">
+            Running the code, the friend function displayDimensions correctly accesses and prints the private dimensions, and calculateVolume computes the volume. Everything works as expected.
+          </aside>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+          <h3>Q4: Key Takeaways</h3>
+          <ul>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              <strong style="color: #8be9fd;"><code>friend</code></strong> grants a non-member function access to private members
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              Declared <strong>inside</strong> the class, defined <strong>outside</strong> (no <code>Box::</code> prefix)
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              Called like a regular function, <strong>not</strong> on an object
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 12px;">
+              Use <code>const</code> reference to avoid copying and prevent modification
+            </li>
+          </ul>
+        </section>
+
+      </section>
+
     </div>
   </div>
 

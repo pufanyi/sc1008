@@ -357,12 +357,188 @@ No double free is possible — the memory is freed exactly once, when the refere
 
 ## Question 3
 
+This question is about the **`this` pointer** and **method chaining**. We need to implement a `Pen` class where setters return a reference to the current object, allowing calls like `myPen.setColor("Red").setPrice(2.0).display();`.
+
+### Starter Code
+
+```cpp
+--8<-- "src/week11/t3/q3.cpp"
+```
+
+---
+
+### What is `this`?
+
+In C++, every non-static member function has access to a special pointer called `this`. It points to the **current object** — the one on which the method was called.
+
+```cpp
+myPen.setColor("Red");
+// Inside setColor, `this` is a pointer to `myPen`
+// So `*this` IS `myPen`
+```
+
+---
+
+### Method Chaining
+
+The idea behind method chaining is simple: if a setter **returns `*this`** (a reference to the current object), we can immediately call another method on the returned reference.
+
+```cpp
+// Without chaining:
+myPen.setColor("Red");
+myPen.setPrice(2.0);
+myPen.display();
+
+// With chaining:
+myPen.setColor("Red").setPrice(2.0).display();
+```
+
+For this to work, the setters must return `Pen&` (a reference to a `Pen` object), and specifically return `*this`.
+
+---
+
+### The Setters
+
+```cpp
+Pen& setColor(std::string newColor) {
+  color = newColor;
+  return *this;  // Return the current object by reference
+}
+
+Pen& setPrice(double newPrice) {
+  price = newPrice;
+  return *this;
+}
+```
+
+The return type is `Pen&` — a reference to the same object. By returning `*this`, the next method call in the chain operates on the same `Pen` instance.
+
+---
+
+### The Display Method
+
+```cpp
+void display() const {
+  std::cout << "Color: " << color << std::endl;
+  std::cout << "Price: $" << price << std::endl;
+}
+```
+
+`display()` is the end of the chain — it doesn't need to return anything. It's also marked `const` since it only reads the object's state.
+
+---
+
+### Complete Solution
+
 ```cpp
 --8<-- "src/week11/t3/solution.cpp"
 ```
 
+---
+
+### Testing
+
+Expected output:
+
+```
+The original color and price of the pen:
+Color: Blue
+Price: $1.5
+
+The color and price of the pen after setting:
+Color: Red
+Price: $2
+```
+
 ## Question 4
+
+This question introduces **friend functions** — a way to give an external (non-member) function access to a class's private members.
+
+### Starter Code
+
+```cpp
+--8<-- "src/week11/t4/q4.cpp"
+```
+
+---
+
+### What is a Friend Function?
+
+Normally, only member functions can access a class's `private` members. A **friend function** is an exception — by declaring a function as `friend` inside the class, we grant it access to all private and protected members.
+
+A friend function is **not** a member of the class. It's a regular standalone function that happens to have special access privileges.
+
+---
+
+### Step 1: Declare the Friend Function
+
+Inside the `Box` class, we declare the friend function:
+
+```cpp
+friend void displayDimensions(const Box& box);
+```
+
+This tells the compiler: "The function `displayDimensions` is allowed to access my private members." The `friend` keyword only appears in the **declaration inside the class**, not in the function definition.
+
+---
+
+### Step 2: Implement `calculateVolume()`
+
+This is a regular member function — it already has access to private members:
+
+```cpp
+void calculateVolume() {
+  std::cout << "Box Volume: " << length * width * height
+            << " cubic units" << std::endl;
+}
+```
+
+---
+
+### Step 3: Define the Friend Function
+
+The friend function is defined **outside** the class, just like any regular function. Notice there's no `Box::` prefix — it's not a member function:
+
+```cpp
+void displayDimensions(const Box& box) {
+  std::cout << "Box Dimensions: " << std::endl;
+  std::cout << "Length: " << box.length << std::endl;
+  std::cout << "Width: " << box.width << std::endl;
+  std::cout << "Height: " << box.height << std::endl;
+}
+```
+
+Even though `length`, `width`, and `height` are private, this function can access them because it was declared as a `friend` inside `Box`.
+
+---
+
+### Friend Function vs Member Function
+
+| | Member Function | Friend Function |
+|---|---|---|
+| Access to private members | Yes (via `this`) | Yes (via the passed object) |
+| Called on an object | `myBox.calculateVolume()` | `displayDimensions(myBox)` |
+| Has `this` pointer | Yes | No |
+| Defined with `ClassName::` | Yes | No |
+
+---
+
+### Complete Solution
 
 ```cpp
 --8<-- "src/week11/t4/solution.cpp"
+```
+
+---
+
+### Testing
+
+Expected output:
+
+```
+Box Dimensions:
+Length: 5
+Width: 3
+Height: 2
+Box Volume: 30 cubic units
 ```
