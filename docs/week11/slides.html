@@ -958,6 +958,128 @@ public:
           </aside>
         </section>
 
+        <!-- Smart Pointers Intro -->
+        <section>
+          <h3>The Modern Alternative: Smart Pointers</h3>
+          <p style="font-size: 0.7em; color: #6272a4;">What if we could avoid manual <code>new</code>/<code>delete</code> entirely?</p>
+          <div class="info-box fragment">
+            <p style="font-size: 0.7em; margin: 0;">
+              C++11 introduced <strong style="color: #8be9fd;">smart pointers</strong> in <code>&lt;memory&gt;</code><br>
+              They <strong>automatically manage</strong> the lifetime of heap-allocated objects
+            </p>
+          </div>
+          <ul style="max-width: 700px; margin: 25px auto;">
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">
+              <strong style="color: #bd93f9;">std::unique_ptr</strong> &mdash; sole ownership, cannot be copied, only moved
+            </li>
+            <li class="fragment" style="font-size: 0.7em; margin-bottom: 10px;">
+              <strong style="color: #bd93f9;">std::shared_ptr</strong> &mdash; shared ownership via reference counting
+            </li>
+          </ul>
+          <aside class="notes">
+            Now let me show you the modern C++ way to solve this entire category of problems. C++11 introduced smart pointers that automatically manage heap memory. unique_ptr gives exclusive ownership — when it goes out of scope, the memory is freed. shared_ptr allows multiple owners through reference counting.
+          </aside>
+        </section>
+
+        <!-- unique_ptr Rewrite -->
+        <section>
+          <h3>Rewrite with <code>unique_ptr</code></h3>
+          <pre style="font-size: 0.38em;"><code class="language-cpp" data-trim data-line-numbers="1|4|7-8|10|12">
+#include &lt;memory&gt;
+
+class VisitorCounter {
+private:
+    std::unique_ptr&lt;int&gt; count;
+
+public:
+    VisitorCounter(int initialCount)
+        : count(std::make_unique&lt;int&gt;(initialCount)) {}
+
+    void increment() { (*count)++; }
+
+    void display() const {
+        std::cout &lt;&lt; "Visitor Count: " &lt;&lt; *count &lt;&lt; std::endl;
+    }
+};
+          </code></pre>
+          <div class="good-box fragment">
+            <p style="font-size: 0.7em; margin: 0;">
+              <span style="color: #50fa7b;">No destructor needed</span> &mdash; <code>unique_ptr</code> auto-deletes<br>
+              <span style="color: #50fa7b;">No copy constructor needed</span> &mdash; copying is <strong>blocked at compile time</strong><br>
+              <span style="color: #50fa7b;">No double free possible</span> &mdash; only one owner
+            </p>
+          </div>
+          <aside class="notes">
+            Here's the VisitorCounter rewritten with unique_ptr. Notice how much simpler it is — no destructor, no copy constructor, no assignment operator. unique_ptr automatically deletes the memory when the object is destroyed. And since unique_ptr cannot be copied, the compiler will prevent shallow copy bugs at compile time. If you need to copy, you'd explicitly write a deep copy — but the default behavior is safe.
+          </aside>
+        </section>
+
+        <!-- shared_ptr -->
+        <section>
+          <h3>When You Need Sharing: <code>shared_ptr</code></h3>
+          <pre style="font-size: 0.42em;"><code class="language-cpp" data-trim data-line-numbers="1-2|4-5|7">
+std::shared_ptr&lt;int&gt; p1 = std::make_shared&lt;int&gt;(42);
+std::shared_ptr&lt;int&gt; p2 = p1;  // Both own the same data
+
+std::cout &lt;&lt; p1.use_count();   // 2
+// p1 and p2 both point to the same int(42)
+
+// Memory freed only when LAST shared_ptr is destroyed
+          </code></pre>
+          <div class="info-box fragment">
+            <p style="font-size: 0.7em; margin: 0;">
+              <strong style="color: #8be9fd;">Reference counting</strong>: tracks how many <code>shared_ptr</code>s point to the same object<br>
+              Memory is freed only when the count reaches <strong>zero</strong> &mdash; no double free!
+            </p>
+          </div>
+          <aside class="notes">
+            If you actually need multiple objects to share the same data, use shared_ptr. It uses reference counting — each copy increments the count, each destruction decrements it, and the memory is only freed when the last shared_ptr is destroyed. No manual tracking needed, no double free.
+          </aside>
+        </section>
+
+        <!-- Comparison Table -->
+        <section>
+          <h3>Raw Pointer vs Smart Pointers</h3>
+          <table class="vs-table" style="font-size: 0.6em;">
+            <tr>
+              <th></th>
+              <th style="color: #ff5555;">Raw Pointer</th>
+              <th style="color: #bd93f9;">unique_ptr</th>
+              <th style="color: #8be9fd;">shared_ptr</th>
+            </tr>
+            <tr class="fragment">
+              <td>Ownership</td>
+              <td>Unclear</td>
+              <td>Exclusive</td>
+              <td>Shared</td>
+            </tr>
+            <tr class="fragment">
+              <td>Copyable?</td>
+              <td style="color: #ff5555;">Yes (shallow!)</td>
+              <td>No (move only)</td>
+              <td style="color: #50fa7b;">Yes (ref count)</td>
+            </tr>
+            <tr class="fragment">
+              <td>Auto cleanup?</td>
+              <td style="color: #ff5555;">No</td>
+              <td style="color: #50fa7b;">Yes</td>
+              <td style="color: #50fa7b;">Yes</td>
+            </tr>
+            <tr class="fragment">
+              <td>Double free?</td>
+              <td style="color: #ff5555;">Possible</td>
+              <td style="color: #50fa7b;">Impossible</td>
+              <td style="color: #50fa7b;">Impossible</td>
+            </tr>
+          </table>
+          <p class="fragment explanation">
+            Modern C++ guideline: <strong>prefer smart pointers over raw <code>new</code>/<code>delete</code></strong>
+          </p>
+          <aside class="notes">
+            Here's a comparison. Raw pointers have unclear ownership, allow shallow copies, need manual cleanup, and risk double free. unique_ptr has exclusive ownership and blocks copying. shared_ptr allows safe sharing with reference counting. The modern C++ guideline is clear: prefer smart pointers over raw new and delete.
+          </aside>
+        </section>
+
       </section>
     </div>
   </div>

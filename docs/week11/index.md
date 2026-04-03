@@ -203,9 +203,157 @@ The output matches the expected results perfectly.
 
 ## Question 2
 
+Andy implemented a `VisitorCounter` class that uses a pointer to dynamically allocated memory. We need to identify the issues in his implementation and discuss how to fix them.
+
+### The Code
+
 ```cpp
 --8<-- "src/week11/t2/q2.cpp"
 ```
+
+---
+
+### Issue 1: Shallow Copy
+
+Since Andy didn't define a copy constructor, the compiler generates a **default** one that simply copies each member. For a pointer, this means copying the **address**, not the pointed-to data:
+
+```cpp
+// Compiler-generated default copy constructor:
+VisitorCounter(const VisitorCounter& other) {
+    count = other.count;  // Copies the POINTER, not the data!
+}
+```
+
+After `VisitorCounter counterCopy = counter;`, both `counter.count` and `counterCopy.count` point to the **same** `int` on the heap.
+
+---
+
+### Issue 2: Unintended Sharing
+
+Because both objects share the same memory, modifying the copy also modifies the original:
+
+```cpp
+counterCopy.increment();  // (*count)++ → 11
+counterCopy.increment();  // (*count)++ → 12
+
+counter.display();  // Also prints 12!
+```
+
+---
+
+### Issue 3: Double Free
+
+When `main()` ends, destructors run in **reverse** order of construction:
+
+1. `counterCopy` destructor: `delete count;` — frees the memory at `0xA00`
+2. `counter` destructor: `delete count;` — tries to free `0xA00` **again**
+
+This is **undefined behavior** — it can cause crashes, memory corruption, or security vulnerabilities.
+
+---
+
+### The Fix: Deep Copy
+
+We need to implement a **deep copy constructor** that allocates new memory and copies the value:
+
+```cpp
+// Copy Constructor
+VisitorCounter(const VisitorCounter& other) {
+    count = new int(*other.count);  // Allocate NEW memory, copy the VALUE
+}
+
+// Copy Assignment Operator
+VisitorCounter& operator=(const VisitorCounter& other) {
+    if (this != &other) {       // Self-assignment check
+        *count = *other.count;  // Copy the VALUE
+    }
+    return *this;
+}
+```
+
+Now each object has its own independent copy of the data.
+
+---
+
+### The Rule of Three
+
+If a class needs any one of the following, it probably needs **all three**:
+
+1. **Destructor** — clean up resources
+2. **Copy Constructor** — deep copy on initialization
+3. **Copy Assignment Operator** — deep copy on assignment
+
+If your class manages a resource (heap memory, file handle, etc.), you need all three.
+
+---
+
+### The Modern Alternative: Smart Pointers
+
+All the problems above stem from **manual memory management** with raw `new`/`delete`. Modern C++ (C++11 and later) provides **smart pointers** in `<memory>` that manage memory automatically.
+
+#### `std::unique_ptr` — Exclusive Ownership
+
+`unique_ptr` owns the pointed-to object exclusively. When the `unique_ptr` is destroyed, the memory is automatically freed.
+
+```cpp
+#include <memory>
+
+class VisitorCounter {
+private:
+    std::unique_ptr<int> count;
+
+public:
+    VisitorCounter(int initialCount)
+        : count(std::make_unique<int>(initialCount)) {}
+
+    void increment() { (*count)++; }
+
+    void display() const {
+        std::cout << "Visitor Count: " << *count << std::endl;
+    }
+};
+```
+
+Notice what's **gone**:
+
+- No destructor needed — `unique_ptr` auto-deletes the memory
+- No copy constructor needed — `unique_ptr` **cannot be copied** (compile-time error), so shallow copy bugs are impossible
+- No copy assignment operator needed — same reason
+
+If you need to transfer ownership, use `std::move`:
+
+```cpp
+VisitorCounter a(10);
+VisitorCounter b = std::move(a);  // OK: ownership transferred
+// a.count is now nullptr
+```
+
+#### `std::shared_ptr` — Shared Ownership
+
+When you genuinely need **multiple owners** of the same data, use `shared_ptr`. It uses **reference counting** to track how many `shared_ptr`s point to the same object:
+
+```cpp
+std::shared_ptr<int> p1 = std::make_shared<int>(42);
+std::shared_ptr<int> p2 = p1;  // ref count = 2
+
+std::cout << p1.use_count();   // 2
+
+// Memory is freed only when the LAST shared_ptr is destroyed
+```
+
+No double free is possible — the memory is freed exactly once, when the reference count reaches zero.
+
+#### Comparison
+
+|                | Raw Pointer        | `unique_ptr`       | `shared_ptr`         |
+|----------------|--------------------|--------------------|----------------------|
+| Ownership      | Unclear            | Exclusive          | Shared (ref counted) |
+| Copyable?      | Yes (shallow!)     | No (move only)     | Yes (safe)           |
+| Auto cleanup?  | No                 | Yes                | Yes                  |
+| Double free?   | Possible           | Impossible         | Impossible           |
+
+!!! tip "Modern C++ Guideline"
+    Prefer smart pointers over raw `new`/`delete`. Use `unique_ptr` by default; use `shared_ptr` only when you truly need shared ownership. This is not required for exams, but it's the standard practice in real-world C++ development.
 
 ## Question 3
 
