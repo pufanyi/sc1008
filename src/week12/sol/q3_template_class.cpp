@@ -13,7 +13,7 @@ class ExamResult {
   // Default constructor
   ExamResult() : result(nullptr), size(0) {}
 
-  ExamResult(const ExamResult &other) {
+  ExamResult(const ExamResult& other) {
     size = other.size;
     if (size > 0) {
       result = new T[size];
@@ -25,7 +25,7 @@ class ExamResult {
     }
   }
 
-  ExamResult& operator=(const ExamResult &other) {
+  ExamResult& operator=(const ExamResult& other) {
     if (this == &other) {
       return *this;
     }
@@ -40,7 +40,6 @@ class ExamResult {
     }
     return *this;
   }
-
 
   void setExamResult(T* array, int len) {
     if (result != nullptr) {

@@ -22,12 +22,13 @@ int main() {
   // TO-DO: Print all sales values by using an iterator
   //
   //
-  // for (std::vector<int>::iterator it = dailySales.begin(); it != dailySales.end(); ++it) {
+  // for (std::vector<int>::iterator it = dailySales.begin(); it !=
+  // dailySales.end(); ++it) {
   //   std::cout << *it << " ";
   // }
   // std::cout << std::endl;
   std::cout << "Daily Sales: ";
-  for (const auto x: dailySales) {
+  for (const auto x : dailySales) {
     std::cout << x << ' ';
   }
   std::cout << std::endl;
@@ -47,7 +48,7 @@ int main() {
   //
   //
   std::cout << "Sorted Sales: ";
-  for (const auto x: dailySales) {
+  for (const auto x : dailySales) {
     std::cout << x << ' ';
   }
   std::cout << std::endl;

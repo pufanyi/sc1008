@@ -54,9 +54,7 @@ class ExamResult {
     std::cout << std::endl;
   }
 
-  ~ExamResult() {
-    delete[] this->result;
-  }
+  ~ExamResult() { delete[] this->result; }
 };
 
 int main() {
