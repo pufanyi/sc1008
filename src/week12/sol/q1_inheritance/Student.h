@@ -9,15 +9,14 @@ using namespace std;
 
 class Student : public Person {
  private:
-  // TODO: Define the additional attribute (studentID), studentID is an integer
-  //
+  int studentID;
 
  public:
   // Constructor declaration
   Student(string n, int a, int id);
 
   // Function to display student details (redefine base class function)
-  void displayInfo() const;
+  void displayInfo() const override;
 };
 
 #endif  // STUDENT_H
