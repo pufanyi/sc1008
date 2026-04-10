@@ -6,16 +6,17 @@
 using namespace std;
 
 class Person {
-protected:
-    // TODO: Define the member variables (name and age, which are string and integer)
-    //
+ protected:
+  // TODO: Define the member variables (name and age, which are string and
+  // integer)
+  //
 
-public:
-    // Constructor declaration
-    Person(string n, int a);
+ public:
+  // Constructor declaration
+  Person(string n, int a);
 
-    // Function to display person details
-    void displayInfo() const;
+  // Function to display person details
+  void displayInfo() const;
 };
 
-#endif // PERSON_H
+#endif  // PERSON_H
