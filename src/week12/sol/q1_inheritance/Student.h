@@ -16,7 +16,7 @@ class Student : public Person {
   Student(string n, int a, int id);
 
   // Function to display student details (redefine base class function)
-  void displayInfo() const override;
+  void displayInfo() const;
 };
 
 #endif  // STUDENT_H

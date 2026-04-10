@@ -7,6 +7,7 @@ using namespace std;
 Student::Student(string n, int a, int id)
   : Person(std::move(n), a), studentID(id) {}
 
-void Student::displayInfo() const override {
-  
+void Student::displayInfo() const {
+  Person::displayInfo();
+  std::cout << "Student ID: " << this->studentID << std::endl;
 }

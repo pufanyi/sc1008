@@ -211,3 +211,6 @@ __marimo__/
 
 master.zip
 unsafe_demo
+
+# C++ build output
+build/
