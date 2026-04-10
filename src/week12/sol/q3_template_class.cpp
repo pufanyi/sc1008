@@ -13,25 +13,73 @@ class ExamResult {
   // Default constructor
   ExamResult() : result(nullptr), size(0) {}
 
+  ExamResult(const ExamResult &other) {
+    size = other.size;
+    if (size > 0) {
+      result = new T[size];
+      for (int i = 0; i < size; ++i) {
+        result[i] = other.result[i];
+      }
+    } else {
+      result = nullptr;
+    }
+  }
+
+  ExamResult& operator=(const ExamResult &other) {
+    if (this == &other) {
+      return *this;
+    }
+    size = other.size;
+    if (size > 0) {
+      result = new T[size];
+      for (int i = 0; i < size; ++i) {
+        result[i] = other.result[i];
+      }
+    } else {
+      result = nullptr;
+    }
+    return *this;
+  }
+
+
   void setExamResult(T* array, int len) {
-    // TO-DO: Set the exam result as the input array
-    //
+    if (result != nullptr) {
+      delete[] result;
+    }
+
+    result = new T[len];
+    size = len;
+    for (int i = 0; i < size; ++i) {
+      result[i] = array[i];
+    }
   }
 
   void updateResultAtOneLoc(int i, const T& newResult) {
-    // TO-DO: Update the exam result at i-th location to new result
-    //
-    //
+    if (i < 0 || i >= size) {
+      std::cerr << "Out of range" << std::endl;
+      return;
+    }
+    this->result[i] = newResult;
   }
 
   void printExamResult() const {
-    // TO-DO: Print all exam results
-    //
+    if (result == nullptr) {
+      std::cout << "No results" << std::endl;
+      return;
+    }
+    for (int i = 0; i < size; ++i) {
+      if (i != 0) {
+        std::cout << ' ';
+      }
+      std::cout << result[i];
+    }
+    std::cout << std::endl;
   }
 
   ~ExamResult() {
-    // TO-DO: Destructor to free allocated memory
-    //
+    if (result != nullptr) {
+      delete[] result;
+    }
   }
 };
 
