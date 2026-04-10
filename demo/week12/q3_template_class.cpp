@@ -16,22 +16,68 @@ class ExamResult {
   void setExamResult(T* array, int len) {
     // TO-DO: Set the exam result as the input array
     //
+    if (result != nullptr) {
+      delete[] result;
+    }
+    result = new T[len];
+    size = len;
+    for (int i = 0; i < size; ++i) {
+      result[i] = array[i];
+    }
   }
 
   void updateResultAtOneLoc(int i, const T& newResult) {
     // TO-DO: Update the exam result at i-th location to new result
     //
     //
+    if (i < 0 || i >= size) {
+      std::cerr << "Out of bound" << std::endl;
+      return;
+    }
+    result[i] = newResult;
   }
 
   void printExamResult() const {
     // TO-DO: Print all exam results
     //
+    for (int i = 0; i < size; ++i) {
+      if (i != 0) {
+        std::cout << ' ';
+      }
+      std::cout << result[i];
+    }
+    std::cout << std::endl;
   }
 
   ~ExamResult() {
     // TO-DO: Destructor to free allocated memory
     //
+    delete[] result;
+  }
+
+  ExamResult(const ExamResult& other) {
+    // TO-DO: Copy constructor for deep copy
+    //
+    size = other.size;
+    result = new T[size];
+    for (int i = 0; i < size; ++i) {
+      result[i] = other.result[i];
+    }
+  }
+
+  ExamResult& operator=(const ExamResult& other) {
+    // TO-DO: Copy assignment operator for deep copy
+    //
+    if (this == &other) {
+      return *this;  // Handle self-assignment
+    }
+    delete[] result;  // Free existing resource
+    size = other.size;
+    result = new T[size];
+    for (int i = 0; i < size; ++i) {
+      result[i] = other.result[i];
+    }
+    return *this;
   }
 };
 
@@ -44,6 +90,7 @@ int main() {
   intExam.updateResultAtOneLoc(2, 95);
   intExam.printExamResult();
   cout << endl;
+  ExamResult<int> exam2 = intExam;
 
   int intScores2[] = {100, 99};
   intExam.setExamResult(intScores2, 2);

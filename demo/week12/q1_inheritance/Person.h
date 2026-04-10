@@ -10,6 +10,8 @@ class Person {
   // TODO: Define the member variables (name and age, which are string and
   // integer)
   //
+  std::string name;
+  int age;
 
  public:
   // Constructor declaration

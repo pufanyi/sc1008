@@ -12,14 +12,20 @@ using namespace std;
 class GraduateStudent : public Student {
  private:
   // TODO: Define the additional attribute (researchTopic)
+  std::string researchTopic;
 
  public:
   // TODO: Implement the Constructor
-  GraduateStudent(string n, int a, int id, string topic);
+  GraduateStudent(string n, int a, int id, string topic)
+    : Student(std::move(n), a, id), researchTopic(std::move(topic)) {}
 
   // TODO: Implement displayInfo() (Note: it is virtual function in Student)
 
-  virtual void displayInfo() const;
+  virtual void displayInfo() const override {
+    std::cout << "Name: " << name << ", Age: " <<
+      age << ", Student ID: " << studentID << 
+      ", Research Topic: " << researchTopic << std::endl;
+  }
 };
 
 int main() {
