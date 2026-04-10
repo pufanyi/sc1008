@@ -1,0 +1,12 @@
+#include "Person.h"
+
+#include <iostream>
+using namespace std;
+
+// TODO: Implement Person class constructor and function here
+Person::Person(string n, int a)
+  : name(std::move(n)), age(a) { }
+
+void Person::displayInfo() const {
+  std::cout << "Name: " << name << ", Age: " << age << std::endl;
+}
