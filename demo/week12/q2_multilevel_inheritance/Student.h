@@ -8,7 +8,7 @@
 using namespace std;
 
 class Student : public Person {
- private:
+ protected:
   int studentID;
 
  public:
@@ -16,7 +16,7 @@ class Student : public Person {
   Student(string n, int a, int id);
 
   // Function to display student details (redefine base class function)
-  void displayInfo() const;
+  virtual void displayInfo() const override;
 };
 
 #endif  // STUDENT_H
