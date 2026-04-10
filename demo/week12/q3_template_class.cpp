@@ -16,45 +16,23 @@ class ExamResult {
   void setExamResult(T* array, int len) {
     // TO-DO: Set the exam result as the input array
     //
-    if (result != nullptr) {
-      delete[] result;
-    }
-
-    result = new T[len];
-    size = len;
-    for (int i = 0; i < size; ++i) {
-      result[i] = array[i];
-    }
   }
 
   void updateResultAtOneLoc(int i, const T& newResult) {
     // TO-DO: Update the exam result at i-th location to new result
     //
     //
-    if (i < 0 || i >= size) {
-      std::cerr << "Out of bounds" << std::endl;
-      return;
-    }
-    result[i] = newResult;
   }
 
   void printExamResult() const {
     // TO-DO: Print all exam results
     //
-    if (result == nullptr) {
-      std::cout << "Empty" << std::endl;
-      return;
-    }
-    for (int i = 0; i < size; ++i) {
-      if (i != 0) {
-        std::cout << ' ';
-      }
-      std::cout << this->result[i];
-    }
-    std::cout << std::endl;
   }
 
-  ~ExamResult() { delete[] this->result; }
+  ~ExamResult() {
+    // TO-DO: Destructor to free allocated memory
+    //
+  }
 };
 
 int main() {

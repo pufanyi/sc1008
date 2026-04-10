@@ -15,7 +15,7 @@ class Person {
   Person(string n, int a);
 
   // Function to display person details
-  virtual void displayInfo() const;
+  void displayInfo() const;
 };
 
 #endif  // PERSON_H

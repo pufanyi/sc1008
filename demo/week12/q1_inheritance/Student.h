@@ -11,7 +11,6 @@ class Student : public Person {
  private:
   // TODO: Define the additional attribute (studentID), studentID is an integer
   //
-  int studentID;
 
  public:
   // Constructor declaration
