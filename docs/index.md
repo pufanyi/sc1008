@@ -10,3 +10,6 @@ All codes are available on [GitHub](https://github.com/pufanyi/SC1008).
 - [Week 7](week7/index.md)
 - Week 8 (No Class)
 - [Week 9](week9/index.md)
+- [Week 10](week10/index.md)
+- [Week 11](week11/index.md)
+- [Week 12](week12/index.md)
