@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Week 4 Slides</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/monokai.min.css">
+
+  <style>
+    /* Memory grid for 2D array visualization */
+    .mem-grid {
+      display: grid;
+      grid-template-columns: auto repeat(4, 1fr);
+      gap: 2px;
+      max-width: 700px;
+      margin: 15px auto;
+      font-family: monospace;
+      font-size: 0.75em;
+    }
+    .mem-cell {
+      border: 2px solid #6272a4;
+      padding: 10px 14px;
+      text-align: center;
+      border-radius: 4px;
+      background: #44475a;
+      position: relative;
+    }
+    .mem-cell-val {
+      font-size: 1.2em;
+      color: #f8f8f2;
+    }
+    .mem-cell-addr {
+      font-size: 0.65em;
+      color: #6272a4;
+      margin-top: 3px;
+    }
+    .mem-row-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 10px;
+      color: #8be9fd;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+    .mem-col-header {
+      text-align: center;
+      padding: 5px;
+      color: #bd93f9;
+      font-size: 0.8em;
+    }
+    .highlight-row0 { border-color: #ff79c6 !important; background: rgba(255, 121, 198, 0.15) !important; }
+    .highlight-row1 { border-color: #50fa7b !important; background: rgba(80, 250, 123, 0.15) !important; }
+    .highlight-row2 { border-color: #ffb86c !important; background: rgba(255, 184, 108, 0.15) !important; }
+    .highlight-all  { border-color: #8be9fd !important; background: rgba(139, 233, 253, 0.15) !important; }
+    .val-changed { color: #50fa7b !important; }
+    .val-highlight { color: #ff79c6 !important; }
+
+    /* Linear memory view */
+    .mem-linear {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 1px;
+      margin: 15px auto;
+      font-family: monospace;
+      font-size: 0.6em;
+    }
+    .mem-lin-cell {
+      border: 2px solid #6272a4;
+      padding: 6px 5px;
+      text-align: center;
+      border-radius: 3px;
+      background: #44475a;
+      min-width: 38px;
+    }
+    .mem-lin-val {
+      font-size: 1.1em;
+      color: #f8f8f2;
+    }
+    .mem-lin-idx {
+      font-size: 0.75em;
+      color: #6272a4;
+      margin-top: 2px;
+    }
+    .row-bracket {
+      display: flex;
+      align-items: center;
+      padding: 0 2px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .row0-bracket { color: #ff79c6; }
+    .row1-bracket { color: #50fa7b; }
+    .row2-bracket { color: #ffb86c; }
+    .lin-row0 { border-color: #ff79c6; }
+    .lin-row1 { border-color: #50fa7b; }
+    .lin-row2 { border-color: #ffb86c; }
+    .lin-all  { border-color: #8be9fd; }
+
+    /* GDB terminal style */
+    .gdb-box {
+      background: #1e1f29;
+      border: 1px solid #6272a4;
+      border-radius: 8px;
+      padding: 14px 18px;
+      text-align: left;
+      font-family: monospace;
+      font-size: 0.55em;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 10px auto;
+    }
+    .gdb-prompt { color: #50fa7b; }
+    .gdb-cmd { color: #f8f8f2; }
+    .gdb-output { color: #8be9fd; }
+    .gdb-comment { color: #6272a4; font-style: italic; }
+    .gdb-highlight { color: #ff79c6; }
+    .gdb-addr { color: #bd93f9; }
+
+    /* Pointer arrow diagram */
+    .ptr-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin: 15px auto;
+    }
+    .ptr-box {
+      border: 2px solid #bd93f9;
+      padding: 12px 20px;
+      border-radius: 8px;
+      background: #44475a;
+      text-align: center;
+    }
+    .ptr-label {
+      font-size: 0.7em;
+      color: #8be9fd;
+      margin-bottom: 4px;
+    }
+    .ptr-value {
+      font-family: monospace;
+      font-size: 1.1em;
+      color: #f8f8f2;
+    }
+    .ptr-arrow {
+      color: #50fa7b;
+      font-size: 2em;
+    }
+
+    /* Explanation callout */
+    .explanation {
+      color: #ffb86c;
+      font-size: 0.75em;
+      margin-top: 10px;
+    }
+
+    /* Step-by-step call box */
+    .call-box {
+      background: #6272a4;
+      padding: 8px 22px;
+      border-radius: 8px;
+      display: inline-block;
+      font-family: monospace;
+      font-size: 1em;
+      margin-bottom: 10px;
+    }
+
+    /* Comparison table */
+    .cmp-table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      font-size: 0.6em;
+      border: 1px solid #6272a4;
+    }
+    .cmp-table th, .cmp-table td {
+      padding: 10px 16px;
+      text-align: center;
+      border: 1px solid #6272a4 !important;
+    }
+    .cmp-table th {
+      background: #44475a;
+      color: #8be9fd;
+    }
+    .cmp-table td {
+      font-family: monospace;
+    }
+    .cmp-table tbody tr:nth-child(even) {
+      background: rgba(68, 71, 90, 0.5);
+    }
+
+    /* Code line highlight overlay */
+    .code-note {
+      font-size: 0.65em;
+      color: #ffb86c;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Title -->
+      <section>
+        <h2>NTU SC1008 Tutorial</h2>
+        <h3>Week 4 Slides</h3>
+        <p>Pu Fanyi</p>
+        <p><a href="https://pufanyi.com">pufanyi.com</a></p>
+        <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
+      </section>
+
+      <!-- Q1 Placeholder -->
+      <section>
+        <h2>Question 1</h2>
+        <p style="color: #6272a4;">(To be added)</p>
+      </section>
+
+      <!-- Q2 Placeholder -->
+      <section>
+        <h2>Question 2</h2>
+        <p style="color: #6272a4;">(To be added)</p>
+      </section>
+
+      <!-- Q3 Placeholder -->
+      <section>
+        <h2>Question 3</h2>
+        <p style="color: #6272a4;">(To be added)</p>
+      </section>
+
+      <!-- Question 4 -->
+      <section>
+        <!-- Q4 Intro -->
+        <section>
+          <h2>Question 4</h2>
+          <h4>2D Arrays &amp; Pointers</h4>
+        </section>
+
+        <!-- Data vs Type: Philosophy -->
+        <section>
+          <h3>A Key Idea in C</h3>
+          <p style="font-size: 0.85em;">In C, <strong style="color:#ff79c6;">data</strong> and <strong style="color:#8be9fd;">type</strong> are separate things.</p>
+          <div style="margin: 30px auto; max-width: 700px;">
+            <p class="fragment" style="font-size: 0.75em; text-align: left;">
+              Memory is just <strong style="color:#ffb86c;">bytes</strong> &mdash; it has no inherent meaning.
+            </p>
+            <p class="fragment" style="font-size: 0.75em; text-align: left;">
+              <strong style="color:#8be9fd;">Type</strong> tells the compiler <em>how to interpret</em> those bytes.
+            </p>
+            <p class="fragment" style="font-size: 0.75em; text-align: left;">
+              The same bytes, viewed through a different type = different value.
+            </p>
+          </div>
+          <p class="fragment" style="font-size: 0.7em; color: #6272a4; margin-top: 20px;">
+            "You see what you want to see."
+          </p>
+        </section>
+
+        <!-- Data vs Type: Example 1 — same 4 bytes -->
+        <section>
+          <h3>Example: Same 4 Bytes</h3>
+          <pre style="font-size: 0.48em;"><code class="language-c" data-trim>
+int n = 1078530011;
+float *fp = (float *)&amp;n;
+printf("int:   %d\n", n);      // 1078530011
+printf("float: %f\n", *fp);    // 3.141593
+          </code></pre>
+          <div class="fragment" style="margin-top: 15px;">
+            <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 8px;">Memory (4 bytes, little-endian):</p>
+            <div style="display:flex; justify-content:center; gap:3px; font-family:monospace; font-size:0.7em;">
+              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0xDB</div></div>
+              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x0F</div></div>
+              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x49</div></div>
+              <div class="mem-lin-cell" style="border-color:#bd93f9; min-width:60px;"><div class="mem-lin-val">0x40</div></div>
+            </div>
+          </div>
+          <div class="fragment" style="display:flex; justify-content:center; gap:40px; margin-top:15px; font-size:0.75em;">
+            <div>
+              <span style="color:#ff79c6;">as int &rarr;</span>
+              <code style="color:#f8f8f2;"> 1078530011</code>
+            </div>
+            <div>
+              <span style="color:#50fa7b;">as float &rarr;</span>
+              <code style="color:#f8f8f2;"> 3.1416 (&asymp; &pi;)</code>
+            </div>
+          </div>
+          <p class="explanation fragment">Same bytes, different type = completely different value!</p>
+        </section>
+
+        <!-- Data vs Type: Example 2 — char[] vs int* -->
+        <section>
+          <h3>Example: <code>char[]</code> as <code>int*</code></h3>
+          <pre style="font-size: 0.48em;"><code class="language-c" data-trim>
+char s[] = {1, 0, 0, 0, 2, 0, 0, 0};  // 8 bytes
+int *p = (int *)s;
+printf("%d %d\n", p[0], p[1]);         // 1 2
+          </code></pre>
+          <div class="fragment" style="margin-top: 15px;">
+            <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 8px;">Memory (8 bytes):</p>
+            <div style="display:flex; justify-content:center; gap:2px; font-family:monospace; font-size:0.6em;">
+              <div class="mem-lin-cell" style="border-color:#ff79c6; min-width:34px;"><div class="mem-lin-val">01</div><div class="mem-lin-idx">s[0]</div></div>
+              <div class="mem-lin-cell" style="border-color:#ff79c6; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[1]</div></div>
+              <div class="mem-lin-cell" style="border-color:#ff79c6; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[2]</div></div>
+              <div class="mem-lin-cell" style="border-color:#ff79c6; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[3]</div></div>
+              <div class="mem-lin-cell" style="border-color:#50fa7b; min-width:34px;"><div class="mem-lin-val">02</div><div class="mem-lin-idx">s[4]</div></div>
+              <div class="mem-lin-cell" style="border-color:#50fa7b; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[5]</div></div>
+              <div class="mem-lin-cell" style="border-color:#50fa7b; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[6]</div></div>
+              <div class="mem-lin-cell" style="border-color:#50fa7b; min-width:34px;"><div class="mem-lin-val">00</div><div class="mem-lin-idx">s[7]</div></div>
+            </div>
+            <div style="display:flex; justify-content:center; gap:2px; font-family:monospace; font-size:0.6em; margin-top:3px;">
+              <div style="min-width:142px; text-align:center; color:#ff79c6;">&#9492;&#9472;&#9472; p[0] = 1 &#9472;&#9472;&#9496;</div>
+              <div style="min-width:142px; text-align:center; color:#50fa7b;">&#9492;&#9472;&#9472; p[1] = 2 &#9472;&#9472;&#9496;</div>
+            </div>
+          </div>
+          <p class="explanation fragment">8 chars &rarr; reinterpreted as 2 ints (little-endian; byte order may differ on other architectures)</p>
+        </section>
+
+        <!-- Data vs Type: Example 3 — int[3][4] vs int[12] -->
+        <section>
+          <h3>Example: <code>int[3][4]</code> vs <code>int[12]</code></h3>
+          <pre style="font-size: 0.48em;"><code class="language-c" data-trim>
+int array[3][4] = {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}};
+int *flat = &amp;array[0][0];  // or: (int *)array
+
+// flat[0]..flat[11] accesses ALL 12 elements!
+for (int i = 0; i &lt; 12; i++)
+    printf("%d ", flat[i]);   // 1 2 3 4 5 6 7 8 9 10 11 12
+          </code></pre>
+          <div class="fragment" style="margin-top: 15px;">
+            <p style="font-size: 0.65em; color: #8be9fd; margin-bottom: 8px;">Same 48 bytes, two views:</p>
+            <div style="display:flex; justify-content:center; gap:40px; font-size:0.7em; align-items:center;">
+              <div style="text-align:center;">
+                <div style="color:#ff79c6; margin-bottom:5px;">int [3][4]</div>
+                <div style="color:#f8f8f2;">{1,2,3,4}</div>
+                <div style="color:#f8f8f2;">{5,6,7,8}</div>
+                <div style="color:#f8f8f2;">{9,10,11,12}</div>
+              </div>
+              <div style="font-size:2em; color:#6272a4;">=</div>
+              <div style="text-align:center;">
+                <div style="color:#50fa7b; margin-bottom:5px;">int [12]</div>
+                <div style="color:#f8f8f2;">{1,2,3,4,5,6,7,8,9,10,11,12}</div>
+              </div>
+            </div>
+          </div>
+          <p class="explanation fragment">This is exactly what Question 4 is about!</p>
+        </section>
+
+        <!-- GDB Demo: Data vs Type -->
+        <section>
+          <h3>GDB: See It Yourself</h3>
+          <div class="gdb-box">
+            <span class="gdb-comment">// int n whose bytes happen to encode &pi; as float</span><br>
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p n</span><br>
+            <span class="gdb-output">= 1078530011</span><br>
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p *(float *)&amp;n</span><br>
+            <span class="gdb-output">= <span class="gdb-highlight">3.14159274</span></span><br>
+            <br>
+            <span class="gdb-comment">// Raw bytes</span><br>
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">x/4xb &amp;n</span><br>
+            <span class="gdb-output"><span class="gdb-addr">0x7ffd...</span>: </span>
+            <span style="color:#bd93f9">0xdb 0x0f 0x49 0x40</span><br>
+            <br>
+            <span class="gdb-comment">// 2D array as flat 1D</span><br>
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p array</span><br>
+            <span class="gdb-output">= {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}}</span><br>
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p *(int (*)[12])array</span><br>
+            <span class="gdb-output">= {<span class="gdb-highlight">1,2,3,4,5,6,7,8,9,10,11,12</span>}</span><br>
+          </div>
+          <p class="explanation">Same memory, cast to different type &rarr; different interpretation</p>
+        </section>
+
+        <!-- The Code -->
+        <section>
+          <h3>The Code</h3>
+          <pre style="font-size: 0.42em;"><code class="language-c" data-trim data-line-numbers="|6|13-15|25-28">
+#include &lt;stdio.h&gt;
+
+void add1(int ar[], int size);
+
+int main() {
+  int array[3][4];
+  int h, k;
+  for (h = 0; h &lt; 3; h++) {
+    for (k = 0; k &lt; 4; k++) {
+      scanf("%d", &amp;array[h][k]);
+    }
+  }
+  for (h = 0; h &lt; 3; h++) {   // line a
+    add1(array[h], 4);
+  }
+  for (h = 0; h &lt; 3; h++) {
+    for (k = 0; k &lt; 4; k++) {
+      printf("%10d", array[h][k]);
+    }
+    putchar('\n');
+  }
+  return 0;
+}
+
+void add1(int ar[], int size) {
+  int k;
+  for (k = 0; k &lt; size; k++) ar[k]++;
+}
+          </code></pre>
+        </section>
+
+        <!-- Memory layout: 2D array concept -->
+        <section data-auto-animate>
+          <h3>How We Think of It</h3>
+          <p style="font-size: 0.7em; color: #8be9fd;">int array[3][4] &mdash; 3 rows, 4 columns</p>
+          <div class="mem-grid" data-id="grid">
+            <div></div>
+            <div class="mem-col-header">[0]</div>
+            <div class="mem-col-header">[1]</div>
+            <div class="mem-col-header">[2]</div>
+            <div class="mem-col-header">[3]</div>
+
+            <div class="mem-row-label">array[0]</div>
+            <div class="mem-cell highlight-row0"><div class="mem-cell-val">1</div></div>
+            <div class="mem-cell highlight-row0"><div class="mem-cell-val">2</div></div>
+            <div class="mem-cell highlight-row0"><div class="mem-cell-val">3</div></div>
+            <div class="mem-cell highlight-row0"><div class="mem-cell-val">4</div></div>
+
+            <div class="mem-row-label">array[1]</div>
+            <div class="mem-cell highlight-row1"><div class="mem-cell-val">5</div></div>
+            <div class="mem-cell highlight-row1"><div class="mem-cell-val">6</div></div>
+            <div class="mem-cell highlight-row1"><div class="mem-cell-val">7</div></div>
+            <div class="mem-cell highlight-row1"><div class="mem-cell-val">8</div></div>
+
+            <div class="mem-row-label">array[2]</div>
+            <div class="mem-cell highlight-row2"><div class="mem-cell-val">9</div></div>
+            <div class="mem-cell highlight-row2"><div class="mem-cell-val">10</div></div>
+            <div class="mem-cell highlight-row2"><div class="mem-cell-val">11</div></div>
+            <div class="mem-cell highlight-row2"><div class="mem-cell-val">12</div></div>
+          </div>
+        </section>
+
+        <!-- Memory layout: contiguous in memory -->
+        <section data-auto-animate>
+          <h3>How It Actually Lives in Memory</h3>
+          <p style="font-size: 0.65em; color: #8be9fd;">Row-major order &mdash; all 12 ints are contiguous</p>
+          <div class="mem-linear" data-id="linear">
+            <div class="mem-lin-cell lin-row0"><div class="mem-lin-val">1</div><div class="mem-lin-idx">[0][0]</div></div>
+            <div class="mem-lin-cell lin-row0"><div class="mem-lin-val">2</div><div class="mem-lin-idx">[0][1]</div></div>
+            <div class="mem-lin-cell lin-row0"><div class="mem-lin-val">3</div><div class="mem-lin-idx">[0][2]</div></div>
+            <div class="mem-lin-cell lin-row0"><div class="mem-lin-val">4</div><div class="mem-lin-idx">[0][3]</div></div>
+            <div class="mem-lin-cell lin-row1"><div class="mem-lin-val">5</div><div class="mem-lin-idx">[1][0]</div></div>
+            <div class="mem-lin-cell lin-row1"><div class="mem-lin-val">6</div><div class="mem-lin-idx">[1][1]</div></div>
+            <div class="mem-lin-cell lin-row1"><div class="mem-lin-val">7</div><div class="mem-lin-idx">[1][2]</div></div>
+            <div class="mem-lin-cell lin-row1"><div class="mem-lin-val">8</div><div class="mem-lin-idx">[1][3]</div></div>
+            <div class="mem-lin-cell lin-row2"><div class="mem-lin-val">9</div><div class="mem-lin-idx">[2][0]</div></div>
+            <div class="mem-lin-cell lin-row2"><div class="mem-lin-val">10</div><div class="mem-lin-idx">[2][1]</div></div>
+            <div class="mem-lin-cell lin-row2"><div class="mem-lin-val">11</div><div class="mem-lin-idx">[2][2]</div></div>
+            <div class="mem-lin-cell lin-row2"><div class="mem-lin-val">12</div><div class="mem-lin-idx">[2][3]</div></div>
+          </div>
+          <div style="display: flex; justify-content: center; gap: 30px; font-size: 0.6em; margin-top: 8px;">
+            <span style="color: #ff79c6;">&#9608; array[0]</span>
+            <span style="color: #50fa7b;">&#9608; array[1]</span>
+            <span style="color: #ffb86c;">&#9608; array[2]</span>
+          </div>
+          <p style="font-size: 0.6em; color: #6272a4; margin-top: 10px;">Low address &#x2192; High address</p>
+        </section>
+
+        <!-- GDB: verify contiguous memory -->
+        <section>
+          <h3>GDB: Verify Memory Layout</h3>
+          <div class="gdb-box">
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">b 13</span><br>
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">r &lt; input.txt</span><br>
+            <br>
+            <span class="gdb-comment">// Print array as 2D</span><br>
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">p array</span><br>
+            <span class="gdb-output">= {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}}</span><br>
+            <br>
+            <span class="gdb-comment">// Examine 12 consecutive ints from the start</span><br>
+            <span class="gdb-prompt">(gdb) </span><span class="gdb-cmd">x/12dw array</span><br>
+            <span class="gdb-addr">0x7ffd1000</span><span class="gdb-output">: </span>
+            <span style="color:#ff79c6">1  2  3  4</span><br>
+            <span class="gdb-addr">0x7ffd1010</span><span class="gdb-output">: </span>
+            <span style="color:#50fa7b">5  6  7  8</span><br>
+            <span class="gdb-addr">0x7ffd1020</span><span class="gdb-output">: </span>
+            <span style="color:#ffb86c">9  10  11  12</span><br>
+          </div>
+          <p class="explanation">Each int = 4 bytes. 12 ints = 48 bytes, all contiguous!</p>
+        </section>
+
+        <!-- What is array[h]? -->
+        <section data-auto-animate>
+          <h3>What is <code>array[h]</code>?</h3>
+          <div style="font-size: 0.7em; text-align: left; max-width: 700px; margin: 0 auto;">
+            <p><code style="color:#8be9fd;">array</code> has type <code style="color:#ff79c6;">int (*)[4]</code> &mdash; pointer to array of 4 ints</p>
+            <p class="fragment"><code style="color:#8be9fd;">array[h]</code> has type <code style="color:#ff79c6;">int [4]</code> &mdash; an array of 4 ints</p>
+            <p class="fragment">When passed to a function, it <strong style="color:#50fa7b;">decays</strong> to <code style="color:#ff79c6;">int *</code></p>
+          </div>
+          <div class="fragment" style="margin-top: 20px;">
+            <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+// These are equivalent:
+void add1(int ar[], int size);
+void add1(int *ar,  int size);
+            </code></pre>
+          </div>
+          <p class="explanation fragment">So <code>add1(array[h], 4)</code> passes a pointer to the first element of row h</p>
+        </section>
+
+        <!-- Step-by-step: all iterations -->
+        <section>
+          <h3>Loop Execution</h3>
+          <div style="font-size: 0.7em; max-width: 700px; margin: 0 auto; text-align: left;">
+            <div class="fragment">
+              <p><span style="color:#ff79c6;">h=0:</span> <code>add1(array[0], 4)</code> &rarr; ar = <code>&amp;array[0][0]</code>, increments row 0</p>
+            </div>
+            <div class="fragment">
+              <p><span style="color:#50fa7b;">h=1:</span> <code>add1(array[1], 4)</code> &rarr; ar = <code>&amp;array[1][0]</code>, increments row 1</p>
+            </div>
+            <div class="fragment">
+              <p><span style="color:#ffb86c;">h=2:</span> <code>add1(array[2], 4)</code> &rarr; ar = <code>&amp;array[2][0]</code>, increments row 2</p>
+            </div>
+          </div>
+          <div class="fragment" style="margin-top: 20px;">
+            <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 8px;">Result: every element +1</p>
+            <div class="mem-grid" style="font-size: 0.85em;">
+              <div></div>
+              <div class="mem-col-header">[0]</div>
+              <div class="mem-col-header">[1]</div>
+              <div class="mem-col-header">[2]</div>
+              <div class="mem-col-header">[3]</div>
+              <div class="mem-row-label">array[0]</div>
+              <div class="mem-cell highlight-row0"><div class="mem-cell-val val-changed">2</div></div>
+              <div class="mem-cell highlight-row0"><div class="mem-cell-val val-changed">3</div></div>
+              <div class="mem-cell highlight-row0"><div class="mem-cell-val val-changed">4</div></div>
+              <div class="mem-cell highlight-row0"><div class="mem-cell-val val-changed">5</div></div>
+              <div class="mem-row-label">array[1]</div>
+              <div class="mem-cell highlight-row1"><div class="mem-cell-val val-changed">6</div></div>
+              <div class="mem-cell highlight-row1"><div class="mem-cell-val val-changed">7</div></div>
+              <div class="mem-cell highlight-row1"><div class="mem-cell-val val-changed">8</div></div>
+              <div class="mem-cell highlight-row1"><div class="mem-cell-val val-changed">9</div></div>
+              <div class="mem-row-label">array[2]</div>
+              <div class="mem-cell highlight-row2"><div class="mem-cell-val val-changed">10</div></div>
+              <div class="mem-cell highlight-row2"><div class="mem-cell-val val-changed">11</div></div>
+              <div class="mem-cell highlight-row2"><div class="mem-cell-val val-changed">12</div></div>
+              <div class="mem-cell highlight-row2"><div class="mem-cell-val val-changed">13</div></div>
+            </div>
+          </div>
+          <p class="explanation fragment">Each call, <code>ar</code> points to a different row's start</p>
+        </section>
+
+        <!-- Transition: the alternative -->
+        <section>
+          <h3>What If We Replace line a?</h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim data-line-numbers="1-3|5">
+// Original: 3 calls, one per row
+for (h = 0; h &lt; 3; h++)
+  add1(array[h], 4);
+
+// Replacement: 1 call for everything
+add1(array[0], 3 * 4);
+          </code></pre>
+          <p class="fragment" style="font-size: 0.8em; color: #8be9fd; margin-top: 20px;">Does this work? <span class="fragment" style="color: #50fa7b; font-weight: bold;">Yes!</span></p>
+        </section>
+
+        <!-- Why it works: linear view -->
+        <section data-auto-animate>
+          <h3>Why It Works</h3>
+          <p style="font-size: 0.65em; color: #8be9fd;">
+            <code>array[0]</code> decays to <code>&amp;array[0][0]</code> &mdash; pointer to the very first int
+          </p>
+          <div class="mem-linear" data-id="lin-alt" style="margin-top: 20px;">
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">1</div><div class="mem-lin-idx">ar[0]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">2</div><div class="mem-lin-idx">ar[1]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">3</div><div class="mem-lin-idx">ar[2]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">4</div><div class="mem-lin-idx">ar[3]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">5</div><div class="mem-lin-idx">ar[4]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">6</div><div class="mem-lin-idx">ar[5]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">7</div><div class="mem-lin-idx">ar[6]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">8</div><div class="mem-lin-idx">ar[7]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">9</div><div class="mem-lin-idx">ar[8]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">10</div><div class="mem-lin-idx">ar[9]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">11</div><div class="mem-lin-idx">ar[10]</div></div>
+            <div class="mem-lin-cell lin-all"><div class="mem-lin-val">12</div><div class="mem-lin-idx">ar[11]</div></div>
+          </div>
+          <p style="font-size: 0.65em; margin-top: 10px;">
+            <code style="color:#ff79c6;">add1(array[0], 12)</code> &mdash; treat entire 2D array as <strong style="color:#8be9fd;">one flat array of 12 ints</strong>
+          </p>
+          <p class="explanation fragment">Memory is contiguous, so <code>ar[0]</code> through <code>ar[11]</code> covers all elements!</p>
+        </section>
+
+        <!-- Comparison -->
+        <section>
+          <h3>Comparison</h3>
+          <table class="cmp-table">
+            <tr>
+              <th></th>
+              <th>Original</th>
+              <th>Alternative</th>
+            </tr>
+            <tr>
+              <td style="color: #8be9fd;">Code</td>
+              <td>
+                <code style="font-size:0.85em;">for (h=0; h&lt;3; h++)<br>&nbsp;&nbsp;add1(array[h], 4);</code>
+              </td>
+              <td><code style="font-size:0.85em;">add1(array[0], 3*4);</code></td>
+            </tr>
+            <tr>
+              <td style="color: #8be9fd;">Calls</td>
+              <td>3</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td style="color: #8be9fd;">Result</td>
+              <td colspan="2" style="color: #50fa7b;">Same &#10003; &mdash; 2D array is contiguous in memory</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li class="fragment"><code>int array[M][N]</code> is <strong>M&times;N contiguous</strong> ints in memory</li>
+            <li class="fragment"><code>array[h]</code> decays to <code>int *</code> pointing to row h</li>
+            <li class="fragment">Because memory is contiguous, you can treat a 2D array as 1D</li>
+          </ul>
+        </section>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/markdown/markdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/math/math.min.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      transition: 'slide',
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Week 7 Slides</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/monokai.min.css">
+
+  <style>
+    /* Recursion call stack frame */
+    .rec-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-family: monospace;
+      font-size: 0.5em;
+      margin: 10px auto;
+    }
+    .rec-frame {
+      border: 2px solid #6272a4;
+      border-radius: 6px;
+      padding: 6px 14px;
+      background: #44475a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      width: auto;
+      min-width: 380px;
+    }
+    .rec-frame.base {
+      border-color: #50fa7b;
+      background: rgba(80, 250, 123, 0.1);
+    }
+    .rec-call { color: #8be9fd; }
+    .rec-detail { color: #f8f8f2; }
+    .rec-ret { color: #50fa7b; font-weight: bold; }
+    .rec-arrow {
+      color: #6272a4;
+      font-size: 0.9em;
+    }
+
+    /* Comparison table */
+    .cmp-table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      font-size: 0.6em;
+      border: 1px solid #6272a4;
+    }
+    .cmp-table th, .cmp-table td {
+      padding: 8px 14px;
+      text-align: center;
+      border: 1px solid #6272a4 !important;
+    }
+    .cmp-table th {
+      background: #44475a;
+      color: #8be9fd;
+    }
+    .cmp-table td {
+      font-family: monospace;
+    }
+
+    /* Terminal output box */
+    .term-box {
+      background: #1e1f29;
+      border: 1px solid #6272a4;
+      border-radius: 8px;
+      padding: 14px 20px;
+      text-align: left;
+      font-family: monospace;
+      font-size: 0.6em;
+      line-height: 1.7;
+      max-width: 750px;
+      margin: 12px auto;
+      color: #f8f8f2;
+    }
+    .term-box .t-label {
+      color: #6272a4;
+      font-style: italic;
+    }
+    .term-box .t-hi {
+      color: #50fa7b;
+    }
+    .term-box .t-new {
+      color: #ffb86c;
+    }
+
+
+    /* Tree visual for memoized DFS */
+    .memo-tree-box {
+      background: #1e1f29;
+      border: 1px solid #6272a4;
+      border-radius: 8px;
+      padding: 12px 16px;
+      text-align: left;
+      font-family: monospace;
+      font-size: 0.44em;
+      line-height: 1.45;
+      max-width: 860px;
+      margin: 10px auto;
+    }
+    .memo-tree, .memo-tree ul {
+      list-style: none;
+      margin: 0;
+      padding-left: 1.2em;
+      position: relative;
+    }
+    .memo-tree ul::before {
+      content: "";
+      position: absolute;
+      left: 0.35em;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid #6272a4;
+    }
+    .memo-tree li {
+      margin: 4px 0;
+      padding-left: 0.9em;
+      position: relative;
+    }
+    .memo-tree li::before {
+      content: "";
+      position: absolute;
+      left: 0.35em;
+      top: 0.7em;
+      width: 0.65em;
+      border-top: 1px solid #6272a4;
+    }
+    .memo-tree > li {
+      padding-left: 0;
+    }
+    .memo-tree > li::before {
+      display: none;
+    }
+    .memo-node { color: #8be9fd; }
+    .memo-base { color: #50fa7b; }
+    .memo-hit { color: #ff79c6; font-weight: bold; }
+    .memo-store { color: #ffb86c; }
+
+    /* Explanation callout */
+    .explanation {
+      color: #ffb86c;
+      font-size: 0.7em;
+      margin-top: 10px;
+    }
+
+    /* Call stack visual (vertical boxes with indent) */
+    .stack-vis {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      font-family: monospace;
+      font-size: 0.48em;
+      margin: 10px auto;
+      max-width: 700px;
+    }
+    .stack-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .stack-box {
+      border: 2px solid #6272a4;
+      border-radius: 5px;
+      padding: 5px 12px;
+      background: #44475a;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .stack-box.base {
+      border-color: #50fa7b;
+      background: rgba(80, 250, 123, 0.1);
+    }
+    .stack-box.match {
+      border-color: #ff79c6;
+      background: rgba(255, 121, 198, 0.1);
+    }
+    .stack-box.no-match {
+      border-color: #6272a4;
+    }
+    .stack-ret {
+      color: #50fa7b;
+      font-weight: bold;
+    }
+    .stack-call {
+      color: #8be9fd;
+    }
+    .stack-arrow {
+      color: #6272a4;
+      margin-left: 4px;
+    }
+
+    /* Char stack visual for Q3 */
+    .char-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      font-family: monospace;
+      font-size: 0.5em;
+      margin: 10px auto;
+    }
+    .char-frame {
+      border: 2px solid #6272a4;
+      border-radius: 5px;
+      padding: 5px 16px;
+      background: #44475a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      min-width: 450px;
+    }
+    .char-frame.space-frame {
+      border-color: #ff79c6;
+      background: rgba(255, 121, 198, 0.1);
+    }
+    .char-ch { color: #ffb86c; font-weight: bold; }
+    .char-act { color: #f8f8f2; }
+    .char-out { color: #50fa7b; font-weight: bold; }
+
+    /* Hand-drawn style animation for Question 2 */
+    .q2-sketch-stage {
+      position: relative;
+      max-width: 980px;
+      height: 390px;
+      margin: 14px auto 0;
+    }
+    .q2-sketch-card {
+      position: absolute;
+      width: 300px;
+      border: 3px solid #f8f8f2;
+      border-radius: 28px 10px 24px 12px;
+      background: rgba(30, 31, 41, 0.92);
+      padding: 14px 16px 10px;
+      text-align: left;
+      box-shadow: 0 0 0 2px rgba(248, 248, 242, 0.08);
+    }
+    .q2-sketch-card.left {
+      left: 12px;
+      top: 18px;
+      transform: rotate(-1.6deg);
+    }
+    .q2-sketch-card.right {
+      left: 340px;
+      top: 84px;
+      transform: rotate(1.2deg);
+    }
+    .q2-sketch-card.base {
+      left: 660px;
+      top: 156px;
+      transform: rotate(-0.9deg);
+      border-color: #50fa7b;
+    }
+    .q2-code {
+      margin: 0;
+      white-space: pre;
+      font-family: monospace;
+      font-size: 0.38em;
+      line-height: 1.23;
+      color: #f8f8f2;
+    }
+    .q2-code .q2-hi {
+      color: #8be9fd;
+      font-weight: bold;
+    }
+    .q2-state {
+      margin-top: 6px;
+      font-family: monospace;
+      font-size: 0.42em;
+      color: #ffb86c;
+    }
+    .q2-arrow-note {
+      position: absolute;
+      font-family: monospace;
+      font-size: 0.4em;
+      border: 1px dashed #8be9fd;
+      border-radius: 12px;
+      color: #8be9fd;
+      background: rgba(40, 42, 54, 0.85);
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+    .q2-arrow-note.call1 {
+      left: 278px;
+      top: 76px;
+      transform: rotate(8deg);
+    }
+    .q2-arrow-note.call2 {
+      left: 607px;
+      top: 162px;
+      transform: rotate(11deg);
+    }
+    .q2-arrow-note.ret1 {
+      left: 546px;
+      top: 260px;
+      color: #50fa7b;
+      border-color: #50fa7b;
+      transform: rotate(-10deg);
+    }
+    .q2-arrow-note.ret2 {
+      left: 292px;
+      top: 194px;
+      color: #50fa7b;
+      border-color: #50fa7b;
+      transform: rotate(-10deg);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Title -->
+      <section>
+        <h2>NTU SC1008 Tutorial</h2>
+        <h3>Week 7 Slides</h3>
+        <p>Pu Fanyi</p>
+        <p><a href="https://pufanyi.com">pufanyi.com</a></p>
+        <p><a href="mailto:FPU001@e.ntu.edu.sg">FPU001@e.ntu.edu.sg</a></p>
+      </section>
+
+      <!-- ==================== Question 1: rSumup ==================== -->
+      <section>
+        <section>
+          <h2>Question 1</h2>
+          <h4>Recursive Sum: <code>rSumup1</code> &amp; <code>rSumup2</code></h4>
+          <p style="font-size: 0.65em; color: #8be9fd;">Compute 1 + 2 + &hellip; + n recursively</p>
+        </section>
+
+        <!-- Template Code -->
+        <section>
+          <h3>Template Code</h3>
+          <pre style="font-size: 0.4em;"><code class="language-c" data-trim data-line-numbers>
+#include &lt;stdio.h&gt;
+
+int rSumup1(int n);
+void rSumup2(int n, int* result);
+
+int main() {
+  int n, result;
+  printf("Enter a number: \n");
+  scanf("%d", &amp;n);
+  printf("rSumup1(): %d\n", rSumup1(n));
+  rSumup2(n, &amp;result);
+  printf("rSumup2(): %d\n", result);
+  return 0;
+}
+
+int rSumup1(int n) { /* Write your code here */ }
+
+void rSumup2(int n, int* result) { /* Write your code here */ }
+          </code></pre>
+        </section>
+
+        <!-- rSumup1 Idea -->
+        <section>
+          <h3><code>rSumup1</code> &mdash; Return Value Approach</h3>
+          <p style="font-size: 0.6em; color: #8be9fd;">Base case: <code>n == 1</code> &rarr; return <code>1</code></p>
+          <p style="font-size: 0.6em; color: #8be9fd;">Recursive: return <code>n + rSumup1(n - 1)</code></p>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+int rSumup1(int n) {
+  if (n == 1) {
+    return 1;
+  }
+  return n + rSumup1(n - 1);
+}
+          </code></pre>
+        </section>
+
+        <!-- rSumup1 Diagram: n=4 -->
+        <section>
+          <h3><code>rSumup1(4)</code> Call Trace</h3>
+          <div class="rec-stack">
+            <div class="rec-frame">
+              <span class="rec-call">rSumup1(4)</span>
+              <span class="rec-detail">= 4 + rSumup1(3)</span>
+              <span class="rec-ret">= 4 + 6 = 10</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame" style="margin-left: 30px;">
+              <span class="rec-call">rSumup1(3)</span>
+              <span class="rec-detail">= 3 + rSumup1(2)</span>
+              <span class="rec-ret">= 3 + 3 = 6</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame" style="margin-left: 60px;">
+              <span class="rec-call">rSumup1(2)</span>
+              <span class="rec-detail">= 2 + rSumup1(1)</span>
+              <span class="rec-ret">= 2 + 1 = 3</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame base" style="margin-left: 90px;">
+              <span class="rec-call">rSumup1(1)</span>
+              <span class="rec-detail">n == 1 (base case)</span>
+              <span class="rec-ret">return 1</span>
+            </div>
+          </div>
+          <p class="explanation">Each call waits for the deeper call to return, then adds <code>n</code> to the result.</p>
+        </section>
+
+        <!-- rSumup2 Idea -->
+        <section>
+          <h3><code>rSumup2</code> &mdash; Pointer Approach</h3>
+          <p style="font-size: 0.6em; color: #8be9fd;">Base case: <code>n == 1</code> &rarr; <code>*result = 1</code></p>
+          <p style="font-size: 0.6em; color: #8be9fd;">Recursive: get sub-result via pointer, then <code>*result = n + temp</code></p>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+void rSumup2(int n, int* result) {
+  if (n == 1) {
+    *result = 1;
+    return;
+  }
+  int temp;
+  rSumup2(n - 1, &amp;temp);
+  *result = n + temp;
+}
+          </code></pre>
+        </section>
+
+        <!-- rSumup2 Diagram: n=4 -->
+        <section>
+          <h3><code>rSumup2(4, &amp;result)</code> Call Trace</h3>
+          <div class="rec-stack">
+            <div class="rec-frame">
+              <span class="rec-call">rSumup2(4, &amp;result)</span>
+              <span class="rec-detail">temp=6, *result = 4+6</span>
+              <span class="rec-ret">*result = 10</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame" style="margin-left: 30px;">
+              <span class="rec-call">rSumup2(3, &amp;temp)</span>
+              <span class="rec-detail">temp=3, *result = 3+3</span>
+              <span class="rec-ret">*result = 6</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame" style="margin-left: 60px;">
+              <span class="rec-call">rSumup2(2, &amp;temp)</span>
+              <span class="rec-detail">temp=1, *result = 2+1</span>
+              <span class="rec-ret">*result = 3</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame base" style="margin-left: 90px;">
+              <span class="rec-call">rSumup2(1, &amp;temp)</span>
+              <span class="rec-detail">n == 1 (base case)</span>
+              <span class="rec-ret">*result = 1</span>
+            </div>
+          </div>
+          <p class="explanation">Same logic, but results are written through pointers instead of return values.</p>
+        </section>
+      </section>
+
+      <!-- ==================== Question 2: rDigitValue ==================== -->
+      <section>
+        <section>
+          <h2>Question 2</h2>
+          <h4>Recursive Digit: <code>rDigitValue1</code> &amp; <code>rDigitValue2</code></h4>
+          <p style="font-size: 0.65em; color: #8be9fd;">Find the k-th digit from the right of a number</p>
+        </section>
+
+        <!-- Template Code -->
+        <section>
+          <h3>Template Code</h3>
+          <pre style="font-size: 0.4em;"><code class="language-c" data-trim data-line-numbers>
+#include &lt;stdio.h&gt;
+
+int rDigitValue1(int num, int k);
+void rDigitValue2(int num, int k, int* result);
+
+int main() {
+  int k;
+  int number, digit;
+  printf("Enter a number: \n");
+  scanf("%d", &amp;number);
+  printf("Enter k position: \n");
+  scanf("%d", &amp;k);
+  printf("rDigitValue1(): %d\n", rDigitValue1(number, k));
+  rDigitValue2(number, k, &amp;digit);
+  printf("rDigitValue2(): %d\n", digit);
+  return 0;
+}
+
+int rDigitValue1(int num, int k) { /* Write your code here */ }
+
+void rDigitValue2(int num, int k, int* result) { /* Write your code here */ }
+          </code></pre>
+        </section>
+
+        <!-- Key Idea -->
+        <section>
+          <h3>Key Idea</h3>
+          <p style="font-size: 0.65em; color: #8be9fd;">The k-th digit from the right of <code>num</code>:</p>
+          <table class="cmp-table" style="font-size: 0.55em; margin-top: 15px;">
+            <tr>
+              <th>Operation</th>
+              <th>Effect</th>
+              <th>Example (num=12345)</th>
+            </tr>
+            <tr>
+              <td><code>num % 10</code></td>
+              <td>Get last digit</td>
+              <td style="color:#50fa7b;">12345 % 10 = 5</td>
+            </tr>
+            <tr>
+              <td><code>num / 10</code></td>
+              <td>Remove last digit</td>
+              <td style="color:#50fa7b;">12345 / 10 = 1234</td>
+            </tr>
+          </table>
+          <p style="font-size: 0.6em; margin-top: 15px;">
+            <span style="color:#ffb86c;">Strategy:</span> Remove last digit <code>k-1</code> times, then take <code>% 10</code>
+          </p>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+int rDigitValue1(int num, int k) {
+  if (k == 1) {
+    return num % 10;
+  }
+  return rDigitValue1(num / 10, k - 1);
+}
+          </code></pre>
+        </section>
+
+        <!-- Hand-drawn Animation -->
+        <section>
+          <h3>Sketch Animation: <code>rDigitValue1(12345, 3)</code></h3>
+          <p style="font-size: 0.56em; color: #6272a4;">Press next: stack grows by recursive calls, then returns the answer upward.</p>
+
+          <div class="q2-sketch-stage">
+            <div class="q2-sketch-card left fragment" data-fragment-index="0">
+              <pre class="q2-code">int rDigitValue1(int num, int k) {
+  if (k == 1) return num % 10;
+  <span class="q2-hi">return rDigitValue1(num / 10, k - 1);</span>
+}</pre>
+              <div class="q2-state">Frame A: num=12345, k=3</div>
+            </div>
+
+            <div class="q2-arrow-note call1 fragment" data-fragment-index="1">save frame A, call -> (1234, 2)</div>
+
+            <div class="q2-sketch-card right fragment" data-fragment-index="2">
+              <pre class="q2-code">int rDigitValue1(int num, int k) {
+  if (k == 1) return num % 10;
+  <span class="q2-hi">return rDigitValue1(num / 10, k - 1);</span>
+}</pre>
+              <div class="q2-state">Frame B: num=1234, k=2</div>
+            </div>
+
+            <div class="q2-arrow-note call2 fragment" data-fragment-index="3">save frame B, call -> (123, 1)</div>
+
+            <div class="q2-sketch-card base fragment" data-fragment-index="4">
+              <pre class="q2-code">int rDigitValue1(int num, int k) {
+  <span class="q2-hi">if (k == 1) return num % 10;</span>
+  return rDigitValue1(num / 10, k - 1);
+}</pre>
+              <div class="q2-state">Base frame: num=123, k=1 -> return 3</div>
+            </div>
+
+            <div class="q2-arrow-note ret1 fragment" data-fragment-index="5">return 3 <- to frame B</div>
+            <div class="q2-arrow-note ret2 fragment" data-fragment-index="6">return 3 <- to frame A</div>
+          </div>
+
+          <p class="explanation" style="margin-top: 10px;">Each frame keeps the same code, but with different <code>num</code> and <code>k</code>.</p>
+        </section>
+
+        <!-- rDigitValue1 Diagram: num=12345, k=3 -->
+        <section>
+          <h3><code>rDigitValue1(12345, 3)</code></h3>
+          <p style="font-size: 0.6em; color: #6272a4;">12345 &rarr; digits: 1 2 3 4 5, k=3 means 3rd from right = <span style="color:#50fa7b;">3</span></p>
+          <div class="rec-stack" style="margin-top: 15px;">
+            <div class="rec-frame">
+              <span class="rec-call">rDigitValue1(12345, 3)</span>
+              <span class="rec-detail">k&ne;1 &rarr; call(12345/10, 3-1)</span>
+              <span class="rec-ret">= 3</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame" style="margin-left: 30px;">
+              <span class="rec-call">rDigitValue1(1234, 2)</span>
+              <span class="rec-detail">k&ne;1 &rarr; call(1234/10, 2-1)</span>
+              <span class="rec-ret">= 3</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame base" style="margin-left: 60px;">
+              <span class="rec-call">rDigitValue1(123, 1)</span>
+              <span class="rec-detail">k == 1 (base case)</span>
+              <span class="rec-ret">return 123 % 10 = 3</span>
+            </div>
+          </div>
+          <p class="explanation">Each recursion strips the last digit (<code>/10</code>) and decrements <code>k</code>. When <code>k == 1</code>, the last digit is the answer.</p>
+        </section>
+
+        <!-- rDigitValue2 -->
+        <section>
+          <h3><code>rDigitValue2</code> &mdash; Pointer Approach</h3>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+void rDigitValue2(int num, int k, int* result) {
+  if (k == 1) {
+    *result = num % 10;
+  } else {
+    rDigitValue2(num / 10, k - 1, result);
+  }
+}
+          </code></pre>
+          <div class="rec-stack" style="margin-top: 15px;">
+            <div class="rec-frame">
+              <span class="rec-call">rDigitValue2(12345, 3, &amp;digit)</span>
+              <span class="rec-detail">k&ne;1 &rarr; call(1234, 2, &amp;digit)</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame" style="margin-left: 30px;">
+              <span class="rec-call">rDigitValue2(1234, 2, &amp;digit)</span>
+              <span class="rec-detail">k&ne;1 &rarr; call(123, 1, &amp;digit)</span>
+            </div>
+            <div class="rec-arrow">&darr;</div>
+            <div class="rec-frame base" style="margin-left: 60px;">
+              <span class="rec-call">rDigitValue2(123, 1, &amp;digit)</span>
+              <span class="rec-detail">k == 1</span>
+              <span class="rec-ret">*result = 3</span>
+            </div>
+          </div>
+          <p class="explanation">Same pointer <code>result</code> is passed all the way down. The base case writes directly to it.</p>
+        </section>
+      </section>
+
+      <!-- ==================== Question 3: What does code.c do? ==================== -->
+      <section>
+        <section>
+          <h2>Question 3</h2>
+          <h4>What does this code do?</h4>
+        </section>
+
+        <!-- The Code -->
+        <section>
+          <h3>The Code</h3>
+          <pre style="font-size: 0.45em;"><code class="language-c" data-trim data-line-numbers>
+#include &lt;stdio.h&gt;
+
+#define BLANK ' '
+
+void saveChar(void);
+
+int main() {
+  printf("Enter your word and end it with a space => ");
+  saveChar();
+  putchar('\n');
+  return 0;
+}
+
+void saveChar() {
+  char ch;
+  ch = getchar();
+  if (ch != BLANK) {
+    saveChar();
+  } else {
+    putchar('\n');
+  }
+  putchar(ch);
+}
+          </code></pre>
+        </section>
+
+        <!-- Analysis -->
+        <section>
+          <h3>How <code>saveChar()</code> Works</h3>
+          <p style="font-size: 0.6em; color: #8be9fd; margin-bottom: 10px;">Each call reads one character and saves it on the <strong>stack</strong>.</p>
+          <p style="font-size: 0.6em;">If <code>ch != ' '</code> &rarr; recurse deeper (read next char)</p>
+          <p style="font-size: 0.6em;">If <code>ch == ' '</code> &rarr; stop recursing, print <code>'\n'</code></p>
+          <p style="font-size: 0.6em; color: #ffb86c; margin-top: 10px;">After recursion returns, <code>putchar(ch)</code> prints the saved character.</p>
+          <p style="font-size: 0.6em; color: #ff79c6; margin-top: 10px;">Since deeper calls return first &rarr; characters print in <strong>reverse order</strong>!</p>
+        </section>
+
+        <!-- Trace with "hello " -->
+        <section>
+          <h3>Trace: Input = <code>"hello "</code></h3>
+          <p style="font-size: 0.55em; color: #6272a4; margin-bottom: 5px;">&darr; Calling phase (reading characters)</p>
+          <div class="char-stack">
+            <div class="char-frame">
+              <span class="char-ch">ch = 'h'</span>
+              <span class="char-act">ch != ' ' &rarr; call saveChar()</span>
+              <span class="char-out">putchar('h') &larr; 6th</span>
+            </div>
+            <div class="char-frame" style="margin-left: 20px;">
+              <span class="char-ch">ch = 'e'</span>
+              <span class="char-act">ch != ' ' &rarr; call saveChar()</span>
+              <span class="char-out">putchar('e') &larr; 5th</span>
+            </div>
+            <div class="char-frame" style="margin-left: 40px;">
+              <span class="char-ch">ch = 'l'</span>
+              <span class="char-act">ch != ' ' &rarr; call saveChar()</span>
+              <span class="char-out">putchar('l') &larr; 4th</span>
+            </div>
+            <div class="char-frame" style="margin-left: 60px;">
+              <span class="char-ch">ch = 'l'</span>
+              <span class="char-act">ch != ' ' &rarr; call saveChar()</span>
+              <span class="char-out">putchar('l') &larr; 3rd</span>
+            </div>
+            <div class="char-frame" style="margin-left: 80px;">
+              <span class="char-ch">ch = 'o'</span>
+              <span class="char-act">ch != ' ' &rarr; call saveChar()</span>
+              <span class="char-out">putchar('o') &larr; 2nd</span>
+            </div>
+            <div class="char-frame space-frame" style="margin-left: 100px;">
+              <span class="char-ch">ch = ' '</span>
+              <span class="char-act">ch == ' ' &rarr; putchar('\n')</span>
+              <span class="char-out">putchar(' ') &larr; 1st</span>
+            </div>
+          </div>
+          <p style="font-size: 0.55em; color: #6272a4; margin-top: 3px;">&uarr; Returning phase (printing characters in reverse)</p>
+        </section>
+
+        <!-- Output -->
+        <section>
+          <h3>Output</h3>
+          <div class="term-box" style="font-size: 0.7em;">
+            Enter your word and end it with a space => hello <br>
+            <span class="t-label">&uarr; user types "hello " (with trailing space)</span><br>
+            <br>
+            <span class="t-new">␠olleh</span><br>
+            <span class="t-label">&uarr; newline from putchar('\n'), then ␠(space) + reversed chars</span>
+          </div>
+          <p class="explanation" style="margin-top: 15px;">
+            The code <strong>reverses a word</strong> using the call stack as implicit storage.
+            Each recursive call "saves" one character; as the stack unwinds, characters are printed in reverse order.
+          </p>
+        </section>
+      </section>
+
+      <!-- ==================== Question 4: rCountArray ==================== -->
+      <section>
+        <section>
+          <h2>Question 4</h2>
+          <h4>Recursive Count: <code>rCountArray</code></h4>
+          <p style="font-size: 0.65em; color: #8be9fd;">Count occurrences of a target number in an array</p>
+        </section>
+
+        <!-- Template Code -->
+        <section>
+          <h3>Template Code</h3>
+          <pre style="font-size: 0.4em;"><code class="language-c" data-trim data-line-numbers>
+#include &lt;stdio.h&gt;
+
+#define SIZE 20
+
+int rCountArray(int array[], int n, int a);
+
+int main() {
+  int array[SIZE];
+  int index, count, target, size;
+  printf("Enter array size: \n");
+  scanf("%d", &amp;size);
+  printf("Enter %d numbers: \n", size);
+  for (index = 0; index &lt; size; index++) scanf("%d", &amp;array[index]);
+  printf("Enter the target number: \n");
+  scanf("%d", &amp;target);
+  count = rCountArray(array, size, target);
+  printf("rCountArray(): %d\n", count);
+  return 0;
+}
+
+int rCountArray(int array[], int n, int a) {
+  /* Write your program code here */
+}
+          </code></pre>
+        </section>
+
+        <!-- Key Idea -->
+        <section>
+          <h3>Key Idea</h3>
+          <p style="font-size: 0.6em; color: #8be9fd;">Base case: <code>n == 0</code> &rarr; no elements left, return <code>0</code></p>
+          <p style="font-size: 0.6em; color: #8be9fd;">Recursive: count in first <code>n-1</code> elements, then check <code>array[n-1]</code></p>
+          <pre style="font-size: 0.5em;"><code class="language-c" data-trim>
+int rCountArray(int array[], int n, int a) {
+  if (n == 0) {
+    return 0;
+  }
+  int count = rCountArray(array, n - 1, a);
+  if (array[n - 1] == a) {
+    count++;
+  }
+  return count;
+}
+          </code></pre>
+        </section>
+
+        <!-- Diagram: array = [1,2,3,2,1], target = 2 -->
+        <section>
+          <h3>Example: arr = [1, 2, 3, 2, 1], target = 2</h3>
+          <div class="stack-vis">
+            <div class="stack-row">
+              <div class="stack-box no-match">
+                <span class="stack-call">rCountArray(arr, 5, 2)</span>
+                <span class="stack-arrow">&rarr;</span>
+                arr[4]=<span style="color:#f8f8f2;">1</span> &ne; 2
+              </div>
+              <span class="stack-ret">return 2</span>
+            </div>
+            <div class="stack-row" style="margin-left: 20px;">
+              <div class="stack-box match">
+                <span class="stack-call">rCountArray(arr, 4, 2)</span>
+                <span class="stack-arrow">&rarr;</span>
+                arr[3]=<span style="color:#ff79c6;">2</span> == 2 &check;
+              </div>
+              <span class="stack-ret">return 1+1 = 2</span>
+            </div>
+            <div class="stack-row" style="margin-left: 40px;">
+              <div class="stack-box no-match">
+                <span class="stack-call">rCountArray(arr, 3, 2)</span>
+                <span class="stack-arrow">&rarr;</span>
+                arr[2]=<span style="color:#f8f8f2;">3</span> &ne; 2
+              </div>
+              <span class="stack-ret">return 1</span>
+            </div>
+            <div class="stack-row" style="margin-left: 60px;">
+              <div class="stack-box match">
+                <span class="stack-call">rCountArray(arr, 2, 2)</span>
+                <span class="stack-arrow">&rarr;</span>
+                arr[1]=<span style="color:#ff79c6;">2</span> == 2 &check;
+              </div>
+              <span class="stack-ret">return 0+1 = 1</span>
+            </div>
+            <div class="stack-row" style="margin-left: 80px;">
+              <div class="stack-box no-match">
+                <span class="stack-call">rCountArray(arr, 1, 2)</span>
+                <span class="stack-arrow">&rarr;</span>
+                arr[0]=<span style="color:#f8f8f2;">1</span> &ne; 2
+              </div>
+              <span class="stack-ret">return 0</span>
+            </div>
+            <div class="stack-row" style="margin-left: 100px;">
+              <div class="stack-box base">
+                <span class="stack-call">rCountArray(arr, 0, 2)</span>
+                <span style="color:#50fa7b;">&rarr; n == 0 (base case)</span>
+              </div>
+              <span class="stack-ret">return 0</span>
+            </div>
+          </div>
+          <p class="explanation">Two matches found (indices 1 and 3) &rarr; result = <strong>2</strong></p>
+        </section>
+
+        <!-- Output -->
+        <section>
+          <h3>Sample Run</h3>
+          <div class="term-box" style="font-size: 0.65em;">
+            Enter array size:<br>
+            <span class="t-hi">5</span><br>
+            Enter 5 numbers:<br>
+            <span class="t-hi">1 2 3 2 1</span><br>
+            Enter the target number:<br>
+            <span class="t-hi">2</span><br>
+            rCountArray(): <span class="t-new">2</span>
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== Bonus: Memoization ==================== -->
+      <section>
+        <section>
+          <h2>Bonus: Memoization</h2>
+          <p style="font-size: 0.65em; color: #8be9fd;">Optimizing recursion by caching results</p>
+        </section>
+
+        <!-- Fibonacci: Naive -->
+        <section>
+          <h3>Fibonacci &mdash; Naive Recursion</h3>
+          <pre style="font-size: 0.45em;"><code class="language-c" data-trim data-line-numbers>
+int fibonacci(int n) {
+  if (n == 0) return 0;
+  if (n == 1) return 1;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+          </code></pre>
+          <p style="font-size: 0.65em; margin-top: 15px;">
+            F(0)=0, &ensp; F(1)=1, &ensp; F(2)=1, &ensp; F(3)=2, &ensp; F(4)=3, &ensp; F(5)=5, &ensp; &hellip;
+          </p>
+        </section>
+
+        <!-- Naive Tree for fib(5) -->
+        <section>
+          <h3><code>fib(5)</code> &mdash; Recursion Tree</h3>
+          <div class="term-box" style="font-size: 0.42em; line-height: 1.5;">
+<span style="color:#8be9fd;">fib(5)</span><br>
+├── <span style="color:#8be9fd;">fib(4)</span><br>
+│&nbsp;&nbsp; ├── <span style="color:#8be9fd;">fib(3)</span><br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span style="color:#8be9fd;">fib(2)</span><br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span style="color:#50fa7b;">fib(1) = 1</span><br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; │&nbsp;&nbsp; └── <span style="color:#50fa7b;">fib(0) = 0</span><br>
+│&nbsp;&nbsp; │&nbsp;&nbsp; └── <span style="color:#50fa7b;">fib(1) = 1</span><br>
+│&nbsp;&nbsp; └── <span style="color:#ff5555;">fib(2)</span> <span style="color:#6272a4;">&larr; repeated!</span><br>
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span style="color:#50fa7b;">fib(1) = 1</span><br>
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span style="color:#50fa7b;">fib(0) = 0</span><br>
+└── <span style="color:#ff5555;">fib(3)</span> <span style="color:#6272a4;">&larr; repeated!</span><br>
+&nbsp;&nbsp;&nbsp; ├── <span style="color:#ff5555;">fib(2)</span> <span style="color:#6272a4;">&larr; repeated!</span><br>
+&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span style="color:#50fa7b;">fib(1) = 1</span><br>
+&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; └── <span style="color:#50fa7b;">fib(0) = 0</span><br>
+&nbsp;&nbsp;&nbsp; └── <span style="color:#50fa7b;">fib(1) = 1</span>
+          </div>
+          <p style="font-size: 0.6em; color: #ff5555; margin-top: 8px;">
+            15 total calls &mdash; <code>fib(2)</code> computed 3 times, <code>fib(3)</code> computed 2 times!
+          </p>
+        </section>
+
+        <!-- The Problem -->
+        <section>
+          <h3>The Problem: Exponential Growth</h3>
+          <table class="cmp-table" style="font-size: 0.55em;">
+            <tr><th>n</th><th>fib(n)</th><th>Total Calls</th></tr>
+            <tr><td>5</td><td>5</td><td>15</td></tr>
+            <tr><td>10</td><td>55</td><td>177</td></tr>
+            <tr><td>20</td><td>6,765</td><td>21,891</td></tr>
+            <tr><td>30</td><td>832,040</td><td>2,692,537</td></tr>
+            <tr><td>40</td><td>102,334,155</td><td style="color:#ff5555;">331,160,281</td></tr>
+          </table>
+          <p style="font-size: 0.65em; color: #ff5555; margin-top: 15px;">
+            Time complexity: O(2<sup>n</sup>) &mdash; exponential!
+          </p>
+          <p class="explanation">Same subproblems are solved over and over again.</p>
+        </section>
+
+        <!-- Memoization Concept -->
+        <section>
+          <h3>Idea: Memoization</h3>
+          <p style="font-size: 0.65em; color: #8be9fd;">Store results of subproblems so we never recompute them.</p>
+          <div style="font-size: 0.6em; margin-top: 20px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+            <p>1. Create a <code>memory[]</code> array, initialized to <code>-1</code></p>
+            <p style="margin-top: 8px;">2. Before computing, check: <code>memory[n] != -1</code> ?</p>
+            <p style="margin-top: 8px;">3. If cached &rarr; return <code>memory[n]</code> immediately</p>
+            <p style="margin-top: 8px;">4. Otherwise &rarr; compute, store in <code>memory[n]</code>, then return</p>
+          </div>
+        </section>
+
+        <!-- Memoized Code -->
+        <section>
+          <h3>Memoized Fibonacci</h3>
+          <pre style="font-size: 0.42em;"><code class="language-c" data-trim data-line-numbers>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int fibonacci(int n, int *memory);
+
+int main() {
+  int n;
+  scanf("Enter a number n: %d", &amp;n);
+  int *memory = (int*) malloc(n * sizeof(int));
+  for (int i = 0; i &lt; n; i++) memory[i] = -1;
+  printf("Fibonacci of %d is %d\n", n, fibonacci(n, memory));
+  free(memory);
+  return 0;
+}
+
+int fibonacci(int n, int *memory) {
+  if (n == 0) return 0;
+  if (n == 1) return 1;
+  if (memory[n] != -1)       // already computed?
+    return memory[n];         // return cached result!
+  memory[n] = fibonacci(n - 1, memory) + fibonacci(n - 2, memory);
+  return memory[n];
+}
+          </code></pre>
+        </section>
+
+        <!-- Memoized Tree -->
+        <section>
+          <h3><code>fib(5)</code> &mdash; With Memoization</h3>
+          <div class="memo-tree-box">
+            <ul class="memo-tree">
+              <li>
+                <span class="memo-node">fib(5)</span> <span class="memo-store">&rarr; store mem[5] = 5</span>
+                <ul>
+                  <li>
+                    <span class="memo-node">fib(4)</span> <span class="memo-store">&rarr; store mem[4] = 3</span>
+                    <ul>
+                      <li>
+                        <span class="memo-node">fib(3)</span> <span class="memo-store">&rarr; store mem[3] = 2</span>
+                        <ul>
+                          <li>
+                            <span class="memo-node">fib(2)</span> <span class="memo-store">&rarr; store mem[2] = 1</span>
+                            <ul>
+                              <li><span class="memo-base">fib(1) = 1</span></li>
+                              <li><span class="memo-base">fib(0) = 0</span></li>
+                            </ul>
+                          </li>
+                          <li><span class="memo-base">fib(1) = 1</span></li>
+                        </ul>
+                      </li>
+                      <li><span class="memo-hit">fib(2) &rarr; cache hit: mem[2] = 1</span></li>
+                    </ul>
+                  </li>
+                  <li><span class="memo-hit">fib(3) &rarr; cache hit: mem[3] = 2</span></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <p style="font-size: 0.6em; color: #50fa7b; margin-top: 8px;">
+            Only 9 calls! Repeated subproblems return immediately from cache.
+          </p>
+        </section>
+
+        <!-- Memory Array -->
+        <section>
+          <h3>Memory Array</h3>
+          <p style="font-size: 0.6em; color: #6272a4;">After <code>fib(5)</code> completes:</p>
+          <table class="cmp-table" style="font-size: 0.6em; margin-top: 15px;">
+            <tr>
+              <th>Index</th>
+              <th>0</th>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+            </tr>
+            <tr>
+              <td style="color:#8be9fd;">memory[]</td>
+              <td style="color:#6272a4;">-1</td>
+              <td style="color:#6272a4;">-1</td>
+              <td style="color:#50fa7b;">1</td>
+              <td style="color:#50fa7b;">2</td>
+              <td style="color:#50fa7b;">3</td>
+              <td style="color:#50fa7b;">5</td>
+            </tr>
+          </table>
+          <p style="font-size: 0.55em; color: #6272a4; margin-top: 12px;">
+            fib(0) and fib(1) are handled by base cases, so memory[0] and memory[1] stay as -1.
+          </p>
+        </section>
+
+        <!-- Complexity Comparison -->
+        <section>
+          <h3>Comparison</h3>
+          <table class="cmp-table" style="font-size: 0.6em;">
+            <tr>
+              <th></th>
+              <th>Naive</th>
+              <th>Memoized</th>
+            </tr>
+            <tr>
+              <td style="color:#8be9fd;">Time</td>
+              <td style="color:#ff5555;">O(2<sup>n</sup>)</td>
+              <td style="color:#50fa7b;">O(n)</td>
+            </tr>
+            <tr>
+              <td style="color:#8be9fd;">Space</td>
+              <td>O(n) call stack</td>
+              <td>O(n) call stack + array</td>
+            </tr>
+            <tr>
+              <td style="color:#8be9fd;">fib(40) calls</td>
+              <td style="color:#ff5555;">331,160,281</td>
+              <td style="color:#50fa7b;">77</td>
+            </tr>
+          </table>
+          <p class="explanation" style="margin-top: 15px;">
+            Memoization trades a small amount of memory for a <strong>massive</strong> speedup.<br>
+            Each subproblem is computed at most once &rarr; linear time!
+          </p>
+        </section>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/markdown/markdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/math/math.min.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      transition: 'slide',
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+    });
+  </script>
+</body>
+
+</html>
