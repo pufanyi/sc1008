@@ -17,7 +17,7 @@ int main() {
   dailySales.push_back(100);
 
   std::cout << "Daily Sales: ";
-  for (const auto x: dailySales) {
+  for (const auto x : dailySales) {
     std::cout << x << ' ';
   }
   std::cout << std::endl;
@@ -29,7 +29,7 @@ int main() {
   std::sort(dailySales.begin(), dailySales.end());
 
   std::cout << "Sorted Sales: ";
-  for (const auto x: dailySales) {
+  for (const auto x : dailySales) {
     std::cout << x << ' ';
   }
   std::cout << std::endl;
